@@ -47,6 +47,7 @@ void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1
 void TratamentoColisaoJogadorJogador(Jogador * head1, Jogador * head);
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola);
 void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames);
+void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1);
 
 
 
@@ -98,9 +99,9 @@ void main() {
     if (jogador1) {
         jogador1->temDominio = 0;
         jogador1->forcaChute = 10.0f;
-        jogador1->posJogador = (Vector2){ 200,400.0f };
-        jogador1->largura = 20.0f;
-        jogador1->altura = 20.0f;
+        jogador1->posJogador = (Vector2){ 500,180};
+        jogador1->largura = 24;
+        jogador1->altura = 30;
         jogador1->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador1->rectJogador = (Rectangle){ jogador1->posJogador.x, jogador1->posJogador.y,jogador1->largura,jogador1->altura };
         jogador1->time =1;
@@ -157,13 +158,14 @@ void main() {
     InitWindow(screenWidth, screenHeight, "Fut");
 
     Texture2D campo = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/pitch-lines.png");
+    Texture2D jogador = LoadTexture("soccer-course-assets-main/assets/art/characters/soccer-player.png");
     Texture2D bola = LoadTexture("soccer-course-assets-main/assets/art/props/soccer-ball.png");
 
     
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
         bola1->posBola = (Vector2){ 425,180 };
-        bola1->raioBola = 10.0f;
+        bola1->raioBola = 5;
         bola1->velocidadeAtual = (Vector2){ 0.0f,0.0f };
     }
 
@@ -208,8 +210,10 @@ void main() {
                 // DrawRectangle(jogador2->posJogador.x, jogador2->posJogador.y, jogador2->rectJogador.width, jogador2->rectJogador.height, RED);
                 // DrawRectangle(jogador3->posJogador.x, jogador3->posJogador.y, jogador3->rectJogador.width, jogador3->rectJogador.height, YELLOW);
                 // DrawRectangle(jogador4->posJogador.x, jogador4->posJogador.y, jogador4->rectJogador.width, jogador4->rectJogador.height, YELLOW);
-
+                desenharTexturaJogador(jogador,bola1,jogador1);
+                DrawRectangleLines(jogador1->posJogador.x,jogador1->posJogador.y,jogador1->rectJogador.width,jogador1->rectJogador.height,WHITE);
                 desenharTexturaBola(bola,bola1,0);
+                DrawCircleLines(bola1->posBola.x,bola1->posBola.y,bola1->raioBola,WHITE);
                 // DrawCircleV(bola1->posBola, bola1->raioBola, BLUE);
                 // DrawCircleV(jogadorControladoTime1->posJogador, 5.0f,GREEN);
             EndMode2D();
@@ -254,7 +258,7 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
             bola->velocidadeAtual.x = 0.0f;
             bola->velocidadeAtual.y = 0.0f;
             jogo->timeComBola = jogador->time;
-            TratamentoColisaoJogadorBola(jogador,bola,head1,head2, jogo);
+            // TratamentoColisaoJogadorBola(jogador,bola,head1,head2, jogo);
         }
     }
     else{//Tem dominio sendo true
@@ -459,8 +463,8 @@ void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames){
     Rectangle src2 = {0,0,20,20};
     Rectangle src3 = {0,0,30,30};
     Rectangle src4 = {0,0,40,40};
-    Rectangle dest = {bola1->posBola.x, bola1->posBola.y,15,15};
-    Vector2 origin = {20,20};
+    Rectangle dest = {bola1->posBola.x, bola1->posBola.y,10,10};
+    Vector2 origin = {dest.width/2,dest.height/2};
 
     if(bola1->velocidadeAtual.x == 0.0f && bola1->velocidadeAtual.y == 0.0f){
         DrawTexturePro(bola,src1,dest,origin,0.0f,WHITE);
@@ -468,6 +472,10 @@ void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames){
 
 }
 
-void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogadorComDominioTime1, Jogador * jogadorComDominioTime2){
+void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1){
+    Rectangle src1 = {0,0,24,32};
+    Vector2 origin = {0,0};
+    Rectangle dest = {jogador1->posJogador.x,jogador1->posJogador.y,24,32};
+    DrawTexturePro(jogador,src1,dest,origin,0.0f,WHITE);
     
 }
