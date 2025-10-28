@@ -15,11 +15,17 @@ typedef struct Jogador {
     float altura;
     int temDominio;
     int time;
+    int isMovendo;
     struct Jogador* prox;
     Vector2 velocidadeJogador;
     Vector2 posJogador;
     Rectangle rectJogador;
 }Jogador;
+
+typedef struct RectangleSprites{
+    Rectangle Rectangle;
+    struct RectangleSprites * prox;
+}RectangleSprites;
 
 typedef struct Bola {
     float raioBola;
@@ -46,8 +52,8 @@ void Chutar(Bola* bola, Jogador* jogador,Jogo * jogo);
 void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1, Jogador * head2,Jogo * jogo);
 void TratamentoColisaoJogadorJogador(Jogador * head1, Jogador * head);
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola);
-void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames);
-void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1);
+void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2);
+void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contador);
 
 
 
@@ -85,15 +91,49 @@ void main() {
     
     
     head1Jogador = jogador1;
-    jogador1->prox = jogador2;
     jogador2->prox = head1Jogador;
     tail1Jogador = jogador2;
-    
+    Rectangle src1 = {0,0,24,32};
+    jogador1->prox = jogador2;  
     
     head2Jogador = jogador3;
     jogador3->prox = jogador4;
     jogador4->prox = jogador3;
     tail2Jogador = jogador4;
+    
+    //Sprites de jogador correndo
+    RectangleSprites * headSpritesJogador;
+    Rectangle srcJ2 = {0,32,24,32};
+    Rectangle srcJ3 = {32,32,24,32};
+    Rectangle srcJ4 = {64,32,24,32};
+    Rectangle srcJ5 = {96,32,24,32};
+    Rectangle srcJ6 = {128,32,24,32};
+    Rectangle srcJ7 = {160,32,24,32};
+
+
+    RectangleSprites * rsj2 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
+    RectangleSprites * rsj3 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
+    RectangleSprites * rsj4 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
+    RectangleSprites * rsj5 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
+    RectangleSprites * rsj6 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
+    RectangleSprites * rsj7 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
+    
+ 
+    rsj2->Rectangle = srcJ2;
+    rsj2->prox = rsj3;
+    rsj3->Rectangle = srcJ3;
+    rsj3->prox = rsj4;
+    rsj4->Rectangle = srcJ4;
+    rsj4->prox = rsj5;
+    rsj5->Rectangle = srcJ5;
+    rsj5->prox = rsj6;
+    rsj6->Rectangle = srcJ6;
+    rsj6->prox = rsj7;
+    rsj7->Rectangle = srcJ7;
+    rsj7->prox = rsj2;
+    headSpritesJogador = rsj2;
+
+
     
     
     if (jogador1) {
@@ -177,10 +217,19 @@ void main() {
     pthread_create(&threadChecarControlado,NULL,DefinirJogadorControlado,&jogadorControladoTime1);
     pthread_create(&threadChecarControlado,NULL,DefinirJogadorControlado,&jogadorControladoTime2);
     
-
+    //contadores de frames:
+    int contFramesBola = 0;
+    int contadorFramesJogador =0;
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
+        //reset dos contadores de frames
+        if(contFramesBola == 60){
+            contFramesBola = 0;
+        }
+        if (contadorFramesJogador == 60){
+            contadorFramesJogador =0;
+        }
 
         pthread_mutex_lock(&lock);
         AtualizarPosJogador(jogadorControladoTime1,head1Jogador,head2Jogador);
@@ -210,14 +259,17 @@ void main() {
                 // DrawRectangle(jogador2->posJogador.x, jogador2->posJogador.y, jogador2->rectJogador.width, jogador2->rectJogador.height, RED);
                 // DrawRectangle(jogador3->posJogador.x, jogador3->posJogador.y, jogador3->rectJogador.width, jogador3->rectJogador.height, YELLOW);
                 // DrawRectangle(jogador4->posJogador.x, jogador4->posJogador.y, jogador4->rectJogador.width, jogador4->rectJogador.height, YELLOW);
-                desenharTexturaJogador(jogador,bola1,jogador1);
+                desenharTexturaJogador(jogador,bola1,jogador1,&headSpritesJogador,contadorFramesJogador);
                 DrawRectangleLines(jogador1->posJogador.x,jogador1->posJogador.y,jogador1->rectJogador.width,jogador1->rectJogador.height,WHITE);
-                desenharTexturaBola(bola,bola1,0);
+                desenharTexturaBola(bola,bola1,contFramesBola,jogadorControladoTime1,jogadorControladoTime2);
                 DrawCircleLines(bola1->posBola.x,bola1->posBola.y,bola1->raioBola,WHITE);
                 // DrawCircleV(bola1->posBola, bola1->raioBola, BLUE);
                 // DrawCircleV(jogadorControladoTime1->posJogador, 5.0f,GREEN);
             EndMode2D();
         EndDrawing();
+        //Incremento dos contadores de frames
+        contFramesBola++;
+        contadorFramesJogador++;
     }
     CloseWindow();
 
@@ -239,11 +291,14 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2) {
         if (IsKeyDown(KEY_S)) jogador->velocidadeJogador.y = 5.0f;
     }
 
-    TratamentoColisaoJogadorJogador(head1,head2);
-
     jogador->posJogador.x += jogador->velocidadeJogador.x;
     jogador->posJogador.y += jogador->velocidadeJogador.y;
-
+    if(jogador->velocidadeJogador.x != 0.0f || jogador->velocidadeJogador.y != 0.0f){
+        jogador->isMovendo =1;
+    }
+    else{
+        jogador->isMovendo = 0;
+    }
     jogador->rectJogador.x = jogador->posJogador.x;
     jogador->rectJogador.y = jogador->posJogador.y;
 
@@ -275,12 +330,12 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
             }   
             else if (IsKeyDown(KEY_RIGHT)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
-                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 0;//Direita
             }
             else if (IsKeyDown(KEY_LEFT)) {
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
-                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 1;//Esquerda
             }
         }
@@ -291,13 +346,13 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
                 bola->ladoBola = 2;//Cima
             }
             else if (IsKeyDown(KEY_S)) {
-                bola->posBola.x = jogador->posJogador.x+ jogador->rectJogador.width / 2.0f;
+                bola->posBola.x = jogador->posJogador.x+ jogador->rectJogador.width;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height + bola->raioBola;
                 bola->ladoBola = 3;//Baixo
             }   
             else if (IsKeyDown(KEY_D)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
-                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 0;//Direita
             }
             else if (IsKeyDown(KEY_A)) {
@@ -429,8 +484,6 @@ void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1
 }
 
 void TratamentoColisaoJogadorJogador(Jogador * head1, Jogador * head2){
-
-
     do{
         do{
             if(CheckCollisionRecs(head1->rectJogador,head2->rectJogador)){
@@ -458,24 +511,50 @@ void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControlad
     }
 }
 
-void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames){
+void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2){
     Rectangle src1 = {0,0,10,10};
-    Rectangle src2 = {0,0,20,20};
-    Rectangle src3 = {0,0,30,30};
-    Rectangle src4 = {0,0,40,40};
+    Rectangle src2 = {20,20,10,10};
+    Rectangle src3 = {30,30,10,10};
+    Rectangle src4 = {40,40,10,10};
     Rectangle dest = {bola1->posBola.x, bola1->posBola.y,10,10};
     Vector2 origin = {dest.width/2,dest.height/2};
 
-    if(bola1->velocidadeAtual.x == 0.0f && bola1->velocidadeAtual.y == 0.0f){
+    if((bola1->velocidadeAtual.x == 0.0f && bola1->velocidadeAtual.y == 0.0f && jogadorControladoTime1->temDominio == 0 && jogadorControladoTime2->temDominio == 0) || ((jogadorControladoTime1->temDominio == 1 && jogadorControladoTime1->velocidadeJogador.x == 0.0f && jogadorControladoTime1->velocidadeJogador.y == 0.0f) || (jogadorControladoTime2->temDominio == 1 && jogadorControladoTime2->velocidadeJogador.x == 0.0f && jogadorControladoTime2->velocidadeJogador.y==0.0f))){
         DrawTexturePro(bola,src1,dest,origin,0.0f,WHITE);
+    }
+    else{
+        if(contadorFrames<=15){
+            DrawTexturePro(bola,src2,dest,origin,0.0f,WHITE);
+        }
+        else if(contadorFrames<=30){
+            DrawTexturePro(bola,src2,dest,origin,0.0f,WHITE);
+        }
+        else if(contadorFrames<=45){
+            DrawTexturePro(bola,src3,dest,origin,0.0f,WHITE);
+        }
+        else if(contadorFrames<=60){
+            DrawTexturePro(bola,src4,dest,origin,0.0f,WHITE);
+        }
     }
 
 }
 
-void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1){
-    Rectangle src1 = {0,0,24,32};
+void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador){
+    int mudouSprites = 0;
     Vector2 origin = {0,0};
     Rectangle dest = {jogador1->posJogador.x,jogador1->posJogador.y,24,32};
-    DrawTexturePro(jogador,src1,dest,origin,0.0f,WHITE);
+    Rectangle src1 = {0,0,24,32};
     
+    Rectangle srcDaVez;
+    if (jogador1->isMovendo == 0){
+        srcDaVez = src1;
+    }
+    else{
+        srcDaVez = (*headSprites)->Rectangle;
+        if(contadorFramesJogador%10== 0){
+          *headSprites = (*headSprites)->prox;
+          
+        }
+    }
+    DrawTexturePro(jogador,srcDaVez,dest,origin,0.0f,WHITE);
 }
