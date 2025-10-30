@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "structsoccer.h"  // <- usa os typedefs e protótipos do .h
+#include "structsoccer.h" 
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
 //Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA E CHUTE). C PASSE

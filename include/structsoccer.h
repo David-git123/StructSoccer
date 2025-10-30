@@ -1,9 +1,8 @@
 #ifndef STRUCTSOCCER_H
 #define STRUCTSOCCER_H
-/* Interface pública do jogo */
 
-#include "raylib.h"     // Vector2, Rectangle, Texture2D, Camera2D
-#include <pthread.h>    // pthread_mutex_t
+#include "raylib.h"    
+#include <pthread.h>    
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,9 +15,9 @@ typedef struct Jogador {
     float   largura;
     float   altura;
     int     temDominio;
-    int     time;           /* 1 ou 2 */
+    int     time;           
     int     isMovendo;
-    struct Jogador* prox;   /* lista circular por time */
+    struct Jogador* prox;  
     Vector2 velocidadeJogador;
     Vector2 posJogador;
     Rectangle rectJogador;
@@ -26,18 +25,18 @@ typedef struct Jogador {
 
 typedef struct RectangleSprites {
     Rectangle Rectangle;
-    struct RectangleSprites* prox; /* lista circular de frames */
+    struct RectangleSprites* prox;
 } RectangleSprites;
 
 typedef struct Bola {
     float   raioBola;
-    int     ladoBola;       /* 0 dir, 1 esq, 2 cima, 3 baixo */
+    int     ladoBola;      
     Vector2 velocidadeAtual;
     Vector2 posBola;
 } Bola;
 
 typedef struct Jogo {
-    int       timeComBola;  /* 0 sem dono, 1 T1, 2 T2 */
+    int       timeComBola; 
     int       placarTime1;
     int       placarTime2;
     Rectangle rectangleGol1;
@@ -66,4 +65,4 @@ void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1,
 #ifdef __cplusplus
 }
 #endif
-#endif /* STRUCTSOCCER_H */
+#endif
