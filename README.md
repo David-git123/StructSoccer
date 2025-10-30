@@ -109,19 +109,19 @@ Bom jogo!
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/rodrigo603">
+      <a href="https://github.com/rafaferraz05">
         <img src="https://avatars.githubusercontent.com/rafaferraz05" width="100" style="border-radius: 50%; margin: 10px;" />
         <br><strong>🎮 Rafael Ferraz</strong>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/rodrigo603">
+      <a href="https://github.com/David-git123">
         <img src="https://avatars.githubusercontent.com/David-git123" width="100" style="border-radius: 50%; margin: 10px;" />
         <br><strong>🎮 David Magalhães</strong>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/rodrigo603">
+      <a href="https://github.com/Cavalcanti-Felipe">
         <img src="https://avatars.githubusercontent.com/Cavalcanti-Felipe" width="100" style="border-radius: 50%; margin: 10px;" />
         <br><strong>🎮 Felipe Cavalcanti</strong>
       </a>
