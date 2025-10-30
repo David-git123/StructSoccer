@@ -22,14 +22,12 @@
 
 ```bash
 String-Slayer/
-├── .vscode
 ├── assets/             # Imagens e sons   
 ├── build               # Executáveis
 ├── include/            # Headers do projeto
 ├── src/                # Códigos-fonte dos minigames
 ├── Makefile            # Script de build
-├── README.md           # README.md
-└── scores.dat          # Ponto de entrada do jogo
+└── README.md           # README.md
 ``` 
 
 <h1><strong>🚀 Instalação e Execução</strong></h1>
