@@ -4,64 +4,14 @@
 #include <pthread.h>
 #include <unistd.h>
 
-
+#include "structsoccer.h"  // <- usa os typedefs e protótipos do .h
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
 //Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA E CHUTE). C PASSE
 
-typedef struct Jogador {
-    float forcaChute;
-    float largura;
-    float altura;
-    int temDominio;
-    int time;
-    int isMovendo;
-    struct Jogador* prox;
-    Vector2 velocidadeJogador;
-    Vector2 posJogador;
-    Rectangle rectJogador;
-}Jogador;
-
-typedef struct RectangleSprites{
-    Rectangle Rectangle;
-    struct RectangleSprites * prox;
-}RectangleSprites;
-
-typedef struct Bola {
-    float raioBola;
-    int ladoBola;
-    Vector2 velocidadeAtual;
-    Vector2 posBola;
-}Bola;
-
-typedef struct Jogo{
-    int timeComBola;
-    int placarTime1;
-    int placarTime2;
-    Rectangle rectangleGol1;
-    Rectangle rectangleGol2;
-}Jogo;
-
-void * DefinirJogadorControlado(void * jogadorAtual);
-void AtualizarPosJogador(Jogador * jogador, Jogador * head1, Jogador * head2);
-void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2, Jogo * jogo);
-void Atrito(Bola * bola);
-void Passe(Bola * bola,Jogador * jogador,Jogo * jogo);
-void MudarPosicaoBola(Bola * bola);
-void Chutar(Bola* bola, Jogador* jogador,Jogo * jogo);
-void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1, Jogador * head2,Jogo * jogo);
-void TratamentoColisaoJogadorJogador(Jogador * head1, Jogador * head);
-void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola);
-void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2);
-void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contador);
-
-
-
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
-
 void main() {
-
 
     Jogo * jogo = (Jogo *)malloc(sizeof(Jogo));
     jogo->timeComBola =0;
@@ -76,7 +26,6 @@ void main() {
     jogo->rectangleGol2.y = 540.0f;
     jogo->rectangleGol2.height = 300.0f;
     jogo->rectangleGol2.width = 200.0f;
-
 
     Jogador* head1Jogador = NULL;
     Jogador* tail1Jogador = NULL;
@@ -110,7 +59,6 @@ void main() {
     Rectangle srcJ6 = {128,32,24,32};
     Rectangle srcJ7 = {160,32,24,32};
 
-
     RectangleSprites * rsj2 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
     RectangleSprites * rsj3 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
     RectangleSprites * rsj4 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
@@ -133,9 +81,6 @@ void main() {
     rsj7->prox = rsj2;
     headSpritesJogador = rsj2;
 
-
-    
-    
     if (jogador1) {
         jogador1->temDominio = 0;
         jogador1->forcaChute = 10.0f;
@@ -178,15 +123,11 @@ void main() {
         jogador4->time =2;
     }
 
- 
-    
     Jogador* jogadorControladoTime1 = jogador1;
     Jogador* jogadorControladoTime2 = jogador3;
     
-    
     pthread_t threadChecarControlado;
 
-    
     const int screenWidth = 1920;
     const int screenHeight = 1080;
     Color corVerdeGrama;
@@ -205,7 +146,6 @@ void main() {
 
     Rectangle srcparedeLadoInvertida = (Rectangle){0,0,paredeLado.width, -paredeLado.height};
     
-
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
         bola1->posBola = (Vector2){ 425,180 };
@@ -252,7 +192,6 @@ void main() {
         Atrito(bola1);
         MudarPosicaoBola(bola1);
 
-    
         AtualizarCamera(camera,jogo,jogadorControladoTime1,jogadorControladoTime2,bola1);
         
         BeginDrawing();
@@ -277,10 +216,6 @@ void main() {
         contadorFramesJogador++;
     }
     CloseWindow();
-
-
-
-
 }
 
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2) {
@@ -346,16 +281,6 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
             }
         }
         else if(jogador->time== 2){
-            // if (IsKeyDown(KEY_W)) {//Adicionar o + velocidade bola. Diminuir a velocidade da bola quando estiver em movimento;
-            //     bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width / 2.0f;
-            //     bola->posBola.y = jogador->posJogador.y - bola->raioBola;
-            //     bola->ladoBola = 2;//Cima
-            // }
-            // else if (IsKeyDown(KEY_S)) {
-            //     bola->posBola.x = jogador->posJogador.x+ jogador->rectJogador.width;
-            //     bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height + bola->raioBola;
-            //     bola->ladoBola = 3;//Baixo
-            // }
             if(IsKeyDown(KEY_W)){
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
@@ -380,7 +305,6 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
     }
 }
 
-
 void Atrito(Bola * bola) {
     if (bola->velocidadeAtual.x > 0.0f) {
         bola->velocidadeAtual.x -= 0.5f;
@@ -398,7 +322,6 @@ void Atrito(Bola * bola) {
         bola->velocidadeAtual.y += 0.5f;
         if (bola->velocidadeAtual.y > 0.0f) bola->velocidadeAtual.y = 0.0f;
     }
-
 }
 
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
@@ -419,7 +342,6 @@ void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
         jogador->temDominio = 0;
         jogo->timeComBola = 0;
     }
-    
 }
 
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
@@ -441,6 +363,7 @@ void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
         jogo->timeComBola = 0;
     }
 }
+
 void MudarPosicaoBola(Bola * bola) {
     bola->posBola.x += bola->velocidadeAtual.x;
     bola->posBola.y += bola->velocidadeAtual.y;
@@ -468,7 +391,6 @@ void * DefinirJogadorControlado(void * jogadorAtual){
             usleep(500000);
         }
     }
-    
 }
 
 void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1, Jogador * head2, Jogo * jogo){
@@ -512,7 +434,6 @@ void TratamentoColisaoJogadorJogador(Jogador * head1, Jogador * head2){
         }while(head2!=head2);
         head1 = head1->prox;
     }while(head1!=head1);
- 
 }
 
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola){
@@ -552,7 +473,6 @@ void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogad
             DrawTexturePro(bola,src4,dest,origin,0.0f,WHITE);
         }
     }
-
 }
 
 void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador){
@@ -569,16 +489,13 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
         srcDaVez = (*headSprites)->Rectangle;
         if(contadorFramesJogador%10== 0){
           *headSprites = (*headSprites)->prox;
-          
         }
     }
     if(jogador1->time == 1 && (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN))){
         srcDaVez.width = -srcDaVez.width;
     }
     else if(jogador1->time == 2 && (IsKeyDown(KEY_A) || IsKeyDown(KEY_S))){
-       
         srcDaVez.width = -srcDaVez.width;
-
     }
     DrawTexturePro(jogador,srcDaVez,dest,origin,0.0f,WHITE);
 }
