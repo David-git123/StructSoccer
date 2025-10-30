@@ -5,22 +5,35 @@
 
 # Compilador e flags
 CC      = gcc
-CFLAGS  = -std=c99 -Wall -Wextra -O2
+CFLAGS  = -std=c99 -Wall -Wextra -O2 -Iinclude
 
-# Bibliotecas Raylib (para Linux)
+# Bibliotecas Raylib (Linux)
 LIBS    = -lraylib -lm -lpthread -ldl -lX11 -lGL
+# (Se quiser macOS:
+# LIBS  = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo)
 
-# Diretórios e arquivos
-SRC_FILES   = main.c
-BUILD_DIR   = build
-OUT_FILE    = $(BUILD_DIR)/structsoccer
+# Diretórios
+SRC_DIR   = src
+BUILD_DIR = build
+OBJ_DIR   = $(BUILD_DIR)/obj
 
-# Criação da pasta build, se não existir
-$(shell mkdir -p $(BUILD_DIR))
+# Arquivos (todos os .c dentro de src/, inclusive subpastas)
+SRC_FILES = $(shell find $(SRC_DIR) -name "*.c")
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+OUT_FILE  = $(BUILD_DIR)/structsoccer
 
-# Compilação
-$(OUT_FILE): $(SRC_FILES)
-	$(CC) $(CFLAGS) -o $(OUT_FILE) $(SRC_FILES) $(LIBS)
+# Alvo padrão
+all: $(OUT_FILE)
+
+# Link final
+$(OUT_FILE): $(OBJ_FILES)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+# Regra de compilação de cada .c -> .o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Limpeza
 clean:
@@ -30,4 +43,4 @@ clean:
 run: $(OUT_FILE)
 	./$(OUT_FILE)
 
-.PHONY: clean run
+.PHONY: all clean run

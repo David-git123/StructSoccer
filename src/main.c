@@ -197,11 +197,11 @@ void main() {
     
     InitWindow(screenWidth, screenHeight, "Fut");
 
-    Texture2D campo = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/pitch-lines.png");
-    Texture2D jogador = LoadTexture("soccer-course-assets-main/assets/art/characters/soccer-player.png");
-    Texture2D bola = LoadTexture("soccer-course-assets-main/assets/art/props/soccer-ball.png");
-    Texture2D paredeFundo = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/side-wall.png");
-    Texture2D paredeLado = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/top-wall.png");
+    Texture2D campo = LoadTexture("assets/art/backgrounds/pitch-lines.png");
+    Texture2D jogador = LoadTexture("assets/art/characters/soccer-player.png");
+    Texture2D bola = LoadTexture("assets/art/props/soccer-ball.png");
+    Texture2D paredeFundo = LoadTexture("assets/art/backgrounds/side-wall.png");
+    Texture2D paredeLado = LoadTexture("assets/art/backgrounds/top-wall.png");
 
     Rectangle srcparedeLadoInvertida = (Rectangle){0,0,paredeLado.width, -paredeLado.height};
     
