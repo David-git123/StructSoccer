@@ -200,8 +200,12 @@ void main() {
     Texture2D campo = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/pitch-lines.png");
     Texture2D jogador = LoadTexture("soccer-course-assets-main/assets/art/characters/soccer-player.png");
     Texture2D bola = LoadTexture("soccer-course-assets-main/assets/art/props/soccer-ball.png");
+    Texture2D paredeFundo = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/side-wall.png");
+    Texture2D paredeLado = LoadTexture("soccer-course-assets-main/assets/art/backgrounds/top-wall.png");
 
+    Rectangle srcparedeLadoInvertida = (Rectangle){0,0,paredeLado.width, -paredeLado.height};
     
+
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
         bola1->posBola = (Vector2){ 425,180 };
@@ -255,6 +259,7 @@ void main() {
             ClearBackground(corVerdeGrama);
             BeginMode2D(*camera);
                 DrawTexture(campo,0,0,WHITE);
+                DrawTexture(paredeLado,50,20,WHITE);
                 // DrawRectangle(jogador1->posJogador.x, jogador1->posJogador.y, jogador1->rectJogador.width, jogador1->rectJogador.height, RED);
                 // DrawRectangle(jogador2->posJogador.x, jogador2->posJogador.y, jogador2->rectJogador.width, jogador2->rectJogador.height, RED);
                 // DrawRectangle(jogador3->posJogador.x, jogador3->posJogador.y, jogador3->rectJogador.width, jogador3->rectJogador.height, YELLOW);
@@ -318,38 +323,26 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
     }
     else{//Tem dominio sendo true
         if(jogador->time == 1){
-            // if (IsKeyDown(KEY_UP)) {//Adicionar o + velocidade bola. Diminuir a velocidade da bola quando estiver em movimento;
-            //     bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width / 2.0f;
-            //     bola->posBola.y = jogador->posJogador.y - bola->raioBola;
-            //     bola->ladoBola = 2;//Cima
-            // }
-            // else if (IsKeyDown(KEY_DOWN)) {
-            //     bola->posBola.x = jogador->posJogador.x+ jogador->rectJogador.width / 2.0f;
-            //     bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height + bola->raioBola;
-            //     bola->ladoBola = 3;//Baixo
-            // }   
-            if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_UP)) {
+            if(IsKeyDown(KEY_UP)){
+                bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
+                bola->ladoBola =2;
+            }   
+            else if (IsKeyDown(KEY_RIGHT)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 0;//Direita
-                if(IsKeyDown(IsKeyDown(KEY_UP))){
-                    bola->ladoBola =2;
-                }
-                if(IsKeyDown(KEY_RIGHT)){
-                    bola->ladoBola = 0;//Direita
-                }
+               
             }
-            else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) {
+            else if (IsKeyDown(KEY_LEFT)) {
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 1;//Esquerda
-                if(IsKeyDown(IsKeyDown(KEY_DOWN))){
-                    bola->ladoBola =3;//baixo
-                }
-                if(IsKeyDown(KEY_LEFT)){
-                    bola->ladoBola = 1;//Esquerda
-                }
-                
+            }
+            else if(IsKeyDown(KEY_DOWN)){
+                bola->posBola.x = jogador->posJogador.x - bola->raioBola;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
+                bola->ladoBola = 3;
             }
         }
         else if(jogador->time== 2){
@@ -362,27 +355,26 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
             //     bola->posBola.x = jogador->posJogador.x+ jogador->rectJogador.width;
             //     bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height + bola->raioBola;
             //     bola->ladoBola = 3;//Baixo
-            // }   
+            // }
+            if(IsKeyDown(KEY_W)){
+                bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
+                bola->ladoBola =2;
+            }   
             if (IsKeyDown(KEY_D) || IsKeyDown(KEY_W)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
-                if(IsKeyDown(IsKeyDown(KEY_W))){
-                    bola->ladoBola =2;
-                }
-                if(IsKeyDown(KEY_D)){
-                    bola->ladoBola = 0;//Direita
-                }
+                bola->ladoBola = 0;//Direita
             }
-            else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_S)) {
+            else if (IsKeyDown(KEY_A)) {
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
                 bola->ladoBola = 1;//Esquerda
-                if(IsKeyDown(IsKeyDown(KEY_W))){
-                    bola->ladoBola =3;//baixo
-                }
-                if(IsKeyDown(KEY_A)){
-                    bola->ladoBola = 1;//Esquerda
-                }
+            }
+            else if(IsKeyDown(KEY_S)){
+                bola->posBola.x = jogador->posJogador.x - bola->raioBola;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
+                bola->ladoBola =3;//baixo
             }
         }
     }
