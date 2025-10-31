@@ -12,8 +12,8 @@ extern "C" {
 
 typedef enum {
     ST_MENU,
-    ST_JOGO,
-    ST_SAIR
+    ST_CLASSICO,   
+    ST_ARCADE
 } EstadoDoJogo;
 
 /* ─── Dados do menu ─────────────────────────────────────────────────────────────── */

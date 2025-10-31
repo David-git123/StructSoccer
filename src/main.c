@@ -147,7 +147,7 @@ void main() {
 
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
-    .itens = {"Jogar", "Sair"},
+    .itens = {"Classico", "Arcade"},
     .cont = 2,
     .selecionar = 0
     };
@@ -159,9 +159,9 @@ void main() {
 
         if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
             if (menu.selecionar == 0){
-                estado = ST_JOGO;
+                estado = ST_CLASSICO;
             }else{  
-                estado = ST_SAIR;
+                estado = ST_ARCADE;
             }
         }
             BeginDrawing();
@@ -190,10 +190,7 @@ void main() {
 
             EndDrawing();
         }
-        if (estado == ST_SAIR || WindowShouldClose()) {
-            CloseWindow();
-            return 0;
-        }
+        
 
 
     Rectangle srcparedeLadoInvertida = (Rectangle){0,0,paredeLado.width, -paredeLado.height};
