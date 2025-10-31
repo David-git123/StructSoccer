@@ -6,6 +6,7 @@
 
 #include "structsoccer.h" 
 
+
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
 //Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA E CHUTE). C PASSE
 
@@ -144,6 +145,57 @@ void main() {
     Texture2D paredeFundo = LoadTexture("assets/art/backgrounds/side-wall.png");
     Texture2D paredeLado = LoadTexture("assets/art/backgrounds/top-wall.png");
 
+    EstadoDoJogo estado = ST_MENU;
+    Menu menu = {
+    .itens = {"Jogar", "Sair"},
+    .cont = 2,
+    .selecionar = 0
+    };
+
+    while (estado == ST_MENU && !WindowShouldClose()) {
+        if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_UP)) {
+        menu.selecionar = 1 - menu.selecionar;
+        }
+
+        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+            if (menu.selecionar == 0){
+                estado = ST_JOGO;
+            }else{  
+                estado = ST_SAIR;
+            }
+        }
+            BeginDrawing();
+            ClearBackground((Color){20,20,28,255});
+
+            DrawText("STRUCT SOCCER", 60, 60, 48, RAYWHITE);
+            
+
+            Color c0;
+            Color c1;
+
+            if (menu.selecionar == 0) {
+                c0 = YELLOW;
+            } else {
+                c0 = LIGHTGRAY;
+            }
+
+            if (menu.selecionar == 1) {
+                c1 = YELLOW;
+            } else {
+                c1 = LIGHTGRAY;
+            }
+
+            DrawText(menu.itens[0], 80, 200, 32, c0);
+            DrawText(menu.itens[1], 80, 250, 32, c1);
+
+            EndDrawing();
+        }
+        if (estado == ST_SAIR || WindowShouldClose()) {
+            CloseWindow();
+            return 0;
+        }
+
+
     Rectangle srcparedeLadoInvertida = (Rectangle){0,0,paredeLado.width, -paredeLado.height};
     
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
@@ -163,7 +215,7 @@ void main() {
     
     //contadores de frames:
     int contFramesBola = 0;
-    int contadorFramesJogador =0;
+    int contadorFramesJogador = 0;
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {

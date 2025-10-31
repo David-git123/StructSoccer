@@ -8,6 +8,22 @@
 extern "C" {
 #endif
 
+/* ─── Estado do jogo ─────────────────────────────────────────────────────────────── */
+
+typedef enum {
+    ST_MENU,
+    ST_JOGO,
+    ST_SAIR
+} EstadoDoJogo;
+
+/* ─── Dados do menu ─────────────────────────────────────────────────────────────── */
+
+typedef struct {
+    const char *itens[2];  
+    int cont;             
+    int selecionar;         
+} Menu;
+
 /* ─── Tipos ─────────────────────────────────────────────────────────────── */
 
 typedef struct Jogador {
