@@ -6,7 +6,7 @@
 
 static float clampf(float x, float a, float b) { return (x < a) ? a : (x > b) ? b : x; }
 
-// Botão estilizado (igual antes)
+// botao do menu
 static bool DrawMenuButton(Rectangle r, const char* label, const char* desc, bool selected, float dt) {
     static float pulse = 0.0f;
     pulse += dt * 2.5f;

@@ -141,6 +141,9 @@ void main() {
     
     InitWindow(screenWidth, screenHeight, "StructSoccer");
 
+    InitAudioDevice();
+    SetMasterVolume(1.0f);
+
     Texture2D campo = LoadTexture("assets/art/backgrounds/pitch-lines.png");
     Texture2D jogador = LoadTexture("assets/art/characters/soccer-player.png");
     Texture2D bola = LoadTexture("assets/art/props/soccer-ball.png");
@@ -160,8 +163,14 @@ void main() {
     .selecionar = 0
     };
 
+    Music menuMusic = LoadMusicStream("assets/music/menu.mp3"); // seu arquivo
+    menuMusic.looping = true;                  // tocar em loop
+    SetMusicVolume(menuMusic, 0.6f);           // volume da música do menu
+    PlayMusicStream(menuMusic);
+
     //loop do menu
     while (estado == ST_MENU && !WindowShouldClose()) {
+        UpdateMusicStream(menuMusic);
         float dt = GetFrameTime();
 
         BeginDrawing();
@@ -172,6 +181,8 @@ void main() {
             //libera apenas as texturas do menu
             UnloadTexture(menuBg);
             UnloadTexture(menuLogo);
+            StopMusicStream(menuMusic);
+            UnloadMusicStream(menuMusic);
             CloseWindow();
             return 0;
         }
@@ -256,6 +267,7 @@ void main() {
     UnloadTexture(barraTopo);
 
     CloseWindow();
+    CloseAudioDevice();
 }
 
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2) {
