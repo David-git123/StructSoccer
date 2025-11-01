@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "structsoccer.h" 
+#include "./include/structsoccer.h" 
 
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
