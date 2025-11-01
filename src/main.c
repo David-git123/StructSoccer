@@ -148,6 +148,8 @@ void main() {
     Texture2D paredeLadoBaixo = LoadTexture("assets/art/backgrounds/bottom-wall.png");
     Texture2D barra = LoadTexture("assets/art/backgrounds/goal-bottom.png");
     Texture2D barraTopo = LoadTexture("assets/art/backgrounds/goal-top.png");
+    Texture2D menuBg   = LoadTexture("assets/art/ui/mainmenu/menu-background.png");     // sua imagem de fundo
+    Texture2D menuLogo = LoadTexture("assets/art/ui/mainmenu/title.png");  // sua imagem de título
     
 
     EstadoDoJogo estado = ST_MENU;
@@ -162,13 +164,15 @@ void main() {
         float dt = GetFrameTime();
 
         BeginDrawing();
-            UpdateAndDrawMainMenu(&menu, &estado, campo, bola, dt);
+            UpdateAndDrawMainMenu(&menu, &estado, menuBg, menuLogo, dt);
         EndDrawing();
 
-        // Sair direto do jogo a partir do menu:
-        if (IsKeyPressed(KEY_ESCAPE) || (IsGamepadAvailable(0) && IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT))) {
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            // libera apenas as texturas do MENU (as únicas carregadas e já usadas)
+            UnloadTexture(menuBg);
+            UnloadTexture(menuLogo);
             CloseWindow();
-            return;
+            return 0;
         }
     }
 
@@ -262,6 +266,16 @@ void main() {
         contFramesBola++;
         contadorFramesJogador++;
     }
+
+    UnloadTexture(campo);
+    UnloadTexture(jogador);
+    UnloadTexture(bola);
+    UnloadTexture(paredeFundoCampo);
+    UnloadTexture(paredeLadoCima);
+    UnloadTexture(paredeLadoBaixo);
+    UnloadTexture(barra);
+    UnloadTexture(barraTopo);
+    
     CloseWindow();
 }
 
