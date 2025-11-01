@@ -4,9 +4,9 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "../include/menu.h"                 // <-- menu bonito agora vem de outro .c/.h
+#include "../include/menu.h"
 #include "../include/structsoccer.h"
-
+#include "../include/modes.h"                
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
 //Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA E CHUTE). C PASSE
@@ -149,8 +149,8 @@ void main() {
     Texture2D paredeLadoBaixo = LoadTexture("assets/art/backgrounds/bottom-wall.png");
     Texture2D barra = LoadTexture("assets/art/backgrounds/goal-bottom.png");
     Texture2D barraTopo = LoadTexture("assets/art/backgrounds/goal-top.png");
-    Texture2D menuBg   = LoadTexture("assets/art/ui/mainmenu/menu-background.png");     // sua imagem de fundo
-    Texture2D menuLogo = LoadTexture("assets/art/ui/mainmenu/title.png");  // sua imagem de título
+    Texture2D menuBg   = LoadTexture("assets/art/ui/mainmenu/menu-background.png");     
+    Texture2D menuLogo = LoadTexture("assets/art/ui/mainmenu/title.png");
     
 
     EstadoDoJogo estado = ST_MENU;
@@ -160,7 +160,7 @@ void main() {
     .selecionar = 0
     };
 
-    // loop do menu
+    //loop do menu
     while (estado == ST_MENU && !WindowShouldClose()) {
         float dt = GetFrameTime();
 
@@ -169,7 +169,7 @@ void main() {
         EndDrawing();
 
         if (IsKeyPressed(KEY_ESCAPE)) {
-            // libera apenas as texturas do MENU (as únicas carregadas e já usadas)
+            //libera apenas as texturas do menu
             UnloadTexture(menuBg);
             UnloadTexture(menuLogo);
             CloseWindow();
@@ -177,15 +177,16 @@ void main() {
         }
     }
 
- 
+    //como saiu do menu, nao precisa mais delas
+    UnloadTexture(menuBg);
+    UnloadTexture(menuLogo);
+
     Rectangle srcParedeFundoCampoDir = {0,0,paredeFundoCampo.width,-paredeFundoCampo.height};
     Rectangle destParedeFundoCampoDir2 = {805,220,paredeFundoCampo.width,paredeFundoCampo.height};
 
     Rectangle srcBarraEsquerda = (Rectangle){0,0,-barra.width,barra.height};
     Rectangle destBarraEsquerda = (Rectangle){805,90,barra.width,barra.height};
 
-
-    
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
         bola1->posBola = (Vector2){ 425,180 };
@@ -200,78 +201,51 @@ void main() {
 
     pthread_create(&threadChecarControlado,NULL,DefinirJogadorControlado,&jogadorControladoTime1);
     pthread_create(&threadChecarControlado,NULL,DefinirJogadorControlado,&jogadorControladoTime2);
-    
-    //contadores de frames:
-    int contFramesBola = 0;
-    int contadorFramesJogador = 0;
+
+    //prepara ponteiro da lista de sprites para passar por referência
+    RectangleSprites* headSpritesJogador_local = headSpritesJogador;
+
+    //configura contexto do jogo
+    GameCtx ctx = {
+        .campo = campo,
+        .jogadorTex = jogador,
+        .bolaTex = bola,
+        .paredeFundoCampo = paredeFundoCampo,
+        .paredeLadoCima = paredeLadoCima,
+        .paredeLadoBaixo = paredeLadoBaixo,
+        .barra = barra,
+        .barraTopo = barraTopo,
+
+        .srcParedeFundoCampoDir = srcParedeFundoCampoDir,
+        .destParedeFundoCampoDir2 = destParedeFundoCampoDir2,
+        .srcBarraEsquerda = srcBarraEsquerda,
+        .destBarraEsquerda = destBarraEsquerda,
+
+        .jogo = jogo,
+        .bola1 = bola1,
+        .camera = camera,
+        .corVerdeGrama = corVerdeGrama,
+
+        .j1 = jogador1,
+        .j2 = jogador2,
+        .j3 = jogador3,
+        .j4 = jogador4,
+
+        .ctrl1 = &jogadorControladoTime1,
+        .ctrl2 = &jogadorControladoTime2,
+
+        .headSprites = &headSpritesJogador_local
+    };
 
     SetTargetFPS(60);
-    while (!WindowShouldClose()) {
-        //reset dos contadores de frames
-        if(contFramesBola == 60){
-            contFramesBola = 0;
-        }
-        if (contadorFramesJogador == 60){
-            contadorFramesJogador =0;
-        }
 
-        pthread_mutex_lock(&lock);
-        AtualizarPosJogador(jogadorControladoTime1,head1Jogador,head2Jogador);
-        AtualizarPosJogador(jogadorControladoTime2,head1Jogador, head2Jogador);
-        EstadoBola(bola1,jogadorControladoTime1,head1Jogador,head2Jogador, jogo);
-        EstadoBola(bola1,jogadorControladoTime2,head1Jogador,head2Jogador, jogo);
-        if(jogo->timeComBola == 1 || jogo->timeComBola == 0){
-            Passe(bola1,jogadorControladoTime1, jogo);
-            Chutar(bola1, jogadorControladoTime1, jogo);   
-        }
-        else if(jogo->timeComBola == 2 || jogo->timeComBola == 0){
-            Passe(bola1,jogadorControladoTime2, jogo);
-            Chutar(bola1, jogadorControladoTime2, jogo); 
-        }
-        pthread_mutex_unlock(&lock);
-        Atrito(bola1);
-        MudarPosicaoBola(bola1);
-
-        AtualizarCamera(camera,jogo,jogadorControladoTime1,jogadorControladoTime2,bola1);
-        
-        BeginDrawing();
-            ClearBackground(corVerdeGrama);
-            BeginMode2D(*camera);
-                //Texturas da parede do campo
-                DrawTexture(campo,0,0,WHITE);
-                DrawTexture(paredeLadoCima,50,20,WHITE);
-                DrawTexture(paredeLadoBaixo,28,355,WHITE);
-                //Fundo de campo esquerdo
-                // DrawTexture(paredeFundoCampo,35,130,WHITE);
-                DrawTexture(paredeFundoCampo,25,220,WHITE);
-                // Fundo de campo direito
-                DrawTexturePro(paredeFundoCampo,srcParedeFundoCampoDir,destParedeFundoCampoDir2,(Vector2){0,0},0.0f,WHITE);
-                // Textura da barra
-                DrawTexture(barra,20,100,WHITE);
-                DrawTexture(barraTopo,20,100,WHITE);
-                DrawTexturePro(barra,srcBarraEsquerda,destBarraEsquerda,(Vector2){0,0},0.0f,WHITE);
-                DrawTexturePro(barraTopo,(Rectangle){0,0,-barraTopo.width,barraTopo.height},(Rectangle){805,90,barraTopo.width,barraTopo.height},(Vector2){0,0},0.0f,WHITE);
-
-      
-                desenharTexturaJogador(jogador,bola1,jogador1,&headSpritesJogador,contadorFramesJogador);
-                desenharTexturaJogador(jogador,bola1,jogador2,&headSpritesJogador,contadorFramesJogador);
-                desenharTexturaJogador(jogador,bola1,jogador3,&headSpritesJogador,contadorFramesJogador);
-                desenharTexturaJogador(jogador,bola1,jogador4,&headSpritesJogador,contadorFramesJogador);
-
-                DrawRectangleLines(jogador1->posJogador.x,jogador1->posJogador.y,jogador1->rectJogador.width,jogador1->rectJogador.height,WHITE);
-                DrawRectangleLines(jogo->rectangleParedeCima.x,jogo->rectangleParedeCima.y,jogo->rectangleParedeCima.width,jogo->rectangleParedeCima.height,RED);
-                
-                desenharTexturaBola(bola,bola1,contFramesBola,jogadorControladoTime1,jogadorControladoTime2);
-                DrawCircleLines(bola1->posBola.x,bola1->posBola.y,bola1->raioBola,WHITE);
-                // DrawCircleV(bola1->posBola, bola1->raioBola, BLUE);
-                // DrawCircleV(jogadorControladoTime1->posJogador, 5.0f,GREEN);
-            EndMode2D();
-        EndDrawing();
-        //Incremento dos contadores de frames
-        contFramesBola++;
-        contadorFramesJogador++;
+    if (estado == ST_CLASSICO) {
+        RunModoClassico(&ctx);
+    } else if (estado == ST_ARCADE) {
+        RunModoPowerUps(&ctx);
     }
 
+    // Libera texturas do gameplay e fecha
     UnloadTexture(campo);
     UnloadTexture(jogador);
     UnloadTexture(bola);
@@ -280,7 +254,7 @@ void main() {
     UnloadTexture(paredeLadoBaixo);
     UnloadTexture(barra);
     UnloadTexture(barraTopo);
-    
+
     CloseWindow();
 }
 
