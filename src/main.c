@@ -4,8 +4,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include "menu.h"                 // <-- menu bonito agora vem de outro .c/.h
 #include "../include/structsoccer.h"
-
 
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
@@ -138,7 +138,7 @@ void main() {
     corVerdeGrama.b = 0;
     corVerdeGrama.a = 1;
     
-    InitWindow(screenWidth, screenHeight, "Fut");
+    InitWindow(screenWidth, screenHeight, "StructSoccer");
 
     Texture2D campo = LoadTexture("assets/art/backgrounds/pitch-lines.png");
     Texture2D jogador = LoadTexture("assets/art/characters/soccer-player.png");
@@ -150,53 +150,27 @@ void main() {
     Texture2D barraTopo = LoadTexture("assets/art/backgrounds/goal-top.png");
     
 
-
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
-    .itens = {"Classico", "Arcade"},
+    .itens = {"Classico", "PowerUps"},
     .cont = 2,
     .selecionar = 0
     };
 
+    // loop do menu
     while (estado == ST_MENU && !WindowShouldClose()) {
-        if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_UP)) {
-        menu.selecionar = 1 - menu.selecionar;
-        }
+        float dt = GetFrameTime();
 
-        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
-            if (menu.selecionar == 0){
-                estado = ST_CLASSICO;
-            }else{  
-                estado = ST_ARCADE;
-            }
-        }
         BeginDrawing();
-        ClearBackground((Color){20,20,28,255});
-
-        DrawText("STRUCT SOCCER", 60, 60, 48, RAYWHITE);
-        
-
-        Color c0;
-        Color c1;
-
-        if (menu.selecionar == 0) {
-            c0 = YELLOW;
-        } else {
-            c0 = LIGHTGRAY;
-        }
-
-        if (menu.selecionar == 1) {
-            c1 = YELLOW;
-        } else {
-            c1 = LIGHTGRAY;
-        }
-
-        DrawText(menu.itens[0], 80, 200, 32, c0);
-        DrawText(menu.itens[1], 80, 250, 32, c1);
-
+            UpdateAndDrawMainMenu(&menu, &estado, campo, bola, dt);
         EndDrawing();
+
+        // Sair direto do jogo a partir do menu:
+        if (IsKeyPressed(KEY_ESCAPE) || (IsGamepadAvailable(0) && IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT))) {
+            CloseWindow();
+            return;
+        }
     }
-        
 
  
     Rectangle srcParedeFundoCampoDir = {0,0,paredeFundoCampo.width,-paredeFundoCampo.height};
@@ -548,27 +522,38 @@ void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogad
     }
 }
 
-void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador){
-    int mudouSprites = 0;
-    Vector2 origin = {0,0};
-    Rectangle dest = {jogador1->posJogador.x,jogador1->posJogador.y,24,32};
-    Rectangle src1 = {0,0,24,32};
-    
+void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,RectangleSprites ** headSprites, int contadorFramesJogador) {
+    Vector2 origin = (Vector2){0,0};
+    Rectangle dest  = (Rectangle){ jogador1->posJogador.x, jogador1->posJogador.y, 24, 32 };
+    Rectangle srcIdle = (Rectangle){ 0, 0, 24, 32 };
+
+    // parado = idle, andando = animação na lista
     Rectangle srcDaVez;
-    if (jogador1->isMovendo == 0){
-        srcDaVez = src1;
-    }
-    else{
+    if (jogador1->isMovendo == 0) {
+        srcDaVez = srcIdle;
+    } else {
         srcDaVez = (*headSprites)->Rectangle;
-        if(contadorFramesJogador%10== 0){
-          *headSprites = (*headSprites)->prox;
+        if (contadorFramesJogador % 10 == 0) {
+            *headSprites = (*headSprites)->prox;
         }
     }
-    if(jogador1->time == 1 && (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN))){
-        srcDaVez.width = -srcDaVez.width;
+
+    bool faceLeft = false;
+
+    if (jogador1->isMovendo) {
+        if (jogador1->time == 1) {
+            if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) faceLeft = true;
+        } else { // time 2
+            if (IsKeyDown(KEY_A) || IsKeyDown(KEY_S))      faceLeft = true;
+        }
+    } else {
+        // Parado: olha para a bola
+        float playerCenterX = jogador1->posJogador.x + jogador1->rectJogador.width * 0.5f;
+        float ballX         = bola1->posBola.x;
+        faceLeft            = (ballX < playerCenterX);
     }
-    else if(jogador1->time == 2 && (IsKeyDown(KEY_A) || IsKeyDown(KEY_S))){
-        srcDaVez.width = -srcDaVez.width;
-    }
-    DrawTexturePro(jogador,srcDaVez,dest,origin,0.0f,WHITE);
+
+    srcDaVez.width = faceLeft ? -fabsf(srcDaVez.width) :  fabsf(srcDaVez.width);
+
+    DrawTexturePro(jogador, srcDaVez, dest, origin, 0.0f, WHITE);
 }
