@@ -4,7 +4,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "./include/structsoccer.h" 
+#include "../include/structsoccer.h"
+
 
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
@@ -142,8 +143,13 @@ void main() {
     Texture2D campo = LoadTexture("assets/art/backgrounds/pitch-lines.png");
     Texture2D jogador = LoadTexture("assets/art/characters/soccer-player.png");
     Texture2D bola = LoadTexture("assets/art/props/soccer-ball.png");
-    Texture2D paredeFundo = LoadTexture("assets/art/backgrounds/side-wall.png");
-    Texture2D paredeLado = LoadTexture("assets/art/backgrounds/top-wall.png");
+    Texture2D paredeFundoCampo = LoadTexture("assets/art/backgrounds/side-wall.png");
+    Texture2D paredeLadoCima = LoadTexture("assets/art/backgrounds/top-wall.png");
+    Texture2D paredeLadoBaixo = LoadTexture("assets/art/backgrounds/bottom-wall.png");
+    Texture2D barra = LoadTexture("assets/art/backgrounds/goal-bottom.png");
+    Texture2D barraTopo = LoadTexture("assets/art/backgrounds/goal-top.png");
+    
+
 
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
@@ -164,36 +170,41 @@ void main() {
                 estado = ST_ARCADE;
             }
         }
-            BeginDrawing();
-            ClearBackground((Color){20,20,28,255});
+        BeginDrawing();
+        ClearBackground((Color){20,20,28,255});
 
-            DrawText("STRUCT SOCCER", 60, 60, 48, RAYWHITE);
-            
-
-            Color c0;
-            Color c1;
-
-            if (menu.selecionar == 0) {
-                c0 = YELLOW;
-            } else {
-                c0 = LIGHTGRAY;
-            }
-
-            if (menu.selecionar == 1) {
-                c1 = YELLOW;
-            } else {
-                c1 = LIGHTGRAY;
-            }
-
-            DrawText(menu.itens[0], 80, 200, 32, c0);
-            DrawText(menu.itens[1], 80, 250, 32, c1);
-
-            EndDrawing();
-        }
+        DrawText("STRUCT SOCCER", 60, 60, 48, RAYWHITE);
         
 
+        Color c0;
+        Color c1;
 
-    Rectangle srcparedeLadoInvertida = (Rectangle){0,0,paredeLado.width, -paredeLado.height};
+        if (menu.selecionar == 0) {
+            c0 = YELLOW;
+        } else {
+            c0 = LIGHTGRAY;
+        }
+
+        if (menu.selecionar == 1) {
+            c1 = YELLOW;
+        } else {
+            c1 = LIGHTGRAY;
+        }
+
+        DrawText(menu.itens[0], 80, 200, 32, c0);
+        DrawText(menu.itens[1], 80, 250, 32, c1);
+
+        EndDrawing();
+    }
+        
+
+ 
+    Rectangle srcParedeFundoCampoDir = {0,0,paredeFundoCampo.width,-paredeFundoCampo.height};
+    Rectangle destParedeFundoCampoDir2 = {805,220,paredeFundoCampo.width,paredeFundoCampo.height};
+
+    Rectangle srcBarraEsquerda = (Rectangle){0,0,-barra.width,barra.height};
+    Rectangle destBarraEsquerda = (Rectangle){805,90,barra.width,barra.height};
+
     
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
@@ -246,8 +257,21 @@ void main() {
         BeginDrawing();
             ClearBackground(corVerdeGrama);
             BeginMode2D(*camera);
+                //Texturas da parede do campo
                 DrawTexture(campo,0,0,WHITE);
-                DrawTexture(paredeLado,50,20,WHITE);
+                DrawTexture(paredeLadoCima,50,20,WHITE);
+                DrawTexture(paredeLadoBaixo,28,355,WHITE);
+                //Fundo de campo esquerdo
+                // DrawTexture(paredeFundoCampo,35,130,WHITE);
+                DrawTexture(paredeFundoCampo,25,220,WHITE);
+                // Fundo de campo direito
+                DrawTexturePro(paredeFundoCampo,srcParedeFundoCampoDir,destParedeFundoCampoDir2,(Vector2){0,0},0.0f,WHITE);
+                // Textura da barra
+                DrawTexture(barra,20,100,WHITE);
+                DrawTexture(barraTopo,20,100,WHITE);
+                DrawTexturePro(barra,srcBarraEsquerda,destBarraEsquerda,(Vector2){0,0},0.0f,WHITE);
+                DrawTexturePro(barraTopo,(Rectangle){0,0,-barraTopo.width,barraTopo.height},(Rectangle){805,90,barraTopo.width,barraTopo.height},(Vector2){0,0},0.0f,WHITE);
+
                 // DrawRectangle(jogador1->posJogador.x, jogador1->posJogador.y, jogador1->rectJogador.width, jogador1->rectJogador.height, RED);
                 // DrawRectangle(jogador2->posJogador.x, jogador2->posJogador.y, jogador2->rectJogador.width, jogador2->rectJogador.height, RED);
                 // DrawRectangle(jogador3->posJogador.x, jogador3->posJogador.y, jogador3->rectJogador.width, jogador3->rectJogador.height, YELLOW);
