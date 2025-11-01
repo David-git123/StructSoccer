@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "menu.h"                 // <-- menu bonito agora vem de outro .c/.h
+#include "../include/menu.h"                 // <-- menu bonito agora vem de outro .c/.h
 #include "../include/structsoccer.h"
 
 
@@ -19,6 +19,7 @@ void main() {
     jogo->timeComBola =0;
     jogo->placarTime1 =0;
     jogo->placarTime2 =0;
+    jogo->rectangleParedeCima = (Rectangle){50,20,750,10};
     jogo->rectangleGol1.x= 1720.0f;
     jogo->rectangleGol1.y = 540.0f;
     jogo->rectangleGol1.height = 300.0f;
@@ -183,6 +184,7 @@ void main() {
     Rectangle srcBarraEsquerda = (Rectangle){0,0,-barra.width,barra.height};
     Rectangle destBarraEsquerda = (Rectangle){805,90,barra.width,barra.height};
 
+
     
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
@@ -250,12 +252,15 @@ void main() {
                 DrawTexturePro(barra,srcBarraEsquerda,destBarraEsquerda,(Vector2){0,0},0.0f,WHITE);
                 DrawTexturePro(barraTopo,(Rectangle){0,0,-barraTopo.width,barraTopo.height},(Rectangle){805,90,barraTopo.width,barraTopo.height},(Vector2){0,0},0.0f,WHITE);
 
-                // DrawRectangle(jogador1->posJogador.x, jogador1->posJogador.y, jogador1->rectJogador.width, jogador1->rectJogador.height, RED);
-                // DrawRectangle(jogador2->posJogador.x, jogador2->posJogador.y, jogador2->rectJogador.width, jogador2->rectJogador.height, RED);
-                // DrawRectangle(jogador3->posJogador.x, jogador3->posJogador.y, jogador3->rectJogador.width, jogador3->rectJogador.height, YELLOW);
-                // DrawRectangle(jogador4->posJogador.x, jogador4->posJogador.y, jogador4->rectJogador.width, jogador4->rectJogador.height, YELLOW);
+      
                 desenharTexturaJogador(jogador,bola1,jogador1,&headSpritesJogador,contadorFramesJogador);
+                desenharTexturaJogador(jogador,bola1,jogador2,&headSpritesJogador,contadorFramesJogador);
+                desenharTexturaJogador(jogador,bola1,jogador3,&headSpritesJogador,contadorFramesJogador);
+                desenharTexturaJogador(jogador,bola1,jogador4,&headSpritesJogador,contadorFramesJogador);
+
                 DrawRectangleLines(jogador1->posJogador.x,jogador1->posJogador.y,jogador1->rectJogador.width,jogador1->rectJogador.height,WHITE);
+                DrawRectangleLines(jogo->rectangleParedeCima.x,jogo->rectangleParedeCima.y,jogo->rectangleParedeCima.width,jogo->rectangleParedeCima.height,RED);
+                
                 desenharTexturaBola(bola,bola1,contFramesBola,jogadorControladoTime1,jogadorControladoTime2);
                 DrawCircleLines(bola1->posBola.x,bola1->posBola.y,bola1->raioBola,WHITE);
                 // DrawCircleV(bola1->posBola, bola1->raioBola, BLUE);
