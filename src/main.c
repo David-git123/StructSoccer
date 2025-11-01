@@ -163,9 +163,9 @@ void main() {
     .selecionar = 0
     };
 
-    Music menuMusic = LoadMusicStream("assets/music/menu.mp3"); // seu arquivo
-    menuMusic.looping = true;                  // tocar em loop
-    SetMusicVolume(menuMusic, 0.6f);           // volume da música do menu
+    Music menuMusic = LoadMusicStream("assets/music/menu.mp3");
+    menuMusic.looping = true;           
+    SetMusicVolume(menuMusic, 0.6f);
     PlayMusicStream(menuMusic);
 
     //loop do menu
