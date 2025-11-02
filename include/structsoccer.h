@@ -55,6 +55,9 @@ typedef struct Jogo {
     int       timeComBola; 
     int       placarTime1;
     int       placarTime2;
+    int   tempoInicial;    
+    float tempoRestante; 
+    int   jogoPausado; 
     Rectangle rectangleParedeCima;
     Rectangle rectangleGol1;
     Rectangle rectangleGol2;
