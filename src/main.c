@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include "tempo.h"
 #include "../include/menu.h"
 #include "../include/structsoccer.h"
 #include "../include/modes.h"                

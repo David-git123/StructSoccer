@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include "raylib.h"
 #include "../include/modes.h"
+#include "tempo.h"
 
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;
@@ -23,7 +24,13 @@ void RunModoClassico(GameCtx* ctx) {
 
     SetTargetFPS(60);
 
+    ReiniciarCronometro(ctx->jogo, 60);
+
     while (!WindowShouldClose()) {
+
+        float dt = GetFrameTime();
+        AtualizarCronometro(ctx->jogo, dt);
+
         if (contFramesBola == 60) contFramesBola = 0;
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
 
@@ -72,7 +79,15 @@ void RunModoClassico(GameCtx* ctx) {
             EndMode2D();
 
             DrawText("MODO: CLASSICO", 20, 20, 22, WHITE);
+
+            
+            DesenharCronometroHUD(ctx->jogo, 20, 50);
         EndDrawing();
+
+        
+        if (ctx->jogo->tempoRestante <= 0.0f) {
+            break;
+        }
 
         contFramesBola++;
         contadorFramesJogador++;
