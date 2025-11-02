@@ -1,7 +1,7 @@
-// src/powerups.c
 #include <pthread.h>
 #include "raylib.h"
 #include "../include/modes.h"
+#include "tempo.h"
 
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;
@@ -23,7 +23,12 @@ void RunModoPowerUps(GameCtx* ctx) {
 
     SetTargetFPS(60);
 
+    ReiniciarCronometro(ctx->jogo, 60);
+
     while (!WindowShouldClose()) {
+        float dt = GetFrameTime();
+        AtualizarCronometro(ctx->jogo, dt);
+
         if (contFramesBola == 60) contFramesBola = 0;
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
 
@@ -47,7 +52,6 @@ void RunModoPowerUps(GameCtx* ctx) {
         AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);
 
         BeginDrawing();
-            //mudei a cor do fundo pra poder mostrar que ta diferente (debug)
             ClearBackground((Color){ 100, 200, 120, 255 });
             BeginMode2D(*(ctx->camera));
                 DrawTexture(ctx->campo, 0, 0, WHITE);
@@ -66,12 +70,16 @@ void RunModoPowerUps(GameCtx* ctx) {
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador);
 
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
-
-                //aqui a gente pode implementar a logica do power-ups
             EndMode2D();
 
-            DrawText("MODO: POWERUPS", 20, 20, 22, YELLOW);
+            DrawText("MODO: POWERUPS", 20, 20, 22, WHITE);
+
+            DesenharCronometroHUD(ctx->jogo, 20, 50);
         EndDrawing();
+
+        if (ctx->jogo->tempoRestante <= 0.0f) {
+            break;
+        }
 
         contFramesBola++;
         contadorFramesJogador++;
