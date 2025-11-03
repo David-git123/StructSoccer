@@ -35,6 +35,7 @@ typedef struct Jogador {
     int     isMovendo;
     struct Jogador* prox;  
     Vector2 velocidadeJogador;
+    
     Vector2 posJogador;
     Rectangle rectJogador;
 } Jogador;
@@ -59,6 +60,11 @@ typedef struct Jogo {
     float tempoRestante; 
     int   jogoPausado; 
     Rectangle rectangleParedeCima;
+    Rectangle rectangleParedeBaixo;
+    Rectangle rectangleParedeFundoDir1;
+    Rectangle rectangleParedeFundoDir2;
+    Rectangle rectangleParedeFundoEsq1;
+    Rectangle rectangleParedeFundoEsq2;
     Rectangle rectangleGol1;
     Rectangle rectangleGol2;
 } Jogo;

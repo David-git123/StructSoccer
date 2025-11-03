@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include "raylib.h"
 #include "../include/modes.h"
-#include "tempo.h"
+#include "../include/tempo.h"
 
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;
@@ -46,7 +46,7 @@ void RunModoClassico(GameCtx* ctx) {
             Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
             Chutar(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
         }
-        pthread_mutex_unlock(&lock);
+        
 
         Atrito(ctx->bola1);
         MudarPosicaoBola(ctx->bola1);
@@ -71,10 +71,13 @@ void RunModoClassico(GameCtx* ctx) {
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador);
 
-                // exemplo de debug
                 DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
                 DrawRectangleLines(ctx->jogo->rectangleParedeCima.x, ctx->jogo->rectangleParedeCima.y, ctx->jogo->rectangleParedeCima.width, ctx->jogo->rectangleParedeCima.height, RED);
-
+                DrawRectangleLines(ctx->jogo->rectangleParedeBaixo.x, ctx->jogo->rectangleParedeBaixo.y, ctx->jogo->rectangleParedeBaixo.width, ctx->jogo->rectangleParedeBaixo.height, RED);
+                DrawRectangleLines(ctx->jogo->rectangleParedeFundoEsq1.x, ctx->jogo->rectangleParedeFundoEsq1.y, ctx->jogo->rectangleParedeFundoEsq1.width, ctx->jogo->rectangleParedeFundoEsq1.height, RED);
+                DrawRectangleLines(ctx->jogo->rectangleParedeFundoEsq2.x, ctx->jogo->rectangleParedeFundoEsq2.y, ctx->jogo->rectangleParedeFundoEsq2.width, ctx->jogo->rectangleParedeFundoEsq2.height, RED);
+                DrawRectangleLines(ctx->jogo->rectangleParedeFundoDir1.x, ctx->jogo->rectangleParedeFundoDir1.y, ctx->jogo->rectangleParedeFundoDir1.width, ctx->jogo->rectangleParedeFundoDir1.height, RED);
+                DrawRectangleLines(ctx->jogo->rectangleParedeFundoDir2.x, ctx->jogo->rectangleParedeFundoDir2.y, ctx->jogo->rectangleParedeFundoDir2.width, ctx->jogo->rectangleParedeFundoDir2.height, RED);
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
             EndMode2D();
 
@@ -83,6 +86,7 @@ void RunModoClassico(GameCtx* ctx) {
             
             DesenharCronometroHUD(ctx->jogo, 20, 50);
         EndDrawing();
+        pthread_mutex_unlock(&lock);
 
         
         if (ctx->jogo->tempoRestante <= 0.0f) {

@@ -1,7 +1,7 @@
 #include <pthread.h>
 #include "raylib.h"
 #include "../include/modes.h"
-#include "tempo.h"
+#include "../include/tempo.h"
 
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;

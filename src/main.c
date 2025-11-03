@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "tempo.h"
+#include "../include/tempo.h"
 #include "../include/menu.h"
 #include "../include/structsoccer.h"
 #include "../include/modes.h"                
@@ -21,6 +21,11 @@ void main() {
     jogo->placarTime1 =0;
     jogo->placarTime2 =0;
     jogo->rectangleParedeCima = (Rectangle){50,20,750,10};
+    jogo->rectangleParedeBaixo = (Rectangle){28,355,800,10};
+    jogo->rectangleParedeFundoEsq1 = (Rectangle){55,30,10,100};
+    jogo->rectangleParedeFundoEsq2 = (Rectangle){38,220,10,130};
+    jogo->rectangleParedeFundoDir1 = (Rectangle){785,30,10,100};
+    jogo->rectangleParedeFundoDir2 = (Rectangle){810,220,10,130};
     jogo->rectangleGol1.x= 1720.0f;
     jogo->rectangleGol1.y = 540.0f;
     jogo->rectangleGol1.height = 300.0f;
@@ -185,7 +190,7 @@ void main() {
             StopMusicStream(menuMusic);
             UnloadMusicStream(menuMusic);
             CloseWindow();
-            return 0;
+            return;
         }
     }
 
@@ -563,3 +568,14 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
 
     DrawTexturePro(jogador, srcDaVez, dest, origin, 0.0f, WHITE);
 }
+
+void TratarColisoesParedeBola(Bola * bola, Rectangle * rectangleParede, Rectangle * rectangleParedeBaixo,Rectangle * rectangleParedeCima,Rectangle * rectangleParedeFundoEsq1,
+Rectangle * rectangleParedeFundoEsq2,Rectangle * rectangleParedeDir1,Rectangle * rectangleParedeDir2){
+    if(bola->velocidadeAtual.x!= 0.0f && bola->velocidadeAtual.y !=0.0f){
+        if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,*rectangleParede)){
+            ;
+        }
+    }
+}
+
+   
