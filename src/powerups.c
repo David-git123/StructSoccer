@@ -3,9 +3,9 @@
 #include "../include/modes.h"
 #include "../include/tempo.h"
 
-// ---- declarações das funções ----
+
 extern pthread_mutex_t lock;
-void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2);
+void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, Jogo * jogo);
 void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2, Jogo * jogo);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo);
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
@@ -15,7 +15,7 @@ void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControlad
 void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2);
 void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador);
 
-// ---------------------------------------------
+
 
 void RunModoPowerUps(GameCtx* ctx) {
     int contFramesBola = 0;
@@ -33,8 +33,8 @@ void RunModoPowerUps(GameCtx* ctx) {
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
 
         pthread_mutex_lock(&lock);
-        AtualizarPosJogador(*(ctx->ctrl1), ctx->j1, ctx->j3);
-        AtualizarPosJogador(*(ctx->ctrl2), ctx->j1, ctx->j3);
+        AtualizarPosJogador(*(ctx->ctrl1), ctx->j1, ctx->j3, ctx->jogo);
+        AtualizarPosJogador(*(ctx->ctrl2), ctx->j1, ctx->j3,ctx->jogo);
         EstadoBola(ctx->bola1, *(ctx->ctrl1), ctx->j1, ctx->j3, ctx->jogo);
         EstadoBola(ctx->bola1, *(ctx->ctrl2), ctx->j1, ctx->j3, ctx->jogo);
         if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {

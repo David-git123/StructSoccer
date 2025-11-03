@@ -76,7 +76,7 @@ extern pthread_mutex_t lock;
 /* ─── Funções (protótipos) ─────────────────────────────────────────────── */
 
 void* DefinirJogadorControlado(void* jogadorAtual);
-void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2);
+void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2,Jogo * jogo);
 void   EstadoBola(Bola* bola, Jogador* jogador, Jogador* head1, Jogador* head2, Jogo* jogo);
 void   Atrito(Bola* bola);
 void   Passe(Bola* bola, Jogador* jogador, Jogo* jogo);
@@ -88,6 +88,7 @@ void   AtualizarCamera(Camera2D* camera, Jogo* jogo, Jogador* jogadorControladoT
 void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2);
 void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador);
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
+void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
 
 #ifdef __cplusplus
 }

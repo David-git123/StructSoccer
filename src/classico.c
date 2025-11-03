@@ -6,7 +6,7 @@
 
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;
-void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2);
+void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
 void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2, Jogo * jogo);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo);
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
@@ -16,6 +16,7 @@ void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControlad
 void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2);
 void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador);
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
+void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
 
 // ---------------------------------------------
 
@@ -36,8 +37,8 @@ void RunModoClassico(GameCtx* ctx) {
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
 
         pthread_mutex_lock(&lock);
-        AtualizarPosJogador(*(ctx->ctrl1), ctx->j1, ctx->j3);
-        AtualizarPosJogador(*(ctx->ctrl2), ctx->j1, ctx->j3);
+        AtualizarPosJogador(*(ctx->ctrl1), ctx->j1, ctx->j3,ctx->jogo);
+        AtualizarPosJogador(*(ctx->ctrl2), ctx->j1, ctx->j3,ctx->jogo);
         EstadoBola(ctx->bola1, *(ctx->ctrl1), ctx->j1, ctx->j3, ctx->jogo);
         EstadoBola(ctx->bola1, *(ctx->ctrl2), ctx->j1, ctx->j3, ctx->jogo);
         if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
@@ -50,6 +51,7 @@ void RunModoClassico(GameCtx* ctx) {
         
 
         Atrito(ctx->bola1);
+        
         
         TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeCima,ctx->jogo);
         TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeBaixo,ctx->jogo);
@@ -78,7 +80,6 @@ void RunModoClassico(GameCtx* ctx) {
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j2, ctx->headSprites, contadorFramesJogador);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador);
-
                 DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
                 DrawRectangleLines(ctx->jogo->rectangleParedeCima.x, ctx->jogo->rectangleParedeCima.y, ctx->jogo->rectangleParedeCima.width, ctx->jogo->rectangleParedeCima.height, RED);
                 DrawRectangleLines(ctx->jogo->rectangleParedeBaixo.x, ctx->jogo->rectangleParedeBaixo.y, ctx->jogo->rectangleParedeBaixo.width, ctx->jogo->rectangleParedeBaixo.height, RED);
