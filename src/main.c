@@ -289,6 +289,11 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
         if (IsKeyDown(KEY_S)) jogador->velocidadeJogador.y = 5.0f;
     }
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeCima,jogo);
+    TratarColisoesJogadorParede(jogador,jogo->rectangleParedeBaixo,jogo);
+    TratarColisoesJogadorParede(jogador,jogo->rectangleParedeFundoEsq1,jogo);
+    TratarColisoesJogadorParede(jogador,jogo->rectangleParedeFundoEsq2,jogo);
+    TratarColisoesJogadorParede(jogador,jogo->rectangleParedeFundoDir1,jogo);
+    TratarColisoesJogadorParede(jogador,jogo->rectangleParedeFundoDir2,jogo);
 
     jogador->posJogador.x += jogador->velocidadeJogador.x;
     jogador->posJogador.y += jogador->velocidadeJogador.y;
@@ -591,13 +596,13 @@ void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jog
 
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo){
 
-    Rectangle rectangleLinhaColisao = (Rectangle){jogador->posJogador.x,jogador->posJogador.y+(jogador->altura/2),jogador->posJogador.x + jogador->largura,2};
+    Rectangle rectangleLinhaColisao = (Rectangle){jogador->posJogador.x,jogador->posJogador.y+20,jogador->largura,2};
 
     if(CheckCollisionRecs(rectangleLinhaColisao,rectangleParede)){
         if(IsKeyDown(KEY_UP) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
             jogador->velocidadeJogador.y = 0.0f;
         }
-        else if(IsKeyDown(KEY_DOWN) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
+        else if(IsKeyDown(KEY_DOWN) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
             jogador->velocidadeJogador.y = 0.0f;
         } 
         else if(IsKeyDown(KEY_LEFT) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
