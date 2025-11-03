@@ -569,11 +569,19 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
     DrawTexturePro(jogador, srcDaVez, dest, origin, 0.0f, WHITE);
 }
 
-void TratarColisoesParedeBola(Bola * bola, Rectangle * rectangleParede, Rectangle * rectangleParedeBaixo,Rectangle * rectangleParedeCima,Rectangle * rectangleParedeFundoEsq1,
-Rectangle * rectangleParedeFundoEsq2,Rectangle * rectangleParedeDir1,Rectangle * rectangleParedeDir2){
-    if(bola->velocidadeAtual.x!= 0.0f && bola->velocidadeAtual.y !=0.0f){
-        if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,*rectangleParede)){
-            ;
+void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo){
+    if(bola->velocidadeAtual.x!= 0.0f || bola->velocidadeAtual.y !=0.0f){
+        if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,rectangleParede)){
+          
+            if((rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y) || (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y)){
+                bola->velocidadeAtual.y = -(bola->velocidadeAtual.y);
+            }
+            else if((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y) ||
+            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y) ||
+            (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y)){
+                bola->velocidadeAtual.x = -(bola->velocidadeAtual.x);
+            }
         }
     }
 }

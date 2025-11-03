@@ -15,6 +15,7 @@ void MudarPosicaoBola(Bola * bola);
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola);
 void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2);
 void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador);
+void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
 
 // ---------------------------------------------
 
@@ -49,6 +50,13 @@ void RunModoClassico(GameCtx* ctx) {
         
 
         Atrito(ctx->bola1);
+        
+        TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeCima,ctx->jogo);
+        TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeBaixo,ctx->jogo);
+        TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeFundoDir1,ctx->jogo);
+        TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeFundoDir2,ctx->jogo);
+        TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeFundoEsq1,ctx->jogo);
+        TratarColisoesParedeBola(ctx->bola1,ctx->jogo->rectangleParedeFundoEsq2,ctx->jogo);
         MudarPosicaoBola(ctx->bola1);
 
         AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);

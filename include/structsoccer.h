@@ -87,6 +87,7 @@ void   TratamentoColisaoJogadorJogador(Jogador* head1, Jogador* head2);
 void   AtualizarCamera(Camera2D* camera, Jogo* jogo, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2, Bola* bola);
 void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2);
 void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador);
+void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
 
 #ifdef __cplusplus
 }
