@@ -47,10 +47,10 @@ void RunModoClassico(GameCtx* ctx) {
         pthread_mutex_lock(&lock);
 
         if (!fimDeJogo) {
-            AtualizarPosJogador(*(ctx->ctrl1), ctx->j1, ctx->j3, ctx->jogo);
-            AtualizarPosJogador(*(ctx->ctrl2), ctx->j1, ctx->j3, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl1), ctx->j1, ctx->j3, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl2), ctx->j1, ctx->j3, ctx->jogo);
+            AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
+            AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
+            EstadoBola(ctx->bola1, *(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
+            EstadoBola(ctx->bola1, *(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
 
             if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                 Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo);

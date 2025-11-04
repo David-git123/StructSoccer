@@ -103,10 +103,10 @@ void main() {
     if (jogador2) {
         jogador2->temDominio = 0;
         jogador2->forcaChute = 10.0f;
-        jogador2->posJogador = (Vector2){ 200,500.0f };
+        jogador2->posJogador = (Vector2){ 600.0f,180.0f };
         jogador2->velocidadeJogador = (Vector2){0.0f,0.0f};
-        jogador2->largura = 20.0f;
-        jogador2->altura = 20.0f;
+        jogador2->largura = 24;
+        jogador2->altura = 30;
         jogador2->rectJogador = (Rectangle){ jogador2->posJogador.x, jogador2->posJogador.y,jogador2->largura,jogador2->altura };
         jogador2->time =1;
     }
@@ -114,20 +114,20 @@ void main() {
     if (jogador3) {
         jogador3->temDominio = 0;
         jogador3->forcaChute = 10.0f;
-        jogador3->posJogador = (Vector2){ 1000.0f,500.0f };
+        jogador3->posJogador = (Vector2){ 250,180.0f };
         jogador3->velocidadeJogador = (Vector2){0.0f,0.0f};
-        jogador3->largura = 20.0f;
-        jogador3->altura = 20.0f;
+        jogador3->largura = 24;
+        jogador3->altura = 30;
         jogador3->rectJogador = (Rectangle){ jogador3->posJogador.x, jogador3->posJogador.y,jogador3->largura,jogador3->altura };
         jogador3->time =2;
     }
     if (jogador4) {
         jogador4->temDominio = 0;
         jogador4->forcaChute = 10.0f;
-        jogador4->posJogador = (Vector2){ 1200,500.0f };
+        jogador4->posJogador = (Vector2){ 300,180.0f };
         jogador4->velocidadeJogador = (Vector2){0.0f,0.0f};
-        jogador4->largura = 20.0f;
-        jogador4->altura = 20.0f;
+        jogador4->largura = 24;
+        jogador4->altura = 30;
         jogador4->rectJogador = (Rectangle){ jogador4->posJogador.x, jogador4->posJogador.y,jogador4->largura,jogador4->altura };
         jogador4->time =2;
     }
@@ -247,6 +247,9 @@ void main() {
         .j2 = jogador2,
         .j3 = jogador3,
         .j4 = jogador4,
+        
+        .head1 = head1Jogador,
+        .head2 = head2Jogador,
 
         .ctrl1 = &jogadorControladoTime1,
         .ctrl2 = &jogadorControladoTime2,
@@ -350,19 +353,19 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola =2;
             }   
-            if (IsKeyDown(KEY_D) || IsKeyDown(KEY_W)) {
+            else if (IsKeyDown(KEY_D)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 0;//Direita
             }
             else if (IsKeyDown(KEY_A)) {
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
-                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 1;//Esquerda
             }
             else if(IsKeyDown(KEY_S)){
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
-                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height / 2.0f;
+                bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola =3;//baixo
             }
         }
@@ -437,6 +440,7 @@ void * DefinirJogadorControlado(void * jogadorAtual){
     while(1){
         int mudou =0;
         Jogador ** jogador1 = (Jogador **)jogadorAtual;
+
         if((*jogador1)->temDominio == 0 && (*jogador1)->time == 1){
             while(IsKeyUp(KEY_RIGHT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT));
             pthread_mutex_lock(&lock);

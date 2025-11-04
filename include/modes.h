@@ -28,6 +28,10 @@ typedef struct GameCtx {
     Jogador* j3;
     Jogador* j4;
 
+    Jogador * head1;
+    Jogador * head2;
+
+    
     Jogador** ctrl1;
     Jogador** ctrl2;
 
