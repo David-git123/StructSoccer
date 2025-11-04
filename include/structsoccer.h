@@ -83,7 +83,6 @@ void   Passe(Bola* bola, Jogador* jogador, Jogo* jogo);
 void   MudarPosicaoBola(Bola* bola);
 void   Chutar(Bola* bola, Jogador* jogador, Jogo* jogo);
 void   TratamentoColisaoJogadorBola(Jogador* jogador, Bola* bola, Jogador* head1, Jogador* head2, Jogo* jogo);
-void   TratamentoColisaoJogadorJogador(Jogador* head1, Jogador* head2);
 void   AtualizarCamera(Camera2D* camera, Jogo* jogo, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2, Bola* bola);
 void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2);
 void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador);

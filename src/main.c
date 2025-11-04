@@ -9,8 +9,8 @@
 #include "../include/structsoccer.h"
 #include "../include/modes.h"                
 
-//Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA E CHUTE). 0 PASSE 
-//Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA E CHUTE). C PASSE
+//Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA). Ç PASSE . CHUTA;
+//Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA). C PASSE. LEFT CONTROL CHUTE;
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -443,18 +443,22 @@ void * DefinirJogadorControlado(void * jogadorAtual){
         Jogador ** jogador1 = (Jogador **)jogadorAtual;
 
         if((*jogador1)->temDominio == 0 && (*jogador1)->time == 1){
-            while(!IsKeyPressed(KEY_RIGHT_SHIFT));
-            pthread_mutex_lock(&lock);
-            *jogador1 = (*jogador1)->prox;
-            mudou =1;
-            pthread_mutex_unlock(&lock);
+            while(!IsKeyPressed(KEY_RIGHT_SHIFT) && (*jogador1)->temDominio == 0);
+            if((*jogador1)->temDominio == 0){
+                pthread_mutex_lock(&lock);
+                *jogador1 = (*jogador1)->prox;
+                mudou =1;
+                pthread_mutex_unlock(&lock);
+            }
         }
         else if((*jogador1)->temDominio == 0 && (*jogador1)->time == 2){
-            while(!IsKeyPressed(KEY_LEFT_SHIFT));
-            pthread_mutex_lock(&lock);
-            *jogador1 = (*jogador1)->prox;
-            mudou =1;
-            pthread_mutex_unlock(&lock);
+            while(!IsKeyPressed(KEY_LEFT_SHIFT) && (*jogador1)->temDominio == 0 );
+            if((*jogador1)->temDominio == 0){
+                pthread_mutex_lock(&lock);
+                *jogador1 = (*jogador1)->prox;
+                mudou =1;
+                pthread_mutex_unlock(&lock);
+            }
         }
         if(mudou){  
             usleep(500000);
@@ -490,20 +494,7 @@ void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1
     }
 }
 
-void TratamentoColisaoJogadorJogador(Jogador * head1, Jogador * head2){
-    do{
-        do{
-            if(CheckCollisionRecs(head1->rectJogador,head2->rectJogador)){
-                head1->velocidadeJogador.x = 0.0f;
-                head1->velocidadeJogador.y = 0.0f;
-                head2->velocidadeJogador.x = 0.0f;
-                head2->velocidadeJogador.y = 0.0f;
-            }
-            head2 = head2->prox;
-        }while(head2!=head2);
-        head1 = head1->prox;
-    }while(head1!=head1);
-}
+
 
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola){
     if(jogo->timeComBola == 0){
