@@ -26,15 +26,21 @@ void main() {
     jogo->rectangleParedeFundoEsq2 = (Rectangle){38,220,10,130};
     jogo->rectangleParedeFundoDir1 = (Rectangle){785,30,10,100};
     jogo->rectangleParedeFundoDir2 = (Rectangle){810,220,10,130};
+
+    //rectangleGol1 e rectangleGol2 podem ser excluidos (David)
     jogo->rectangleGol1.x= 1720.0f;
     jogo->rectangleGol1.y = 540.0f;
     jogo->rectangleGol1.height = 300.0f;
     jogo->rectangleGol1.width = 200.0f;
 
+
     jogo->rectangleGol2.x= 0;
     jogo->rectangleGol2.y = 540.0f;
     jogo->rectangleGol2.height = 300.0f;
     jogo->rectangleGol2.width = 200.0f;
+
+    Rectangle linhaGol1 = {20,100,10,15};
+    Rectangle linhaGol2 = {805,90,10,15};
 
     Jogador* head1Jogador = NULL;
     Jogador* tail1Jogador = NULL;
@@ -595,19 +601,37 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
     Rectangle rectangleLinhaColisao = (Rectangle){jogador->posJogador.x,jogador->posJogador.y+20,jogador->largura,2};
 
     if(CheckCollisionRecs(rectangleLinhaColisao,rectangleParede)){
-        if(IsKeyDown(KEY_UP) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
-            jogador->velocidadeJogador.y = 0.0f;
+        if(jogador->time == 1){
+            if(IsKeyDown(KEY_UP) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
+                jogador->velocidadeJogador.y = 0.0f;
+            }
+            else if(IsKeyDown(KEY_DOWN) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
+                jogador->velocidadeJogador.y = 0.0f;
+            } 
+            else if(IsKeyDown(KEY_LEFT) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y ))){
+                jogador->velocidadeJogador.x = 0.0f;
+            }
+            else if(IsKeyDown(KEY_RIGHT) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y ))){
+                jogador->velocidadeJogador.x = 0.0f;
+            }
         }
-        else if(IsKeyDown(KEY_DOWN) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
-            jogador->velocidadeJogador.y = 0.0f;
-        } 
-        else if(IsKeyDown(KEY_LEFT) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
-        (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y ))){
-            jogador->velocidadeJogador.x = 0.0f;
-        }
-        else if(IsKeyDown(KEY_RIGHT) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
-        (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y ))){
-            jogador->velocidadeJogador.x = 0.0f;
+        else if (jogador->time == 2){
+            if(IsKeyDown(KEY_W) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
+                jogador->velocidadeJogador.y = 0.0f;
+            }
+            else if(IsKeyDown(KEY_S) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
+                jogador->velocidadeJogador.y = 0.0f;
+            } 
+            else if(IsKeyDown(KEY_A) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y ))){
+                jogador->velocidadeJogador.x = 0.0f;
+            }
+            else if(IsKeyDown(KEY_D) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y ))){
+                jogador->velocidadeJogador.x = 0.0f;
+            }
         }
 
     }
