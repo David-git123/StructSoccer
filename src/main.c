@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
-
+#include <stdio.h>
 #include "../include/tempo.h"
 #include "../include/menu.h"
 #include "../include/structsoccer.h"
@@ -135,7 +135,8 @@ void main() {
     Jogador* jogadorControladoTime1 = jogador1;
     Jogador* jogadorControladoTime2 = jogador3;
     
-    pthread_t threadChecarControlado;
+    pthread_t threadChecarControlado1;
+    pthread_t threadChecarControlado2;
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -216,8 +217,8 @@ void main() {
     camera->rotation = 0.0f;
     camera->zoom =  3.5f;
 
-    pthread_create(&threadChecarControlado,NULL,DefinirJogadorControlado,&jogadorControladoTime1);
-    pthread_create(&threadChecarControlado,NULL,DefinirJogadorControlado,&jogadorControladoTime2);
+    pthread_create(&threadChecarControlado1,NULL,DefinirJogadorControlado,&jogadorControladoTime1);
+    pthread_create(&threadChecarControlado2,NULL,DefinirJogadorControlado,&jogadorControladoTime2);
 
     //prepara ponteiro da lista de sprites para passar por referência
     RectangleSprites* headSpritesJogador_local = headSpritesJogador;
@@ -320,7 +321,7 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
             bola->velocidadeAtual.x = 0.0f;
             bola->velocidadeAtual.y = 0.0f;
             jogo->timeComBola = jogador->time;
-            // TratamentoColisaoJogadorBola(jogador,bola,head1,head2, jogo);
+            TratamentoColisaoJogadorBola(jogador,bola,head1,head2, jogo);
         }
     }
     else{//Tem dominio sendo true
@@ -442,14 +443,14 @@ void * DefinirJogadorControlado(void * jogadorAtual){
         Jogador ** jogador1 = (Jogador **)jogadorAtual;
 
         if((*jogador1)->temDominio == 0 && (*jogador1)->time == 1){
-            while(IsKeyUp(KEY_RIGHT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT));
+            while(!IsKeyPressed(KEY_RIGHT_SHIFT));
             pthread_mutex_lock(&lock);
             *jogador1 = (*jogador1)->prox;
             mudou =1;
             pthread_mutex_unlock(&lock);
         }
         else if((*jogador1)->temDominio == 0 && (*jogador1)->time == 2){
-            while(IsKeyUp(KEY_LEFT_SHIFT) || IsKeyDown(KEY_LEFT_SHIFT));
+            while(!IsKeyPressed(KEY_LEFT_SHIFT));
             pthread_mutex_lock(&lock);
             *jogador1 = (*jogador1)->prox;
             mudou =1;

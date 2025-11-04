@@ -40,7 +40,7 @@ void RunModoClassico(GameCtx* ctx) {
             ctx->jogo->tempoRestante = 0.0f;
             fimDeJogo = true;
         }
-
+        
         if (contFramesBola == 60) contFramesBola = 0;
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
 
@@ -59,6 +59,7 @@ void RunModoClassico(GameCtx* ctx) {
                 Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
                 Chutar(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
             }
+            pthread_mutex_unlock(&lock);
 
             Atrito(ctx->bola1);
 
@@ -105,6 +106,8 @@ void RunModoClassico(GameCtx* ctx) {
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j2, ctx->headSprites, contadorFramesJogador);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador);
+
+                DrawText(TextFormat("1: %d| 2: %d| 3: %d| 4: %d",ctx->j1->temDominio,ctx->j2->temDominio,ctx->j3->temDominio,ctx->j4->temDominio),100,100,10,BLACK);
 
                 DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
                 DrawRectangleLines(ctx->jogo->rectangleParedeCima.x,     ctx->jogo->rectangleParedeCima.y,     ctx->jogo->rectangleParedeCima.width,     ctx->jogo->rectangleParedeCima.height,     RED);
@@ -159,7 +162,6 @@ void RunModoClassico(GameCtx* ctx) {
             }
 
         EndDrawing();
-        pthread_mutex_unlock(&lock);
 
         contFramesBola++;
         contadorFramesJogador++;
