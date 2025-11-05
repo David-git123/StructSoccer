@@ -39,9 +39,9 @@ void main() {
     jogo->rectangleGol2.height = 300.0f;
     jogo->rectangleGol2.width = 200.0f;
 
-    Rectangle linhaGol1 = {20,100,10,15};
-    Rectangle linhaGol2 = {805,90,10,15};
-
+    jogo->linhaGol1 = (Rectangle){60,153,2,70};
+    jogo->linhaGol2 = (Rectangle){800,145,2,70};
+    jogo->voltandoDoGol = 0;
     Jogador* head1Jogador = NULL;
     Jogador* tail1Jogador = NULL;
 
@@ -100,6 +100,7 @@ void main() {
         jogador1->temDominio = 0;
         jogador1->forcaChute = 10.0f;
         jogador1->posJogador = (Vector2){ 500,180};
+        jogador1->posJogadorInicial = (Vector2){ 500,180};
         jogador1->largura = 24;
         jogador1->altura = 30;
         jogador1->velocidadeJogador = (Vector2){0.0f,0.0f};
@@ -110,6 +111,7 @@ void main() {
         jogador2->temDominio = 0;
         jogador2->forcaChute = 10.0f;
         jogador2->posJogador = (Vector2){ 600.0f,180.0f };
+        jogador1->posJogadorInicial = (Vector2){ 600.0f,180.0f};
         jogador2->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador2->largura = 24;
         jogador2->altura = 30;
@@ -120,7 +122,8 @@ void main() {
     if (jogador3) {
         jogador3->temDominio = 0;
         jogador3->forcaChute = 10.0f;
-        jogador3->posJogador = (Vector2){ 250,180.0f };
+        jogador3->posJogador = (Vector2){ 250.0f,180.0f };
+        jogador3->posJogadorInicial = (Vector2){250.0f ,180.0f};
         jogador3->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador3->largura = 24;
         jogador3->altura = 30;
@@ -131,6 +134,7 @@ void main() {
         jogador4->temDominio = 0;
         jogador4->forcaChute = 10.0f;
         jogador4->posJogador = (Vector2){ 300,180.0f };
+        jogador3->posJogadorInicial = (Vector2){300.0f,180.0f};
         jogador4->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador4->largura = 24;
         jogador4->altura = 30;
@@ -209,7 +213,7 @@ void main() {
     Rectangle destParedeFundoCampoDir2 = {805,220,paredeFundoCampo.width,paredeFundoCampo.height};
 
     Rectangle srcBarraEsquerda = (Rectangle){0,0,-barra.width,barra.height};
-    Rectangle destBarraEsquerda = (Rectangle){805,90,barra.width,barra.height};
+    Rectangle destBarraEsquerda = (Rectangle){795,90,barra.width,barra.height};
 
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
@@ -287,12 +291,12 @@ void main() {
 }
 
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, Jogo * jogo) {
-    if(jogador->time == 1){
+    if(jogador->time == 1 && jogo->voltandoDoGol == 0){
         if (IsKeyDown(KEY_RIGHT)) jogador->velocidadeJogador.x = 5.0f;
         if (IsKeyDown(KEY_LEFT)) jogador->velocidadeJogador.x = -5.0f;
         if (IsKeyDown(KEY_UP)) jogador->velocidadeJogador.y = -5.0f;
         if (IsKeyDown(KEY_DOWN)) jogador->velocidadeJogador.y = 5.0f;
-    }else if(jogador->time==2){
+    }else if(jogador->time==2 && jogo->voltandoDoGol == 0){
         if (IsKeyDown(KEY_D)) jogador->velocidadeJogador.x = 5.0f;
         if (IsKeyDown(KEY_A)) jogador->velocidadeJogador.x = -5.0f;
         if (IsKeyDown(KEY_W)) jogador->velocidadeJogador.y = -5.0f;
@@ -331,7 +335,7 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
         }
     }
     else{//Tem dominio sendo true
-        if(jogador->time == 1){
+        if(jogador->time == 1 && jogo->voltandoDoGol == 0){
             if(IsKeyDown(KEY_UP)){
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
@@ -354,7 +358,7 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2,
                 bola->ladoBola = 3;
             }
         }
-        else if(jogador->time== 2){
+        else if(jogador->time== 2 && jogo->voltandoDoGol == 0){
             if(IsKeyDown(KEY_W)){
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
@@ -637,4 +641,96 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
     }
 
     
+}
+
+void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2){
+    if(jogo->voltandoDoGol == 1){
+        int estaNaInicial = 1;
+        do{
+            if(head1->posJogador.x != head1->posJogadorInicial.x || head1->posJogador.y != head1->posJogador.y){
+                estaNaInicial = 0;
+            }
+            else if(head2->posJogador.x != head2->posJogadorInicial.x || head2->posJogador.y != head2->posJogador.y){
+                estaNaInicial = 0;
+            }
+            head1=head1->prox;
+            head2 = head2->prox;
+        }while(head1!=head1 || head2!=head2);
+        if(estaNaInicial == 0){
+            movimentoAutomatico(jogo,head1,head2);
+        }
+    }
+    else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->rectangleGol1) && jogo->voltandoDoGol == 0){
+        jogo->placarTime2+=1;
+        jogo->voltandoDoGol = 1;
+        Jogador * aux = head1;
+        Jogador * aux2 = head2;
+        do{
+          
+          if(aux->temDominio == 1) aux->temDominio = 0;
+          if(aux2->temDominio ==1) aux2->temDominio = 0;
+          head1 = head1->prox;
+          head2 = head2->prox;
+
+        }while(head1!=head1 || head2!=head2);
+    
+    }
+    else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->rectangleGol2) && jogo->voltandoDoGol == 0){
+        jogo->placarTime1+=1;
+        jogo->voltandoDoGol = 1;
+        Jogador * aux = head1;
+        Jogador * aux2 = head2;
+        do{
+          
+          if(aux->temDominio == 1) aux->temDominio = 0;
+          if(aux2->temDominio ==1) aux2->temDominio = 0;
+          head1 = head1->prox;
+          head2 = head2->prox;
+
+        }while(head1!=head1 || head2!=head2);
+    
+    }
+
+}
+
+void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * head2){
+    if(jogo->voltandoDoGol == 1){
+        do{
+            if(head1->posJogador.x > head1->posJogadorInicial.x){
+                head1->isMovendo = 1;
+                head1->posJogador.x -=1;
+            }
+            else if(head1->posJogador.x < head1->posJogadorInicial.x){
+                head1->isMovendo = 1;
+                head1->posJogador.x +=1;
+            }
+
+            if(head1->posJogador.y >head1->posJogadorInicial.y){
+                head1->isMovendo = 1;
+                head1->posJogador.y -=1;
+            }
+            else if(head1->posJogador.y < head1->posJogadorInicial.y){
+                head1->isMovendo = 1;
+                head1->posJogador.y +=1;
+            }
+
+            if(head2->posJogador.x > head2->posJogadorInicial.x){
+                head2->isMovendo = 1;
+                head2->posJogador.x -=1;
+            }
+            else if(head2->posJogador.x < head2->posJogadorInicial.x){
+                head2->isMovendo = 1;
+                head2->posJogador.x +=1;
+            }
+            
+            if(head2->posJogador.y >head2->posJogadorInicial.y){
+                head2->isMovendo = 1;
+                head2->posJogador.y -=1;
+            }
+            else if(head2->posJogador.y < head2->posJogadorInicial.y){
+                head2->isMovendo = 1;
+                head2->posJogador.y +=1;
+            }
+        }while(head1!=head1 || head2!=head2);
+    }
 }

@@ -37,6 +37,7 @@ typedef struct Jogador {
     Vector2 velocidadeJogador;
     
     Vector2 posJogador;
+    Vector2 posJogadorInicial;
     Rectangle rectJogador;
 } Jogador;
 
@@ -59,6 +60,7 @@ typedef struct Jogo {
     int   tempoInicial;    
     float tempoRestante; 
     int   jogoPausado;
+    int voltandoDoGol;
     Rectangle rectangleParedeCima;
     Rectangle rectangleParedeBaixo;
     Rectangle rectangleParedeFundoDir1;
@@ -90,6 +92,8 @@ void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Joga
 void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador);
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
+void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2);
+void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * head2);
 
 #ifdef __cplusplus
 }
