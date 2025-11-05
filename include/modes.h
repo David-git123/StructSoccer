@@ -7,6 +7,7 @@ typedef struct GameCtx {
     Texture2D campo;
     Texture2D jogadorTex;
     Texture2D bolaTex;
+    Texture2D goalMensagemTex;
     Texture2D paredeFundoCampo;
     Texture2D paredeLadoCima;
     Texture2D paredeLadoBaixo;

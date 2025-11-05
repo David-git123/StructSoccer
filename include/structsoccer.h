@@ -25,6 +25,7 @@ typedef struct {
 } Menu;
 
 /* ─── Tipos ─────────────────────────────────────────────────────────────── */
+//Função do jogador: 1 = Atacante. 2 = Defensor.
 
 typedef struct Jogador {
     float   forcaChute;
@@ -35,7 +36,7 @@ typedef struct Jogador {
     int     isMovendo;
     struct Jogador* prox;  
     Vector2 velocidadeJogador;
-    
+    int  funcaoDoJogador;
     Vector2 posJogador;
     Vector2 posJogadorInicial;
     Rectangle rectJogador;
@@ -68,6 +69,8 @@ typedef struct Jogo {
     Rectangle rectangleParedeFundoDir2;
     Rectangle rectangleParedeFundoEsq1;
     Rectangle rectangleParedeFundoEsq2;
+    Rectangle linhaGolFim1;
+    Rectangle linhaGolFim2;
     Rectangle linhaGol1;
     Rectangle linhaGol2;
     Rectangle rectangleGol1;
