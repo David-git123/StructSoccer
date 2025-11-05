@@ -55,14 +55,14 @@ void main() {
     
     
     head1Jogador = jogador1;
+    jogador1->prox = jogador2;  
     jogador2->prox = head1Jogador;
     tail1Jogador = jogador2;
     Rectangle src1 = {0,0,24,32};
-    jogador1->prox = jogador2;  
     
     head2Jogador = jogador3;
     jogador3->prox = jogador4;
-    jogador4->prox = jogador3;
+    jogador4->prox = head2Jogador;
     tail2Jogador = jogador4;
     
     //Sprites de jogador correndo
@@ -99,8 +99,8 @@ void main() {
     if (jogador1) {
         jogador1->temDominio = 0;
         jogador1->forcaChute = 10.0f;
-        jogador1->posJogador = (Vector2){ 500,180};
-        jogador1->posJogadorInicial = (Vector2){ 500,180};
+        jogador1->posJogador = (Vector2){ 500.0f,180.0f};
+        jogador1->posJogadorInicial = (Vector2){ 500.0f,180.0f};
         jogador1->largura = 24;
         jogador1->altura = 30;
         jogador1->velocidadeJogador = (Vector2){0.0f,0.0f};
@@ -111,7 +111,7 @@ void main() {
         jogador2->temDominio = 0;
         jogador2->forcaChute = 10.0f;
         jogador2->posJogador = (Vector2){ 600.0f,180.0f };
-        jogador1->posJogadorInicial = (Vector2){ 600.0f,180.0f};
+        jogador2->posJogadorInicial = (Vector2){ 600.0f,180.0f};
         jogador2->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador2->largura = 24;
         jogador2->altura = 30;
@@ -134,7 +134,7 @@ void main() {
         jogador4->temDominio = 0;
         jogador4->forcaChute = 10.0f;
         jogador4->posJogador = (Vector2){ 300,180.0f };
-        jogador3->posJogadorInicial = (Vector2){300.0f,180.0f};
+        jogador4->posJogadorInicial = (Vector2){300.0f,180.0f};
         jogador4->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador4->largura = 24;
         jogador4->altura = 30;
@@ -261,6 +261,8 @@ void main() {
         
         .head1 = head1Jogador,
         .head2 = head2Jogador,
+        .tail1 = tail1Jogador,
+        .tail2 = tail2Jogador,
 
         .ctrl1 = &jogadorControladoTime1,
         .ctrl2 = &jogadorControladoTime2,
@@ -314,7 +316,7 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
     if(jogador->velocidadeJogador.x != 0.0f || jogador->velocidadeJogador.y != 0.0f){
         jogador->isMovendo =1;
     }
-    else{
+    else if(jogo->voltandoDoGol == 0){
         jogador->isMovendo = 0;
     }
     jogador->rectJogador.x = jogador->posJogador.x;
@@ -324,14 +326,14 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
     jogador->velocidadeJogador.y = 0;
 }
 
-void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * head2, Jogo * jogo) {
+void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1, Jogador * tail1,Jogador * head2,Jogador * tail2, Jogo * jogo) {
     if (!jogador->temDominio) {
         if (CheckCollisionCircleRec(bola->posBola, bola->raioBola, jogador->rectJogador)) {
             jogador->temDominio = 1; 
             bola->velocidadeAtual.x = 0.0f;
             bola->velocidadeAtual.y = 0.0f;
             jogo->timeComBola = jogador->time;
-            TratamentoColisaoJogadorBola(jogador,bola,head1,head2, jogo);
+            TratamentoColisaoJogadorBola(jogador,bola,head1,tail1,head2,tail2, jogo);
         }
     }
     else{//Tem dominio sendo true
@@ -476,7 +478,7 @@ void * DefinirJogadorControlado(void * jogadorAtual){
     }
 }
 
-void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1, Jogador * head2, Jogo * jogo){
+void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1, Jogador * tail1,Jogador * head2, Jogador * tail2, Jogo * jogo){
     if(jogo->timeComBola != 0 ){
         if(jogador->time == 1){
             do{
@@ -484,7 +486,7 @@ void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1
                     break;
                 }
                 head2 = head2->prox;
-            }while(head2!=head2);
+            }while(head2!=tail2->prox);
             head2->temDominio = 0;
             jogador->temDominio =1;
             jogo->timeComBola = 1;
@@ -496,7 +498,7 @@ void TratamentoColisaoJogadorBola(Jogador * jogador, Bola * bola, Jogador *head1
                     break;
                 }
                 head1 = head1->prox;
-            }while(head1!=head1);
+            }while(head1!=tail1->prox);
             head1->temDominio = 0;
             jogador->temDominio = 1;
             jogo->timeComBola = 2;
@@ -643,7 +645,8 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
     
 }
 
-void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2){
+void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogador *head2, Jogador * tail2){
+
     if(jogo->voltandoDoGol == 1){
         int estaNaInicial = 1;
         do{
@@ -655,12 +658,16 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2){
             }
             head1=head1->prox;
             head2 = head2->prox;
-        }while(head1!=head1 || head2!=head2);
+        }while(head1!=tail1->prox && head2!=head2->prox);
+
         if(estaNaInicial == 0){
-            movimentoAutomatico(jogo,head1,head2);
+            movimentoAutomatico(jogo,head1,tail1,head2,tail2);
+        }
+        else if(estaNaInicial == 1){
+            jogo->voltandoDoGol = 0;
         }
     }
-    else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->rectangleGol1) && jogo->voltandoDoGol == 0){
+    else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->linhaGol1) && jogo->voltandoDoGol == 0){
         jogo->placarTime2+=1;
         jogo->voltandoDoGol = 1;
         Jogador * aux = head1;
@@ -671,11 +678,10 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2){
           if(aux2->temDominio ==1) aux2->temDominio = 0;
           head1 = head1->prox;
           head2 = head2->prox;
-
-        }while(head1!=head1 || head2!=head2);
+        }while(head1!=tail1->prox && head2!=tail2->prox);
     
     }
-    else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->rectangleGol2) && jogo->voltandoDoGol == 0){
+    else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->linhaGol2) && jogo->voltandoDoGol == 0){
         jogo->placarTime1+=1;
         jogo->voltandoDoGol = 1;
         Jogador * aux = head1;
@@ -686,14 +692,13 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2){
           if(aux2->temDominio ==1) aux2->temDominio = 0;
           head1 = head1->prox;
           head2 = head2->prox;
-
-        }while(head1!=head1 || head2!=head2);
+        }while(head1!=tail1->prox && head2!=tail2->prox);
     
     }
 
 }
 
-void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * head2){
+void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador * head2, Jogador *tail2){
     if(jogo->voltandoDoGol == 1){
         do{
             if(head1->posJogador.x > head1->posJogadorInicial.x){
@@ -731,6 +736,8 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * head2){
                 head2->isMovendo = 1;
                 head2->posJogador.y +=1;
             }
-        }while(head1!=head1 || head2!=head2);
+            head1 = head1->prox;
+            head2 = head2->prox;
+        }while(head1!=tail1->prox && head2!=tail2->prox);
     }
 }
