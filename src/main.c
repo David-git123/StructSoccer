@@ -218,6 +218,7 @@ void main() {
     Bola* bola1 = (Bola*)malloc(sizeof(Bola));
     if (bola1) {
         bola1->posBola = (Vector2){ 425,180 };
+        bola1->posInicialBola = (Vector2){425,180};
         bola1->raioBola = 5;
         bola1->velocidadeAtual = (Vector2){ 0.0f,0.0f };
     }
@@ -664,6 +665,8 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogad
             movimentoAutomatico(jogo,head1,tail1,head2,tail2);
         }
         else if(estaNaInicial == 1){
+            bola->posBola.x = bola->posInicialBola.x;
+            bola->posBola.y = bola->posInicialBola.y;
             jogo->voltandoDoGol = 0;
         }
     }
@@ -739,5 +742,6 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador 
             head1 = head1->prox;
             head2 = head2->prox;
         }while(head1!=tail1->prox && head2!=tail2->prox);
+
     }
 }

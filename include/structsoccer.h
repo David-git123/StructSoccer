@@ -50,6 +50,7 @@ typedef struct Bola {
     float   raioBola;
     int     ladoBola;      
     Vector2 velocidadeAtual;
+    Vector2 posInicialBola;
     Vector2 posBola;
 } Bola;
 
