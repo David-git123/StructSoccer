@@ -455,20 +455,20 @@ void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
             bola->velocidadeAtual.y += 20.0f;
         }
         else if(bola->ladoBola == 4){
-            bola->velocidadeAtual.x -= 8;
-            bola->velocidadeAtual.y -= 8;
+            bola->velocidadeAtual.x -= 12;
+            bola->velocidadeAtual.y -= 12;
         }
         else if(bola->ladoBola == 5){
-            bola->velocidadeAtual.x += 8;
-            bola->velocidadeAtual.y -= 8;
+            bola->velocidadeAtual.x += 12;
+            bola->velocidadeAtual.y -= 12;
         }
         else if(bola->ladoBola ==  6){
-            bola->velocidadeAtual.x -= 8;
-            bola->velocidadeAtual.y += 8;
+            bola->velocidadeAtual.x -= 12;
+            bola->velocidadeAtual.y += 12;
         }
         else if(bola->ladoBola == 7){
-            bola->velocidadeAtual.x += 8;
-            bola->velocidadeAtual.y +=8;
+            bola->velocidadeAtual.x += 12;
+            bola->velocidadeAtual.y +=12;
         }
         jogador->temDominio = 0;
         jogo->timeComBola = 0;
@@ -491,20 +491,20 @@ void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
             bola->velocidadeAtual.y += 40.0f;
         }
                else if(bola->ladoBola == 4){
-            bola->velocidadeAtual.x -= 15;
-            bola->velocidadeAtual.y -= 15;
+            bola->velocidadeAtual.x -= 30;
+            bola->velocidadeAtual.y -= 30;
         }
         else if(bola->ladoBola == 5){
-            bola->velocidadeAtual.x += 15;
-            bola->velocidadeAtual.y -= 15;
+            bola->velocidadeAtual.x += 30;
+            bola->velocidadeAtual.y -= 30;
         }
         else if(bola->ladoBola ==  6){
-            bola->velocidadeAtual.x -= 15;
-            bola->velocidadeAtual.y += 15;
+            bola->velocidadeAtual.x -= 30;
+            bola->velocidadeAtual.y += 30;
         }
         else if(bola->ladoBola == 7){
-            bola->velocidadeAtual.x += 15;
-            bola->velocidadeAtual.y +=15;
+            bola->velocidadeAtual.x += 30;
+            bola->velocidadeAtual.y +=30;
         }
         jogador->temDominio = 0;
         jogo->timeComBola = 0;
@@ -832,14 +832,40 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
         if(jogadorControladoTime1->temDominio == 1) timeComBola = 1;
         else if(jogadorControladoTime2->temDominio == 1) timeComBola = 2;
 
-        // do{
-        //     if(timeComBola == 1){
-        //         if(head1!=jogadorControladoTime1){
+        do{
+            if(timeComBola == 1){
+                if(head1!=jogadorControladoTime1){
+                    if(head1->funcaoDoJogador == 1){
+                        if(bola->posBola.x>550){
+                            if(head1->posJogador.x <550){
+                                head1->posJogador.x+=1;
+                            }
+                            else if(head1->posJogador.x<300){
+                                head1->posJogador.x +=3;
+                            }
 
-        //         }
-        //     }
+                            if(head1->posJogador.y>bola->posBola.y){
+                                head1->posJogador.y += 3;
+                            }
+                            else if(head1->posJogador.y<bola->posBola.y){
+                                head1->posJogador.y +=3;
+                            }
+                        }
+                        else if(bola->posBola.x>550){
+                            if(head1->posJogador.x>300) head1->posJogador.x -= 3;
+                            if(head1->posJogador.y == head2->posJogador.y) head1->posJogador.y += 2;
+ //                           else if(head1->posJogador.y>)
+                        }
+                        
+                    }
+                    
+                    else if(head1->funcaoDoJogador == 2 && head2 ){
 
-        // }while(head1 != tail1->prox);
+                    }
+                }
+            }
+
+        }while(head1 != tail1->prox);
 
     }
 }
