@@ -93,11 +93,12 @@ void   Chutar(Bola* bola, Jogador* jogador, Jogo* jogo);
 void   TratamentoColisaoJogadorBola(Jogador* jogador, Bola* bola, Jogador* head1,Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   AtualizarCamera(Camera2D* camera, Jogo* jogo, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2, Bola* bola);
 void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2);
-void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador);
+void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador, Jogo * jogo);
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
 void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1,Jogador * tail1, Jogador *head2, Jogador * tail2);
 void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1,Jogador * head2, Jogador * tail2);
+void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * head1,Jogador * tail1, Jogador * head2,Jogador * tail2);
 
 #ifdef __cplusplus
 }
