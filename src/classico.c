@@ -8,7 +8,7 @@
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
-void EstadoBola(Bola * bola, Jogador * jogador,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
+void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo);
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
 void Atrito(Bola * bola);
@@ -31,14 +31,14 @@ void RunModoClassico(GameCtx* ctx) {
     int  opcaoFim  = 0;    
 
     SetTargetFPS(60);
-
+    
     ReiniciarCronometro(ctx->jogo, 60);
-
+    
     while (!WindowShouldClose()) {
-
+        
         float dt = GetFrameTime();
         AtualizarCronometro(ctx->jogo, dt);
-
+        
         if (!fimDeJogo && ctx->jogo->tempoRestante <= 0.0f) {
             ctx->jogo->tempoRestante = 0.0f;
             fimDeJogo = true;
@@ -46,15 +46,16 @@ void RunModoClassico(GameCtx* ctx) {
         
         if (contFramesBola == 60) contFramesBola = 0;
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
-
+        
         pthread_mutex_lock(&lock);
-
+        
         if (!fimDeJogo) {
+            movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
             AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
             AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl1), ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl2), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
-
+            EstadoBola(ctx->bola1, *(ctx->ctrl1),*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, *(ctx->ctrl2),*(ctx->ctrl1),*(ctx->ctrl2), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
+            
             if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                 Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo);
                 Chutar(ctx->bola1, *(ctx->ctrl1), ctx->jogo);
@@ -95,7 +96,6 @@ void RunModoClassico(GameCtx* ctx) {
         }
         
         tratarGol(ctx->jogo,ctx->bola1,ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
-        movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
 
         BeginDrawing();
             ClearBackground(ctx->corVerdeGrama);
@@ -136,6 +136,7 @@ void RunModoClassico(GameCtx* ctx) {
 
             DrawText("MODO: CLASSICO", 20, 20, 22, WHITE);
             DesenharCronometroHUD(ctx->jogo, 20, 50);
+
 
             // menu para o fim do jogo (caio: vou ajeitar ainda pra ficar 100%)
             if (fimDeJogo) {

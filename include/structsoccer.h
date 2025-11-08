@@ -85,12 +85,12 @@ extern pthread_mutex_t lock;
 
 void* DefinirJogadorControlado(void* jogadorAtual);
 void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2,Jogo * jogo);
-void   EstadoBola(Bola* bola, Jogador* jogador, Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
+void   EstadoBola(Bola* bola, Jogador* jogador, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   Atrito(Bola* bola);
 void   Passe(Bola* bola, Jogador* jogador, Jogo* jogo);
 void   MudarPosicaoBola(Bola* bola);
 void   Chutar(Bola* bola, Jogador* jogador, Jogo* jogo);
-void   TratamentoColisaoJogadorBola(Jogador* jogador, Bola* bola, Jogador* head1,Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
+void   TratamentoColisaoJogadorBola(Jogador* jogadorControladoTime1,Jogador * jogadorControladoTime2, Bola* bola, Jogador* head1,Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   AtualizarCamera(Camera2D* camera, Jogo* jogo, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2, Bola* bola);
 void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Jogador* jogadorControladoTime1, Jogador* jogadorControladoTime2);
 void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador, Jogo * jogo);
