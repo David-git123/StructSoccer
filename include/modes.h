@@ -13,7 +13,8 @@ typedef struct GameCtx {
     Texture2D paredeLadoBaixo;
     Texture2D barra;
     Texture2D barraTopo;
-
+    Texture2D texturaTime2;
+    
     Rectangle srcParedeFundoCampoDir;
     Rectangle destParedeFundoCampoDir2;
     Rectangle srcBarraEsquerda;
@@ -28,6 +29,10 @@ typedef struct GameCtx {
     Jogador* j2;
     Jogador* j3;
     Jogador* j4;
+    Jogador* j5;
+    Jogador* j6;
+
+    Rectangle rectangleCampo;
 
     Jogador * head1;
     Jogador * head2;
@@ -39,6 +44,7 @@ typedef struct GameCtx {
     Jogador** ctrl2;
 
     RectangleSprites** headSprites;
+
 
 } GameCtx;
 

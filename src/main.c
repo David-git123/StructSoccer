@@ -50,23 +50,29 @@ void main() {
 
     Jogador* head2Jogador = NULL;
     Jogador* tail2Jogador = NULL;
-
+    //time 1
     Jogador* jogador1 = (Jogador*)malloc(sizeof(Jogador));
     Jogador* jogador2 = (Jogador*)malloc(sizeof(Jogador));
+    Jogador* jogador5 = (Jogador *)malloc(sizeof(Jogador));
+    //time 2
     Jogador* jogador3 = (Jogador*)malloc(sizeof(Jogador));
     Jogador* jogador4 = (Jogador*)malloc(sizeof(Jogador));
+    Jogador* jogador6 = (Jogador*)malloc(sizeof(Jogador));
+
     
     
     head1Jogador = jogador1;
     jogador1->prox = jogador2;  
-    jogador2->prox = head1Jogador;
-    tail1Jogador = jogador2;
+    jogador2->prox = jogador5;
+    jogador5->prox = head1Jogador;
+    tail1Jogador = jogador5;
     Rectangle src1 = {0,0,24,32};
     
     head2Jogador = jogador3;
     jogador3->prox = jogador4;
-    jogador4->prox = head2Jogador;
-    tail2Jogador = jogador4;
+    jogador4->prox = jogador6;
+    jogador6->prox = head2Jogador;
+    tail2Jogador = jogador6;
     
     //Sprites de jogador correndo
     RectangleSprites * headSpritesJogador;
@@ -76,6 +82,8 @@ void main() {
     Rectangle srcJ5 = {96,32,24,32};
     Rectangle srcJ6 = {128,32,24,32};
     Rectangle srcJ7 = {160,32,24,32};
+
+    Rectangle rectangleCampo = {60,20,80,300};
 
     RectangleSprites * rsj2 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
     RectangleSprites * rsj3 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
@@ -111,6 +119,7 @@ void main() {
         jogador1->rectJogador = (Rectangle){ jogador1->posJogador.x, jogador1->posJogador.y,jogador1->largura,jogador1->altura };
         jogador1->time =1;
     }
+    
     if (jogador2) {
         jogador2->temDominio = 0;
         jogador2->forcaChute = 10.0f;
@@ -122,6 +131,18 @@ void main() {
         jogador2->funcaoDoJogador = 2;
         jogador2->rectJogador = (Rectangle){ jogador2->posJogador.x, jogador2->posJogador.y,jogador2->largura,jogador2->altura };
         jogador2->time =1;
+    }
+    if(jogador5){
+        jogador5->temDominio = 0;
+        jogador5->forcaChute = 10.0f;
+        jogador5->posJogador = (Vector2){ 600.0f,150.0f };
+        jogador5->posJogadorInicial = (Vector2){ 600.0f,150.0f};
+        jogador5->velocidadeJogador = (Vector2){0.0f,0.0f};
+        jogador5->largura = 24;
+        jogador5->altura = 30;
+        jogador5->funcaoDoJogador = 2;
+        jogador5->rectJogador = (Rectangle){ jogador2->posJogador.x, jogador2->posJogador.y,jogador2->largura,jogador2->altura };
+        jogador5->time =1;
     }
 
     if (jogador3) {
@@ -147,6 +168,18 @@ void main() {
         jogador4->funcaoDoJogador = 2;
         jogador4->rectJogador = (Rectangle){ jogador4->posJogador.x, jogador4->posJogador.y,jogador4->largura,jogador4->altura };
         jogador4->time =2;
+    }
+    if (jogador6) {
+        jogador6->temDominio = 0;
+        jogador6->forcaChute = 10.0f;
+        jogador6->posJogador = (Vector2){ 300.0f,200.0f };
+        jogador6->posJogadorInicial = (Vector2){300.0f,180.0f};
+        jogador6->velocidadeJogador = (Vector2){0.0f,0.0f};
+        jogador6->largura = 24;
+        jogador6->altura = 30;
+        jogador6->funcaoDoJogador = 2;
+        jogador6->rectJogador = (Rectangle){ jogador4->posJogador.x, jogador4->posJogador.y,jogador4->largura,jogador4->altura };
+        jogador6->time =2;
     }
 
     Jogador* jogadorControladoTime1 = jogador1;
@@ -179,6 +212,7 @@ void main() {
     Texture2D menuBg   = LoadTexture("assets/art/ui/mainmenu/menu-background.png");     
     Texture2D menuLogo = LoadTexture("assets/art/ui/mainmenu/title.png");
     Texture2D goalMensagem = LoadTexture("assets/art/ui/goal.png");
+    Texture2D time2Textura = LoadTexture("assets/art/characters/struct_soccer_t2.png");
 
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
@@ -252,6 +286,7 @@ void main() {
         .paredeLadoBaixo = paredeLadoBaixo,
         .barra = barra,
         .barraTopo = barraTopo,
+        .texturaTime2 = time2Textura,
 
         .srcParedeFundoCampoDir = srcParedeFundoCampoDir,
         .destParedeFundoCampoDir2 = destParedeFundoCampoDir2,
@@ -262,11 +297,16 @@ void main() {
         .bola1 = bola1,
         .camera = camera,
         .corVerdeGrama = corVerdeGrama,
+
         .j1 = jogador1,
         .j2 = jogador2,
         .j3 = jogador3,
         .j4 = jogador4,
-        
+        .j5 = jogador5,
+        .j6 = jogador6,
+
+        .rectangleCampo = rectangleCampo,
+
         .head1 = head1Jogador,
         .head2 = head2Jogador,
         .tail1 = tail1Jogador,
@@ -421,6 +461,7 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,
 }
 
 void Atrito(Bola * bola) {
+
     if (bola->velocidadeAtual.x > 0.0f) {
         bola->velocidadeAtual.x -= 0.5f;
         if (bola->velocidadeAtual.x < 0.0f) bola->velocidadeAtual.x = 0.0f;
@@ -437,6 +478,14 @@ void Atrito(Bola * bola) {
         bola->velocidadeAtual.y += 0.5f;
         if (bola->velocidadeAtual.y > 0.0f) bola->velocidadeAtual.y = 0.0f;
     }
+    if(bola->posBola.x>780 || bola->posBola.x<55){
+        bola->velocidadeAtual.x - bola->velocidadeAtual.x;
+    }
+    if(bola->posBola.y>325 || bola->posBola.x<10){
+        bola->velocidadeAtual.y - bola->velocidadeAtual.y;
+    }
+
+    
 }
 
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
@@ -490,7 +539,7 @@ void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
         else if (bola->ladoBola == 3) {
             bola->velocidadeAtual.y += 40.0f;
         }
-               else if(bola->ladoBola == 4){
+        else if(bola->ladoBola == 4){
             bola->velocidadeAtual.x -= 30;
             bola->velocidadeAtual.y -= 30;
         }
@@ -565,6 +614,7 @@ void TratamentoColisaoJogadorBola(Jogador * jogadorControladoTime1,Jogador * jog
                 jogadorControladoTime1->temDominio = 0;
                 jogo->timeComBola = 0;
             }
+            head2=head2->prox;
         }while(head2!=tail2->prox);
         
     }
@@ -672,6 +722,8 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
     srcDaVez.width = faceLeft ? -fabsf(srcDaVez.width) :  fabsf(srcDaVez.width);
 
     DrawTexturePro(jogador, srcDaVez, dest, origin, 0.0f, WHITE);
+    
+
 }
 
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo){
@@ -690,6 +742,13 @@ void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jog
             }
         }
     }
+    if(bola->posBola.x>780 || bola->posBola.x<55){
+        bola->velocidadeAtual.x - bola->velocidadeAtual.x;
+    }
+    if(bola->posBola.y>325 || bola->posBola.x<10){
+        bola->velocidadeAtual.y - bola->velocidadeAtual.y;
+    }
+
 }
 
 
@@ -863,33 +922,40 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(bola->posBola.x>415){
                             if(head1->posJogador.x <415 && head1->posJogador.x<785){
                                 head1->posJogador.x+=2;
+                                head1->rectJogador.x = head1->posJogador.x;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.x<300 && head1->posJogador.x>50){
                                 head1->posJogador.x -=2;
+                                head1->rectJogador.x = head1->posJogador.x;
                                 head1->isMovendo = 1;
                             }
 
                             if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y<330){
                                 head1->posJogador.y -= 2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y +=2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                         }
                         else if(bola->posBola.x<415){
                             if(head1->posJogador.x>300 && head1->posJogador.x>50){
-                              head1->posJogador.x -= 2;  
+                              head1->posJogador.x -= 2;
+                              head1->rectJogador.x = head1->posJogador.x;  
                               head1->isMovendo = 1;
                             } 
                             if(head1->posJogador.y>jogadorControladoTime1->posJogador.y && head1->posJogador.y>10){
                                 head1->posJogador.y -=2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.y<jogadorControladoTime1->posJogador.y && head1->posJogador.x<330){
                                 head1->posJogador.y +=2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                         }
@@ -899,19 +965,23 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(bola->posBola.x>415){
                             if(head1->posJogador.x>jogadorControladoTime1->posJogador.x  && head1->posJogador.x>50){
                                 head1->posJogador.x-=2;
+                                head1->rectJogador.x = head1->posJogador.x;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.x<jogadorControladoTime1->posJogador.x && head1->posJogador.x<780){
                                 head1->posJogador.x +=2;
+                                head1->rectJogador.x = head1->posJogador.x;
                                 head1->isMovendo = 1;
                             }
 
                             if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y -= 2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
                                 head1->posJogador.y +=2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                         }
@@ -921,18 +991,22 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                     if(head2->funcaoDoJogador == 1){
                         if(head2->posJogador.x>bola->posBola.x && head2->posJogador.x<785){
                             head2->posJogador.x+=2;
+                            head2->rectJogador.x = head2->posJogador.x;
                             head2->isMovendo = 1;
                         }
                         else if(head2->posJogador.x<bola->posBola.x && head1->posJogador.x && head2->posJogador.x>50){
                             head2->posJogador.x-=2;
+                            head2->rectJogador.x = head2->posJogador.x;
                             head2->isMovendo = 1;
                         }
                         if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                             head2->posJogador.y -=2;
+                            head2->rectJogador.y= head2->posJogador.y;
                             head2->isMovendo = 1;
                         }
                         else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y <330){
                             head2->posJogador.y +=2;
+                            head2->rectJogador.y = head2->posJogador.y;
                             head2->isMovendo = 1;
                         }                    
                     }
@@ -940,19 +1014,23 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(jogadorControladoTime1->posJogador.x<415){
                             if(head2->posJogador.x>jogadorControladoTime1->posJogador.x && head2->posJogador.x>50){
                                 head2->posJogador.x -=2;
+                                head2->rectJogador.x = head2->posJogador.x;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.x<jogadorControladoTime1->posJogador.x && head2->posJogador.x<785){
                                 head2->posJogador.x +=2;
+                                head2->rectJogador.x = head2->posJogador.x;
                                 head2->isMovendo = 1;
                             }
                             
                             if(head2->posJogador.y>jogadorControladoTime1->posJogador.y && head2->posJogador.y>10){
                                 head2->posJogador.y -=2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<jogadorControladoTime1->posJogador.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                         }
@@ -965,33 +1043,40 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(bola->posBola.x>415){
                             if(head2->posJogador.x <415 && head2->posJogador.x<785){
                                 head2->posJogador.x+=2;
+                                head2->rectJogador.x = head2->posJogador.x;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.x<300 && head2->posJogador.x<785){
                                 head2->posJogador.x +=2;
+                                head2->rectJogador.x = head2->posJogador.x;
                                 head2->isMovendo = 1;
                             }
 
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -= 2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                         }
                         else if(bola->posBola.x<415){
                             if(head2->posJogador.x>300 && head2->posJogador.x>50){
-                              head2->posJogador.x -= 2;  
+                              head2->posJogador.x -= 2; 
+                              head2->rectJogador.x = head2->posJogador.x; 
                               head2->isMovendo = 1;
                             } 
                             if(head2->posJogador.y>jogadorControladoTime1->posJogador.y && head2->posJogador.y>10){
                                 head2->posJogador.y -=2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<jogadorControladoTime1->posJogador.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                         }
@@ -1001,19 +1086,23 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(bola->posBola.x>415){
                             if(head2->posJogador.x>jogadorControladoTime2->posJogador.x && head2->posJogador.x>50 ){
                                 head2->posJogador.x-=2;
+                                head2->rectJogador.x = head2->posJogador.x;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.x<jogadorControladoTime2->posJogador.x && head2->posJogador.x<785){
                                 head2->posJogador.x +=2;
+                                head2->rectJogador.x = head2->posJogador.x;
                                 head2->isMovendo = 1;
                             }
 
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -= 2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
+                                head2->rectJogador.y = head2->posJogador.y;
                                 head2->isMovendo = 1;
                             }
                         }
@@ -1023,18 +1112,22 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                     if(head1->funcaoDoJogador == 1){
                         if(head1->posJogador.x>bola->posBola.x && head1->posJogador.x<785){
                             head1->posJogador.x+=2;
+                            head1->rectJogador.x = head1->posJogador.x;
                             head1->isMovendo = 1;
                         }
                         else if(head1->posJogador.x<bola->posBola.x && head1->posJogador.x>50){
                             head1->posJogador.x-=2;
+                            head1->rectJogador.x = head1->posJogador.x;
                             head1->isMovendo = 1;
                         }
                         if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                             head1->posJogador.y -=2;
+                            head1->rectJogador.y = head1->posJogador.y;
                             head1->isMovendo = 1;
                         }
                         else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
                             head1->posJogador.y +=2;
+                            head1->rectJogador.y = head1->posJogador.y;
                             head1->isMovendo = 1;
                         }                    
                     }
@@ -1042,19 +1135,23 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(jogadorControladoTime2->posJogador.x<415){
                             if(head1->posJogador.x>jogadorControladoTime2->posJogador.x && head1->posJogador.x>50){
                                 head1->posJogador.x -=2;
+                                head1->rectJogador.x = head1->posJogador.x;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.x<jogadorControladoTime2->posJogador.x && head1->posJogador.x<785){
                                 head1->posJogador.x +=2;
+                                head1->rectJogador.x = head1->posJogador.x;
                                 head1->isMovendo = 1;
                             }
                             
                             if(head1->posJogador.y>jogadorControladoTime2->posJogador.y && head1->posJogador.y>10){
                                 head1->posJogador.y -=2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.y<jogadorControladoTime1->posJogador.y && head1->posJogador.y<330){
                                 head1->posJogador.y +=2;
+                                head1->rectJogador.y = head1->posJogador.y;
                                 head1->isMovendo = 1;
                             }
                         }

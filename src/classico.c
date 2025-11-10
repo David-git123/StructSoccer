@@ -112,10 +112,10 @@ void RunModoClassico(GameCtx* ctx) {
 
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j1, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j2, ctx->headSprites, contadorFramesJogador,ctx->jogo);
-                desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador,ctx->jogo);
-                desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador,ctx->jogo);
-
-                
+                desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador,ctx->jogo);
+                desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador,ctx->jogo);
+                desenharTexturaJogador(ctx->jogadorTex,ctx->bola1,ctx->j5,ctx->headSprites,contadorFramesJogador,ctx->jogo);
+                desenharTexturaJogador(ctx->texturaTime2,ctx->bola1,ctx->j6,ctx->headSprites,contadorFramesJogador,ctx->jogo);
                 
                 DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
                 DrawRectangleLines(ctx->jogo->rectangleParedeCima.x,     ctx->jogo->rectangleParedeCima.y,     ctx->jogo->rectangleParedeCima.width,     ctx->jogo->rectangleParedeCima.height,     RED);
