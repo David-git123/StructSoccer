@@ -44,7 +44,7 @@ void RunModoClassico(GameCtx* ctx) {
             fimDeJogo = true;
         }
         
-        if (contFramesBola == 60) contFramesBola = 0;
+        if (contFramesBola == 40) contFramesBola = 0;
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
         
         pthread_mutex_lock(&lock);
@@ -117,20 +117,21 @@ void RunModoClassico(GameCtx* ctx) {
                 desenharTexturaJogador(ctx->jogadorTex,ctx->bola1,ctx->j5,ctx->headSprites,contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2,ctx->bola1,ctx->j6,ctx->headSprites,contadorFramesJogador,ctx->jogo);
                 
-                DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
-                DrawRectangleLines(ctx->jogo->rectangleParedeCima.x,     ctx->jogo->rectangleParedeCima.y,     ctx->jogo->rectangleParedeCima.width,     ctx->jogo->rectangleParedeCima.height,     RED);
-                DrawRectangleLines(ctx->jogo->rectangleParedeBaixo.x,    ctx->jogo->rectangleParedeBaixo.y,    ctx->jogo->rectangleParedeBaixo.width,    ctx->jogo->rectangleParedeBaixo.height,    RED);
-                DrawRectangleLines(ctx->jogo->rectangleParedeFundoEsq1.x,ctx->jogo->rectangleParedeFundoEsq1.y,ctx->jogo->rectangleParedeFundoEsq1.width,ctx->jogo->rectangleParedeFundoEsq1.height,RED);
-                DrawRectangleLines(ctx->jogo->rectangleParedeFundoEsq2.x,ctx->jogo->rectangleParedeFundoEsq2.y,ctx->jogo->rectangleParedeFundoEsq2.width,ctx->jogo->rectangleParedeFundoEsq2.height,RED);
-                DrawRectangleLines(ctx->jogo->rectangleParedeFundoDir1.x,ctx->jogo->rectangleParedeFundoDir1.y,ctx->jogo->rectangleParedeFundoDir1.width,ctx->jogo->rectangleParedeFundoDir1.height,RED);
-                DrawRectangleLines(ctx->jogo->rectangleParedeFundoDir2.x,ctx->jogo->rectangleParedeFundoDir2.y,ctx->jogo->rectangleParedeFundoDir2.width,ctx->jogo->rectangleParedeFundoDir2.height,RED);
-                DrawRectangleLines(ctx->jogo->linhaGol1.x,ctx->jogo->linhaGol1.y, ctx->jogo->linhaGol1.width, ctx->jogo->linhaGol1.height,RED);
-                DrawRectangleLines(ctx->jogo->linhaGol2.x,ctx->jogo->linhaGol2.y, ctx->jogo->linhaGol2.width, ctx->jogo->linhaGol2.height,RED);
-                DrawRectangleLines(ctx->jogo->linhaGolFim1.x,ctx->jogo->linhaGolFim1.y, ctx->jogo->linhaGolFim1.width, ctx->jogo->linhaGolFim1.height,RED);
-                DrawRectangleLines(ctx->jogo->linhaGolFim2.x,ctx->jogo->linhaGolFim2.y, ctx->jogo->linhaGolFim2.width, ctx->jogo->linhaGolFim2.height,RED);
-                // if(ctx->jogo->voltandoDoGol == 1){
-                //     int width = GetScreenWidth();
-                // }
+                DrawTexture(ctx->txtJogadorControlado1,(*ctx->ctrl1)->posJogador.x,(*ctx->ctrl1)->posJogador.y-8,WHITE);
+                DrawTexture(ctx->txtJogadorControlado2,(*ctx->ctrl2)->posJogador.x+7,(*ctx->ctrl2)->posJogador.y-8,WHITE);
+                //DEBUG:
+                // DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
+                // DrawRectangleLines(ctx->jogo->rectangleParedeCima.x,     ctx->jogo->rectangleParedeCima.y,     ctx->jogo->rectangleParedeCima.width,     ctx->jogo->rectangleParedeCima.height,     RED);
+                // DrawRectangleLines(ctx->jogo->rectangleParedeBaixo.x,    ctx->jogo->rectangleParedeBaixo.y,    ctx->jogo->rectangleParedeBaixo.width,    ctx->jogo->rectangleParedeBaixo.height,    RED);
+                // DrawRectangleLines(ctx->jogo->rectangleParedeFundoEsq1.x,ctx->jogo->rectangleParedeFundoEsq1.y,ctx->jogo->rectangleParedeFundoEsq1.width,ctx->jogo->rectangleParedeFundoEsq1.height,RED);
+                // DrawRectangleLines(ctx->jogo->rectangleParedeFundoEsq2.x,ctx->jogo->rectangleParedeFundoEsq2.y,ctx->jogo->rectangleParedeFundoEsq2.width,ctx->jogo->rectangleParedeFundoEsq2.height,RED);
+                // DrawRectangleLines(ctx->jogo->rectangleParedeFundoDir1.x,ctx->jogo->rectangleParedeFundoDir1.y,ctx->jogo->rectangleParedeFundoDir1.width,ctx->jogo->rectangleParedeFundoDir1.height,RED);
+                // DrawRectangleLines(ctx->jogo->rectangleParedeFundoDir2.x,ctx->jogo->rectangleParedeFundoDir2.y,ctx->jogo->rectangleParedeFundoDir2.width,ctx->jogo->rectangleParedeFundoDir2.height,RED);
+                // DrawRectangleLines(ctx->jogo->linhaGol1.x,ctx->jogo->linhaGol1.y, ctx->jogo->linhaGol1.width, ctx->jogo->linhaGol1.height,RED);
+                // DrawRectangleLines(ctx->jogo->linhaGol2.x,ctx->jogo->linhaGol2.y, ctx->jogo->linhaGol2.width, ctx->jogo->linhaGol2.height,RED);
+                // DrawRectangleLines(ctx->jogo->linhaGolFim1.x,ctx->jogo->linhaGolFim1.y, ctx->jogo->linhaGolFim1.width, ctx->jogo->linhaGolFim1.height,RED);
+                // DrawRectangleLines(ctx->jogo->linhaGolFim2.x,ctx->jogo->linhaGolFim2.y, ctx->jogo->linhaGolFim2.width, ctx->jogo->linhaGolFim2.height,RED);
+
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
             EndMode2D();
 
