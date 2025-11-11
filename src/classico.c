@@ -47,7 +47,7 @@ void RunModoClassico(GameCtx* ctx) {
         
         if (contFramesBola == 40) contFramesBola = 0;
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
-        
+      
         pthread_mutex_lock(&lock);
         
         if (!fimDeJogo) {
