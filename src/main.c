@@ -59,6 +59,16 @@ void main() {
     Jogador* jogador4 = (Jogador*)malloc(sizeof(Jogador));
     Jogador* jogador6 = (Jogador*)malloc(sizeof(Jogador));
 
+    Jogador * goleiro1 = (Jogador *)malloc(sizeof(Jogador));
+    Jogador * goleiro2 = (Jogador *)malloc(sizeof(Jogador));
+    
+    
+    goleiro1->rectJogador = (Rectangle){50,153,10,10};
+    goleiro1->time = 1;
+
+    goleiro2->rectJogador = (Rectangle){790,145,10,10};
+    goleiro2->time = 1;
+
     
     
     head1Jogador = jogador1;
@@ -307,6 +317,9 @@ void main() {
         .j4 = jogador4,
         .j5 = jogador5,
         .j6 = jogador6,
+
+        .goleiro1 = goleiro1,
+        .goleiro2 = goleiro2,
 
         .rectangleCampo = rectangleCampo,
 
@@ -1344,9 +1357,42 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
 }
 void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
     if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol2.y)){
-        goleiro->posJogador.y -=1;
+        if( goleiro->time == 1 && bola->posBola.x>650){
+            goleiro->posJogador.y -=2;
+        }
+        else{
+            goleiro->posJogador.y -=1;
+        }
+        goleiro->rectJogador.y = goleiro->posJogador.y;
     }
-    else if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol2.y + jogo->linhaGol2.width)){
-        goleiro->posJogador.y +=1;
+    else if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y)){
+        if( goleiro->time == 1 && bola->posBola.x>650){
+            goleiro->posJogador.y +=2;
+        }
+        else{
+            goleiro->posJogador.y +=1;
+        }
+        goleiro->rectJogador.y = goleiro->posJogador.y;
     }
+
+
+    if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol2.y + jogo->linhaGol2.width)){
+        if( goleiro->time == 2 && bola->posBola.x<120){
+            goleiro->posJogador.y +=2;
+        }
+        else{
+            goleiro->posJogador.y +=1;
+        }
+        goleiro->rectJogador.y = goleiro->posJogador.y;
+    }
+    if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y + jogo->linhaGol2.width)){
+        if( goleiro->time == 2 && bola->posBola.x<120){
+            goleiro->posJogador.y -=2;
+        }
+        else{
+            goleiro->posJogador.y -=1;
+        }
+        goleiro->rectJogador.y = goleiro->posJogador.y;
+    }
+
 }

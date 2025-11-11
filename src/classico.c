@@ -20,6 +20,7 @@ void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jog
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
 void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2, Jogador * tail1, Jogador * tail2);
 void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * head1,Jogador * tail1, Jogador * head2,Jogador * tail2);
+void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
 
 // ---------------------------------------------
 
@@ -50,6 +51,8 @@ void RunModoClassico(GameCtx* ctx) {
         pthread_mutex_lock(&lock);
         
         if (!fimDeJogo) {
+            movimentarGoleiro(ctx->goleiro1,ctx->jogo,ctx->bola1);
+            movimentarGoleiro(ctx->goleiro2,ctx->jogo,ctx->bola1);
             movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
             AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
             AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
@@ -110,6 +113,9 @@ void RunModoClassico(GameCtx* ctx) {
                 DrawTexturePro(ctx->barra, ctx->srcBarraEsquerda, ctx->destBarraEsquerda, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(ctx->barraTopo, (Rectangle){0,0,-ctx->barraTopo.width, ctx->barraTopo.height}, (Rectangle){795,90,ctx->barraTopo.width, ctx->barraTopo.height}, (Vector2){0,0}, 0.0f, WHITE);
 
+                DrawRectangle(ctx->goleiro1->rectJogador.x,ctx->goleiro1->rectJogador.y,ctx->goleiro1->rectJogador.width,ctx->goleiro1->rectJogador.height,RED);
+                DrawRectangle(ctx->goleiro2->rectJogador.x,ctx->goleiro2->rectJogador.y,ctx->goleiro2->rectJogador.width,ctx->goleiro2->rectJogador.height,RED);
+                
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j1, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j2, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador,ctx->jogo);
@@ -119,6 +125,8 @@ void RunModoClassico(GameCtx* ctx) {
                 
                 DrawTexture(ctx->txtJogadorControlado1,(*ctx->ctrl1)->posJogador.x,(*ctx->ctrl1)->posJogador.y-8,WHITE);
                 DrawTexture(ctx->txtJogadorControlado2,(*ctx->ctrl2)->posJogador.x+7,(*ctx->ctrl2)->posJogador.y-8,WHITE);
+
+
                 //DEBUG:
                 // DrawRectangleLines(ctx->j1->posJogador.x, ctx->j1->posJogador.y, ctx->j1->rectJogador.width, ctx->j1->rectJogador.height, WHITE);
                 // DrawRectangleLines(ctx->jogo->rectangleParedeCima.x,     ctx->jogo->rectangleParedeCima.y,     ctx->jogo->rectangleParedeCima.width,     ctx->jogo->rectangleParedeCima.height,     RED);

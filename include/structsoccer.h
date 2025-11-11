@@ -99,6 +99,7 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
 void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1,Jogador * tail1, Jogador *head2, Jogador * tail2);
 void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1,Jogador * head2, Jogador * tail2);
 void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * head1,Jogador * tail1, Jogador * head2,Jogador * tail2);
+void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
 
 #ifdef __cplusplus
 }
