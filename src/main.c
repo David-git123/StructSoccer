@@ -414,70 +414,70 @@ void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,
     else{//Tem dominio sendo true
         if(jogador->time == 1 && jogo->voltandoDoGol == 0){
 
-            if(IsKeyDown(KEY_UP)){
+            if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP)){
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola =2;
-                if(IsKeyDown(KEY_LEFT) && IsKeyDown(KEY_UP)){
+                if(IsKeyDown(KEY_LEFT) && IsKeyDown(KEY_UP) || (IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP) && IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT))){
                     bola->ladoBola =4;//Diagonal superior esquerda;
                 }
-                else if(IsKeyDown(KEY_RIGHT) && IsKeyDown(KEY_UP)){
+                else if(IsKeyDown(KEY_RIGHT) && IsKeyDown(KEY_UP) || (IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP) && IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT))){
                     bola->ladoBola = 5; //Diagonal superior direita
                 }
             }   
-            else if (IsKeyDown(KEY_RIGHT)) {
+            else if (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 0;//Direita
                
             }
-            else if (IsKeyDown(KEY_LEFT)) {
+            else if (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 1;//Esquerda
             }
-            else if(IsKeyDown(KEY_DOWN)){
+            else if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN)){
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 3;
-                if(IsKeyDown(KEY_LEFT) && IsKeyDown(KEY_DOWN)){
+                if(IsKeyDown(KEY_LEFT) && IsKeyDown(KEY_DOWN) || (IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN) && IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT))){
                     bola->ladoBola =6;//Diagonal inferior esquerda;
                 }
-                else if(IsKeyDown(KEY_RIGHT) && IsKeyDown(KEY_DOWN)){
+                else if(IsKeyDown(KEY_RIGHT) && IsKeyDown(KEY_DOWN) || (IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN) && IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT))){
                     bola->ladoBola = 7; //Diagonal inferior direita
                 }
             }
         }
         else if(jogador->time== 2 && jogo->voltandoDoGol == 0){
-            if(IsKeyDown(KEY_W)){
+            if(IsKeyDown(KEY_W) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP)){
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola =2;
-                if(IsKeyDown(KEY_A) && IsKeyDown(KEY_W)){
+                if(IsKeyDown(KEY_A) && IsKeyDown(KEY_W) || (IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP) && IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT))){
                     bola->ladoBola =4;//Diagonal superior esquerda;
                 }
-                else if(IsKeyDown(KEY_D) && IsKeyDown(KEY_W)){
+                else if(IsKeyDown(KEY_D) && IsKeyDown(KEY_W) || (IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP) && IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT))){
                     bola->ladoBola = 5; //Diagonal superior direita
                 }
             }   
-            else if (IsKeyDown(KEY_D)) {
+            else if (IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
                 bola->posBola.x = jogador->posJogador.x + jogador->rectJogador.width + bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 0;//Direita
             }   
-            else if (IsKeyDown(KEY_A)) {
+            else if (IsKeyDown(KEY_A) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola = 1;//Esquerda
             }
-            else if(IsKeyDown(KEY_S)){
+            else if(IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)){
                 bola->posBola.x = jogador->posJogador.x - bola->raioBola;
                 bola->posBola.y = jogador->posJogador.y + jogador->rectJogador.height;
                 bola->ladoBola =3;//baixo
-                if(IsKeyDown(KEY_A) && IsKeyDown(KEY_S)){
+                if(IsKeyDown(KEY_A) && IsKeyDown(KEY_S) || (IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT) && IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN))){
                     bola->ladoBola =6;//Diagonal inferior esquerda;
                 }
-                else if(IsKeyDown(KEY_D) && IsKeyDown(KEY_S)){
+                else if(IsKeyDown(KEY_D) && IsKeyDown(KEY_S)|| (IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP) && IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT))){
                     bola->ladoBola = 7; //Diagonal inferior direita
                 }
             }
@@ -514,7 +514,7 @@ void Atrito(Bola * bola) {
 }
 
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2) {
-    if((jogador->temDominio && jogador->time ==1 && IsKeyDown(KEY_SEMICOLON)) || (jogador->temDominio && jogador->time ==2 && IsKeyDown(KEY_C))) {
+    if((jogador->temDominio && jogador->time ==1 && IsKeyDown(KEY_SEMICOLON)) || (jogador->temDominio && jogador->time ==2 && IsKeyDown(KEY_C)) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_FACE_DOWN) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
         if (bola->ladoBola == 0) {
             bola->velocidadeAtual.x += 10.0f;
         }
@@ -555,7 +555,7 @@ void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorContro
 }
 
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
-    if ((jogador->temDominio && jogador->time== 1 && IsKeyPressed(KEY_PERIOD)) || (jogador->temDominio && jogador->time==2 && IsKeyDown(KEY_LEFT_CONTROL))) {
+    if ((jogador->temDominio && jogador->time== 1 && IsKeyPressed(KEY_PERIOD)) || (jogador->temDominio && jogador->time==2 && IsKeyDown(KEY_LEFT_CONTROL)) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
         
         if (bola->ladoBola == 0) {
             bola->velocidadeAtual.x += 20.0f;
@@ -601,7 +601,7 @@ void * DefinirJogadorControlado(void * jogadorAtual){
         Jogador ** jogador1 = (Jogador **)jogadorAtual;
 
         if((*jogador1)->temDominio == 0 && (*jogador1)->time == 1){
-            while(!IsKeyPressed(KEY_RIGHT_SHIFT) && (*jogador1)->temDominio == 0);
+            while((!IsKeyPressed(KEY_RIGHT_SHIFT) && !IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && (*jogador1)->temDominio == 0);
             if((*jogador1)->temDominio == 0){
                 pthread_mutex_lock(&lock);
                 *jogador1 = (*jogador1)->prox;
@@ -610,7 +610,7 @@ void * DefinirJogadorControlado(void * jogadorAtual){
             }
         }
         else if((*jogador1)->temDominio == 0 && (*jogador1)->time == 2){
-            while(!IsKeyPressed(KEY_LEFT_SHIFT) && (*jogador1)->temDominio == 0 );
+            while((!IsKeyPressed(KEY_LEFT_SHIFT)&& !IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && (*jogador1)->temDominio == 0 );
             if((*jogador1)->temDominio == 0){
                 pthread_mutex_lock(&lock);
                 *jogador1 = (*jogador1)->prox;
@@ -745,9 +745,9 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
 
     if (jogador1->isMovendo) {
         if (jogador1->time == 1) {
-            if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) && jogo->voltandoDoGol == 0) faceLeft = true;
+            if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) && jogo->voltandoDoGol == 0) faceLeft = true;
         } else { // time 2
-            if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_S)) && jogo->voltandoDoGol == 0  )      faceLeft = true;
+            if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) && jogo->voltandoDoGol == 0) faceLeft = true;
         }
         if(jogador1->funcaoDoJogador == 4 && jogador1->time == 2){
             faceLeft = true;
@@ -811,47 +811,47 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
 
     if(CheckCollisionRecs(rectangleLinhaColisao,rectangleParede)){
         if(jogador->time == 1){
-            if(IsKeyDown(KEY_UP) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
+            if((IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP)) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
                 jogador->velocidadeJogador.y = 0.0f;
             }
-            else if(IsKeyDown(KEY_DOWN) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
+            else if((IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
                 jogador->velocidadeJogador.y = 0.0f;
             } 
-            else if(IsKeyDown(KEY_LEFT) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
+            else if((IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
             (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y ))){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if(IsKeyDown(KEY_RIGHT) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
+            else if((IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
             (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y ))){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if(IsKeyDown(KEY_LEFT) && (rectangleParede.x == jogo->linhaGolFim1.x && rectangleParede.y == jogo->linhaGolFim1.y)){
+            else if((IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) && (rectangleParede.x == jogo->linhaGolFim1.x && rectangleParede.y == jogo->linhaGolFim1.y)){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if(IsKeyDown(KEY_RIGHT) && (rectangleParede.x == jogo->linhaGolFim2.x && rectangleParede.y == jogo->linhaGolFim2.y)){
+            else if((IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) && (rectangleParede.x == jogo->linhaGolFim2.x && rectangleParede.y == jogo->linhaGolFim2.y)){
                 jogador->velocidadeJogador.x = 0.0f;
             }
             
         }
         else if (jogador->time == 2){
-            if(IsKeyDown(KEY_W) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
+            if((IsKeyDown(KEY_W) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP)) && (rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y )){
                 jogador->velocidadeJogador.y = 0.0f;
             }
-            else if(IsKeyDown(KEY_S) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
+            else if((IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) && (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y )){
                 jogador->velocidadeJogador.y = 0.0f;
             } 
-            else if(IsKeyDown(KEY_A) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
+            else if((IsKeyDown(KEY_A) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) && ((rectangleParede.x == jogo->rectangleParedeFundoEsq1.x && rectangleParede.y == jogo->rectangleParedeFundoEsq1.y ) || 
             (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y ))){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if(IsKeyDown(KEY_D) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
-            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y ))){
+            else if((IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y )))){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if(IsKeyDown(KEY_D) && (rectangleParede.x == jogo->linhaGolFim1.x && rectangleParede.y == jogo->linhaGolFim1.y)){
+            else if((IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) && (rectangleParede.x == jogo->linhaGolFim1.x && rectangleParede.y == jogo->linhaGolFim1.y)){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if(IsKeyDown(KEY_D) && (rectangleParede.x == jogo->linhaGolFim2.x && rectangleParede.y == jogo->linhaGolFim2.y)){
+            else if((IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) && (rectangleParede.x == jogo->linhaGolFim2.x && rectangleParede.y == jogo->linhaGolFim2.y)){
                 jogador->velocidadeJogador.x = 0.0f;
             }
         }
