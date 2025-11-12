@@ -15,7 +15,7 @@
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 void main() {
-
+    
     Jogo * jogo = (Jogo *)malloc(sizeof(Jogo));
     jogo->timeComBola =0;
     jogo->placarTime1 =0;
@@ -26,28 +26,28 @@ void main() {
     jogo->rectangleParedeFundoEsq2 = (Rectangle){38,215,10,144};
     jogo->rectangleParedeFundoDir1 = (Rectangle){785,30,10,120};
     jogo->rectangleParedeFundoDir2 = (Rectangle){810,220,10,140};
-
+    
     //rectangleGol1 e rectangleGol2 podem ser excluidos (David)
     jogo->rectangleGol1.x= 1720.0f;
     jogo->rectangleGol1.y = 540.0f;
     jogo->rectangleGol1.height = 300.0f;
     jogo->rectangleGol1.width = 200.0f;
-
-
+    
+    
     jogo->rectangleGol2.x= 0;
     jogo->rectangleGol2.y = 540.0f;
     jogo->rectangleGol2.height = 300.0f;
     jogo->rectangleGol2.width = 200.0f;
-
+    
     jogo->linhaGol1 = (Rectangle){10,153,50,70};
     jogo->linhaGol2 = (Rectangle){800,145,50,70};
     jogo->linhaGolFim1 = (Rectangle){30,153,2,70};
     jogo->linhaGolFim2 = (Rectangle){830,145,2,70};
-
+    
     jogo->voltandoDoGol = 0;
     Jogador* head1Jogador = NULL;
     Jogador* tail1Jogador = NULL;
-
+    
     Jogador* head2Jogador = NULL;
     Jogador* tail2Jogador = NULL;
     //time 1
@@ -58,17 +58,21 @@ void main() {
     Jogador* jogador3 = (Jogador*)malloc(sizeof(Jogador));
     Jogador* jogador4 = (Jogador*)malloc(sizeof(Jogador));
     Jogador* jogador6 = (Jogador*)malloc(sizeof(Jogador));
-
+    
     Jogador * goleiro1 = (Jogador *)malloc(sizeof(Jogador));
     Jogador * goleiro2 = (Jogador *)malloc(sizeof(Jogador));
     
-    
-    goleiro1->rectJogador = (Rectangle){50,153,10,10};
-    goleiro1->time = 1;
+    goleiro1->posJogador.x = 55;
+    goleiro1->posJogador.y = 153;
 
+    goleiro2->posJogador.x = 790;
+    goleiro2->posJogador.y = 145;
+
+    goleiro1->rectJogador = (Rectangle){55,153,10,10};
+    goleiro1->time = 1;
+    
     goleiro2->rectJogador = (Rectangle){790,145,10,10};
     goleiro2->time = 1;
-
     
     
     head1Jogador = jogador1;
@@ -92,9 +96,9 @@ void main() {
     Rectangle srcJ5 = {96,32,24,32};
     Rectangle srcJ6 = {128,32,24,32};
     Rectangle srcJ7 = {160,32,24,32};
-
+    
     Rectangle rectangleCampo = {60,20,80,300};
-
+    
     RectangleSprites * rsj2 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
     RectangleSprites * rsj3 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
     RectangleSprites * rsj4 = (RectangleSprites *)malloc(sizeof(RectangleSprites));
@@ -116,7 +120,7 @@ void main() {
     rsj7->Rectangle = srcJ7;
     rsj7->prox = rsj2;
     headSpritesJogador = rsj2;
-
+    
     if (jogador1) {
         jogador1->temDominio = 0;
         jogador1->forcaChute = 10.0f;
@@ -154,7 +158,7 @@ void main() {
         jogador5->rectJogador = (Rectangle){ jogador2->posJogador.x, jogador2->posJogador.y,jogador2->largura,jogador2->altura };
         jogador5->time =1;
     }
-
+    
     if (jogador3) {
         jogador3->temDominio = 0;
         jogador3->forcaChute = 10.0f;
@@ -197,7 +201,7 @@ void main() {
     
     pthread_t threadChecarControlado1;
     pthread_t threadChecarControlado2;
-
+    
     const int screenWidth = 1920;
     const int screenHeight = 1080;
     Color corVerdeGrama;
@@ -207,10 +211,10 @@ void main() {
     corVerdeGrama.a = 1;
     
     InitWindow(screenWidth, screenHeight, "StructSoccer");
-
+    
     InitAudioDevice();
     SetMasterVolume(1.0f);
-
+    
     Texture2D campo = LoadTexture("assets/art/backgrounds/pitch-lines.png");
     Texture2D jogador = LoadTexture("assets/art/characters/soccer-player.png");
     Texture2D bola = LoadTexture("assets/art/props/soccer-ball.png");
@@ -225,26 +229,26 @@ void main() {
     Texture2D time2Textura = LoadTexture("assets/art/characters/struct_soccer_t2.png");
     Texture2D texturaJogadorControlado1 = LoadTexture("assets/art/props/1p.png");
     Texture2D texturaJogadorControlado2 = LoadTexture("assets/art/props/2p.png");
-
+    
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
     .itens = {"Classico", "PowerUps"},
     .cont = 2,
     .selecionar = 0
-    };
+};
 
     Music menuMusic = LoadMusicStream("assets/music/menu.mp3");
     menuMusic.looping = true;           
     SetMusicVolume(menuMusic, 0.6f);
     PlayMusicStream(menuMusic);
-
+    
     //loop do menu
     while (estado == ST_MENU && !WindowShouldClose()) {
         UpdateMusicStream(menuMusic);
         float dt = GetFrameTime();
 
         BeginDrawing();
-            UpdateAndDrawMainMenu(&menu, &estado, menuBg, menuLogo, dt);
+        UpdateAndDrawMainMenu(&menu, &estado, menuBg, menuLogo, dt);
         EndDrawing();
 
         if (IsKeyPressed(KEY_ESCAPE)) {
@@ -505,7 +509,6 @@ void Atrito(Bola * bola) {
 }
 
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
-    //Semicolon é o ç.
     if((jogador->temDominio && jogador->time ==1 && IsKeyDown(KEY_SEMICOLON)) || (jogador->temDominio && jogador->time ==2 && IsKeyDown(KEY_C))) {
         if (bola->ladoBola == 0) {
             bola->velocidadeAtual.x += 10.0f;
@@ -659,9 +662,6 @@ void TratamentoColisaoJogadorBola(Jogador * jogadorControladoTime1,Jogador * jog
     }
 }
 
-
-
-
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola){
     if(jogo->timeComBola == 0){
         camera->target = bola->posBola;
@@ -776,8 +776,6 @@ void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jog
     }
 
 }
-
-
 
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo){
 
@@ -1356,7 +1354,7 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
 
 }
 void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
-    if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol2.y)){
+    if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol1.y)){
         if( goleiro->time == 1 && bola->posBola.x>650){
             goleiro->posJogador.y -=2;
         }
@@ -1365,7 +1363,7 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
         }
         goleiro->rectJogador.y = goleiro->posJogador.y;
     }
-    else if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y)){
+    else if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol1.y + jogo->linhaGol1.width)){
         if( goleiro->time == 1 && bola->posBola.x>650){
             goleiro->posJogador.y +=2;
         }
@@ -1376,7 +1374,7 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
     }
 
 
-    if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol2.y + jogo->linhaGol2.width)){
+    if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y + jogo->linhaGol2.height)){
         if( goleiro->time == 2 && bola->posBola.x<120){
             goleiro->posJogador.y +=2;
         }
@@ -1385,7 +1383,7 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
         }
         goleiro->rectJogador.y = goleiro->posJogador.y;
     }
-    if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y + jogo->linhaGol2.width)){
+    if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y + jogo->linhaGol2.height)){
         if( goleiro->time == 2 && bola->posBola.x<120){
             goleiro->posJogador.y -=2;
         }
