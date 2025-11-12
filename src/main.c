@@ -74,7 +74,7 @@ void main() {
     goleiro1->time = 1;
     
     goleiro2->rectJogador = (Rectangle){790,145,10,10};
-    goleiro2->time = 1;
+    goleiro2->time = 2;
     
     
     head1Jogador = jogador1;
@@ -735,9 +735,15 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
 
     if (jogador1->isMovendo) {
         if (jogador1->time == 1) {
-            if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) && jogo->voltandoDoGol == 0 && jogador1->funcaoDoJogador !=4) faceLeft = true;
+            if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) && jogo->voltandoDoGol == 0) faceLeft = true;
         } else { // time 2
-            if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_S)) && jogo->voltandoDoGol == 0)      faceLeft = true;
+            if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_S)) && jogo->voltandoDoGol == 0  )      faceLeft = true;
+        }
+        if(jogador1->funcaoDoJogador == 4 && jogador1->time == 2){
+            faceLeft = true;
+        }
+        if(jogador1->funcaoDoJogador == 4 && jogador1->time == 1){
+            faceLeft = false;
         }
         
     } else {
