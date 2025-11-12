@@ -16,7 +16,7 @@ typedef struct GameCtx {
     Texture2D texturaTime2;
     Texture2D txtJogadorControlado1;
     Texture2D txtJogadorControlado2;
-
+    Texture2D txtGoleiro;
     Rectangle srcParedeFundoCampoDir;
     Rectangle destParedeFundoCampoDir2;
     Rectangle srcBarraEsquerda;

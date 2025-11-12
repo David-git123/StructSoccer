@@ -9,7 +9,7 @@
 extern pthread_mutex_t lock;
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
 void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
-void Passe(Bola * bola, Jogador * jogador, Jogo * jogo);
+void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
 void Atrito(Bola * bola);
 void MudarPosicaoBola(Bola * bola);
@@ -60,10 +60,10 @@ void RunModoClassico(GameCtx* ctx) {
             EstadoBola(ctx->bola1, *(ctx->ctrl2),*(ctx->ctrl1),*(ctx->ctrl2), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
             
             if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
-                Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo);
+                Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
                 Chutar(ctx->bola1, *(ctx->ctrl1), ctx->jogo);
             } else if (ctx->jogo->timeComBola == 2 || ctx->jogo->timeComBola == 0) {
-                Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
+                Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
                 Chutar(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
             }
             pthread_mutex_unlock(&lock);
@@ -113,16 +113,15 @@ void RunModoClassico(GameCtx* ctx) {
                 DrawTexturePro(ctx->barra, ctx->srcBarraEsquerda, ctx->destBarraEsquerda, (Vector2){0,0}, 0.0f, WHITE);
                 DrawTexturePro(ctx->barraTopo, (Rectangle){0,0,-ctx->barraTopo.width, ctx->barraTopo.height}, (Rectangle){795,90,ctx->barraTopo.width, ctx->barraTopo.height}, (Vector2){0,0}, 0.0f, WHITE);
 
-                DrawRectangle(ctx->goleiro1->rectJogador.x,ctx->goleiro1->rectJogador.y,ctx->goleiro1->rectJogador.width,ctx->goleiro1->rectJogador.height,RED);
-                DrawRectangle(ctx->goleiro2->rectJogador.x,ctx->goleiro2->rectJogador.y,ctx->goleiro2->rectJogador.width,ctx->goleiro2->rectJogador.height,RED);
-                
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j1, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j2, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j3, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->jogadorTex,ctx->bola1,ctx->j5,ctx->headSprites,contadorFramesJogador,ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2,ctx->bola1,ctx->j6,ctx->headSprites,contadorFramesJogador,ctx->jogo);
-                
+                desenharTexturaJogador(ctx->txtGoleiro,ctx->bola1,ctx->goleiro1,ctx->headSprites,contadorFramesJogador,ctx->jogo);
+                desenharTexturaJogador(ctx->txtGoleiro,ctx->bola1,ctx->goleiro2,ctx->headSprites,contadorFramesJogador,ctx->jogo);
+
                 DrawTexture(ctx->txtJogadorControlado1,(*ctx->ctrl1)->posJogador.x,(*ctx->ctrl1)->posJogador.y-8,WHITE);
                 DrawTexture(ctx->txtJogadorControlado2,(*ctx->ctrl2)->posJogador.x+7,(*ctx->ctrl2)->posJogador.y-8,WHITE);
 

@@ -64,9 +64,11 @@ void main() {
     
     goleiro1->posJogador.x = 55;
     goleiro1->posJogador.y = 153;
+    goleiro1->funcaoDoJogador = 4;
 
     goleiro2->posJogador.x = 790;
     goleiro2->posJogador.y = 145;
+    goleiro2->funcaoDoJogador = 4;
 
     goleiro1->rectJogador = (Rectangle){55,153,10,10};
     goleiro1->time = 1;
@@ -76,17 +78,17 @@ void main() {
     
     
     head1Jogador = jogador1;
-    jogador1->prox = jogador2;  
-    jogador2->prox = jogador5;
-    jogador5->prox = head1Jogador;
-    tail1Jogador = jogador5;
+    jogador1->prox = jogador5;  
+    jogador5->prox = jogador2;
+    jogador2->prox = head1Jogador;
+    tail1Jogador = jogador2;
     Rectangle src1 = {0,0,24,32};
     
     head2Jogador = jogador3;
-    jogador3->prox = jogador4;
-    jogador4->prox = jogador6;
-    jogador6->prox = head2Jogador;
-    tail2Jogador = jogador6;
+    jogador3->prox = jogador6;
+    jogador6->prox = jogador4;
+    jogador4->prox = head2Jogador;
+    tail2Jogador = jogador4;
     
     //Sprites de jogador correndo
     RectangleSprites * headSpritesJogador;
@@ -229,6 +231,7 @@ void main() {
     Texture2D time2Textura = LoadTexture("assets/art/characters/struct_soccer_t2.png");
     Texture2D texturaJogadorControlado1 = LoadTexture("assets/art/props/1p.png");
     Texture2D texturaJogadorControlado2 = LoadTexture("assets/art/props/2p.png");
+    Texture2D texturaGoleiro = LoadTexture("assets/art/characters/GOLEIRO.png");
     
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
@@ -305,6 +308,7 @@ void main() {
         .texturaTime2 = time2Textura,
         .txtJogadorControlado1 = texturaJogadorControlado1,
         .txtJogadorControlado2 = texturaJogadorControlado2,
+        .txtGoleiro = texturaGoleiro,
         .srcParedeFundoCampoDir = srcParedeFundoCampoDir,
         .destParedeFundoCampoDir2 = destParedeFundoCampoDir2,
         .srcBarraEsquerda = srcBarraEsquerda,
@@ -314,7 +318,8 @@ void main() {
         .bola1 = bola1,
         .camera = camera,
         .corVerdeGrama = corVerdeGrama,
-
+        
+        
         .j1 = jogador1,
         .j2 = jogador2,
         .j3 = jogador3,
@@ -508,7 +513,7 @@ void Atrito(Bola * bola) {
     
 }
 
-void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
+void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2) {
     if((jogador->temDominio && jogador->time ==1 && IsKeyDown(KEY_SEMICOLON)) || (jogador->temDominio && jogador->time ==2 && IsKeyDown(KEY_C))) {
         if (bola->ladoBola == 0) {
             bola->velocidadeAtual.x += 10.0f;
@@ -540,6 +545,12 @@ void Passe(Bola * bola, Jogador * jogador, Jogo * jogo) {
         }
         jogador->temDominio = 0;
         jogo->timeComBola = 0;
+        if(jogador->time == 1){
+            *jogadorControladoTime1 = (*jogadorControladoTime1)->prox;
+        }
+        else if(jogador->time == 2){    
+            *jogadorControladoTime2 = (*jogadorControladoTime2)->prox;
+        }
     }
 }
 
@@ -724,10 +735,11 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
 
     if (jogador1->isMovendo) {
         if (jogador1->time == 1) {
-            if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) && jogo->voltandoDoGol == 0) faceLeft = true;
+            if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_DOWN)) && jogo->voltandoDoGol == 0 && jogador1->funcaoDoJogador !=4) faceLeft = true;
         } else { // time 2
             if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_S)) && jogo->voltandoDoGol == 0)      faceLeft = true;
         }
+        
     } else {
         // Parado: olha para a bola
         float playerCenterX = jogador1->posJogador.x + jogador1->rectJogador.width * 0.5f;
@@ -1070,7 +1082,7 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                             head2->rectJogador.x = head2->posJogador.x;
                             head2->isMovendo = 1;
                         }
-                        else if(head2->posJogador.x<bola->posBola.x && head1->posJogador.x && head2->posJogador.x<790){
+                        else if(head2->posJogador.x<bola->posBola.x && head2->posJogador.x<790){
                             head2->posJogador.x+=2;
                             head2->rectJogador.x = head2->posJogador.x;
                             head2->isMovendo = 1;
@@ -1317,12 +1329,12 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                 else if(head1->funcaoDoJogador ==3){
                         if(head1->posJogador.x>400){
                             head1->posJogador.x -= 2;
-                            head1->rectJogador.y = head1->posJogador.y;
+                            head1->rectJogador.x = head1->posJogador.x;
                             head1->isMovendo = 1;
                         }
                         if(head1->posJogador.x<380 && head1->posJogador.x>bola->posBola.x){
                             head1->posJogador.x -=2;
-                            head1->rectJogador.y = head1->posJogador.y;
+                            head1->rectJogador.x = head1->posJogador.x;
                             head1->isMovendo = 1;
                         }
                         if(head1->posJogador.x<380 && head1->posJogador.x<bola->posBola.x){
@@ -1361,14 +1373,22 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
         else{
             goleiro->posJogador.y -=1;
         }
+        if(goleiro->posJogador.y != goleiro->rectJogador.y){
+            goleiro->isMovendo = 1;
+        }
         goleiro->rectJogador.y = goleiro->posJogador.y;
     }
     else if(goleiro->posJogador.y<bola->posBola.y && (goleiro->posJogador.y<jogo->linhaGol1.y + jogo->linhaGol1.width)){
         if( goleiro->time == 1 && bola->posBola.x>650){
             goleiro->posJogador.y +=2;
+            goleiro->isMovendo = 1;
         }
         else{
             goleiro->posJogador.y +=1;
+            goleiro->isMovendo = 1;
+        }
+        if(goleiro->posJogador.y != goleiro->rectJogador.y){
+            goleiro->isMovendo = 1;
         }
         goleiro->rectJogador.y = goleiro->posJogador.y;
     }
@@ -1381,6 +1401,9 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
         else{
             goleiro->posJogador.y +=1;
         }
+        if(goleiro->posJogador.y != goleiro->rectJogador.y){
+            goleiro->isMovendo = 1;
+        }
         goleiro->rectJogador.y = goleiro->posJogador.y;
     }
     if(goleiro->posJogador.y>bola->posBola.y && (goleiro->posJogador.y>jogo->linhaGol2.y + jogo->linhaGol2.height)){
@@ -1390,7 +1413,11 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
         else{
             goleiro->posJogador.y -=1;
         }
+        if(goleiro->posJogador.y != goleiro->rectJogador.y){
+            goleiro->isMovendo = 1;
+        }
         goleiro->rectJogador.y = goleiro->posJogador.y;
     }
 
 }
+

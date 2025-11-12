@@ -87,7 +87,7 @@ void* DefinirJogadorControlado(void* jogadorAtual);
 void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2,Jogo * jogo);
 void   EstadoBola(Bola* bola, Jogador* jogador, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   Atrito(Bola* bola);
-void   Passe(Bola* bola, Jogador* jogador, Jogo* jogo);
+void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
 void   MudarPosicaoBola(Bola* bola);
 void   Chutar(Bola* bola, Jogador* jogador, Jogo* jogo);
 void   TratamentoColisaoJogadorBola(Jogador* jogadorControladoTime1,Jogador * jogadorControladoTime2, Bola* bola, Jogador* head1,Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
