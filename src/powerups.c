@@ -6,7 +6,7 @@
 
 extern pthread_mutex_t lock;
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
-void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
+void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
 void Atrito(Bola * bola);
@@ -49,8 +49,8 @@ void RunModoPowerUps(GameCtx* ctx) {
             movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
             AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
             AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl1),*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl2),*(ctx->ctrl1),*(ctx->ctrl2), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, *(ctx->ctrl1),*(ctx->ctrl1),*(ctx->ctrl2),ctx->goleiro1,ctx->goleiro2,ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, *(ctx->ctrl2),*(ctx->ctrl1),*(ctx->ctrl2),ctx->goleiro1,ctx->goleiro2, ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
 
             if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                 Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo,ctx->ctrl1,ctx->ctrl2);

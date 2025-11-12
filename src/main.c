@@ -28,16 +28,16 @@ void main() {
     jogo->rectangleParedeFundoDir2 = (Rectangle){810,220,10,140};
     
     //rectangleGol1 e rectangleGol2 podem ser excluidos (David)
-    jogo->rectangleGol1.x= 1720.0f;
-    jogo->rectangleGol1.y = 540.0f;
-    jogo->rectangleGol1.height = 300.0f;
-    jogo->rectangleGol1.width = 200.0f;
+    // jogo->rectangleGol1.x= 1720.0f;
+    // jogo->rectangleGol1.y = 540.0f;
+    // jogo->rectangleGol1.height = 300.0f;
+    // jogo->rectangleGol1.width = 200.0f;
     
     
-    jogo->rectangleGol2.x= 0;
-    jogo->rectangleGol2.y = 540.0f;
-    jogo->rectangleGol2.height = 300.0f;
-    jogo->rectangleGol2.width = 200.0f;
+    // jogo->rectangleGol2.x= 0;
+    // jogo->rectangleGol2.y = 540.0f;
+    // jogo->rectangleGol2.height = 300.0f;
+    // jogo->rectangleGol2.width = 200.0f;
     
     jogo->linhaGol1 = (Rectangle){10,153,50,70};
     jogo->linhaGol2 = (Rectangle){800,145,50,70};
@@ -62,11 +62,11 @@ void main() {
     Jogador * goleiro1 = (Jogador *)malloc(sizeof(Jogador));
     Jogador * goleiro2 = (Jogador *)malloc(sizeof(Jogador));
     
-    goleiro1->posJogador.x = 55;
+    goleiro1->posJogador.x = 70;
     goleiro1->posJogador.y = 153;
     goleiro1->funcaoDoJogador = 4;
 
-    goleiro2->posJogador.x = 790;
+    goleiro2->posJogador.x = 780;
     goleiro2->posJogador.y = 145;
     goleiro2->funcaoDoJogador = 4;
 
@@ -157,7 +157,7 @@ void main() {
         jogador5->largura = 24;
         jogador5->altura = 30;
         jogador5->funcaoDoJogador = 3;
-        jogador5->rectJogador = (Rectangle){ jogador2->posJogador.x, jogador2->posJogador.y,jogador2->largura,jogador2->altura };
+        jogador5->rectJogador = (Rectangle){ jogador5->posJogador.x, jogador5->posJogador.y,jogador5->largura,jogador5->altura };
         jogador5->time =1;
     }
     
@@ -189,17 +189,17 @@ void main() {
         jogador6->temDominio = 0;
         jogador6->forcaChute = 10.0f;
         jogador6->posJogador = (Vector2){ 300.0f,200.0f };
-        jogador6->posJogadorInicial = (Vector2){300.0f,180.0f};
+        jogador6->posJogadorInicial = (Vector2){300.0f,200.0f};
         jogador6->velocidadeJogador = (Vector2){0.0f,0.0f};
         jogador6->largura = 24;
         jogador6->altura = 30;
         jogador6->funcaoDoJogador = 3;
-        jogador6->rectJogador = (Rectangle){ jogador4->posJogador.x, jogador4->posJogador.y,jogador4->largura,jogador4->altura };
+        jogador6->rectJogador = (Rectangle){ jogador6->posJogador.x, jogador6->posJogador.y,jogador6->largura,jogador6->altura };
         jogador6->time =2;
     }
 
-    Jogador* jogadorControladoTime1 = jogador1;
-    Jogador* jogadorControladoTime2 = jogador3;
+    Jogador* jogadorControladoTime1 = jogador5;
+    Jogador* jogadorControladoTime2 = jogador6;
     
     pthread_t threadChecarControlado1;
     pthread_t threadChecarControlado2;
@@ -401,8 +401,8 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
     jogador->velocidadeJogador.y = 0;
 }
 
-void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2,Jogador  * head1, Jogador * tail1,Jogador * head2,Jogador * tail2, Jogo * jogo) {
-    TratamentoColisaoJogadorBola(jogadorControladoTime1,jogadorControladoTime2,bola,head1,tail1,head2,tail2, jogo);
+void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador  * head1, Jogador * tail1,Jogador * head2,Jogador * tail2, Jogo * jogo) {
+    TratamentoColisaoJogadorBola(jogadorControladoTime1,jogadorControladoTime2,goleiro1,goleiro2,bola,head1,tail1,head2,tail2, jogo);
     if (!jogador->temDominio) {
         if (CheckCollisionCircleRec(bola->posBola, bola->raioBola, jogador->rectJogador)) {
             jogador->temDominio = 1; 
@@ -624,7 +624,17 @@ void * DefinirJogadorControlado(void * jogadorAtual){
     }
 }
 
-void TratamentoColisaoJogadorBola(Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2, Bola * bola, Jogador *head1, Jogador * tail1,Jogador * head2, Jogador * tail2, Jogo * jogo){
+void TratamentoColisaoJogadorBola(Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2, Jogador * goleiro1, Jogador * goleiro2,Bola * bola, Jogador *head1, Jogador * tail1,Jogador * head2, Jogador * tail2, Jogo * jogo){
+    
+    if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,goleiro1->rectJogador)){
+        bola->velocidadeAtual.x = -bola->velocidadeAtual.x;
+        MudarPosicaoBola(bola);
+    }
+    if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,goleiro2->rectJogador)){
+        bola->velocidadeAtual.x = -bola->velocidadeAtual.x;
+        MudarPosicaoBola(bola);
+    }
+    
     if(jogadorControladoTime1->temDominio == 1){
         do{
             if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,head2->rectJogador)){
@@ -870,6 +880,19 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogad
             movimentoAutomatico(jogo,head1,tail1,head2,tail2);
         }
         else if(estaNaInicial == 1){
+            Jogador * aux = head1;
+            Jogador * aux2 = head2;
+            do{
+          
+                aux->temDominio = 0;
+                aux2->temDominio = 0;
+
+                aux = aux->prox;
+                aux2 = aux2->prox;
+            }while(aux!=tail1->prox && aux2!=tail2->prox);
+            
+            bola->velocidadeAtual.x = 0;
+            bola->velocidadeAtual.y = 0;
             bola->posBola.x = bola->posInicialBola.x;
             bola->posBola.y = bola->posInicialBola.y;
             jogo->voltandoDoGol = 0;
@@ -882,11 +905,12 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogad
         Jogador * aux2 = head2;
         do{
           
-          if(aux->temDominio == 1) aux->temDominio = 0;
-          if(aux2->temDominio ==1) aux2->temDominio = 0;
+          aux->temDominio = 0;
+          aux2->temDominio = 0;
+
           aux = aux->prox;
           aux2 = aux2->prox;
-        }while(head1!=tail1->prox && head2!=tail2->prox);
+        }while(aux!=tail1->prox && aux2!=tail2->prox);
     
     }
     else if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,jogo->linhaGol2) && jogo->voltandoDoGol == 0){
@@ -896,11 +920,12 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogad
         Jogador * aux2 = head2;
         do{
           
-          if(aux->temDominio == 1) aux->temDominio = 0;
-          if(aux2->temDominio ==1) aux2->temDominio = 0;
+          aux->temDominio = 0;
+          aux2->temDominio = 0;
+
           aux = aux->prox;
           aux2 = aux2->prox;
-        }while(head1!=tail1->prox && head2!=tail2->prox);
+        }while(aux!=tail1->prox && aux2!=tail2->prox);
     
     }
 
@@ -962,61 +987,71 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                 if(head1!=jogadorControladoTime1){
                     if(bola->posBola.x>415){
                         if(head1->funcaoDoJogador == 1){
-                                if(head1->posJogador.x <415 && head1->posJogador.x<785){
-                                    head1->posJogador.x+=2;
-                                    head1->rectJogador.x = head1->posJogador.x;
-                                    head1->isMovendo = 1;
-                                }
-                                else if(head1->posJogador.x<300 && head1->posJogador.x>50){
-                                    head1->posJogador.x -=2;
-                                    head1->rectJogador.x = head1->posJogador.x;
-                                    head1->isMovendo = 1;
-                                }
-
-                                if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y<330){
-                                    head1->posJogador.y -= 2;
-                                    head1->rectJogador.y = head1->posJogador.y;
-                                    head1->isMovendo = 1;
-                                }
-                                else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y>10){
-                                    head1->posJogador.y +=2;
-                                    head1->rectJogador.y = head1->posJogador.y;
-                                    head1->isMovendo = 1;
-                                }
+                            if(head1->posJogador.x <415 && head1->posJogador.x<785){
+                                head1->posJogador.x+=2;
+                            }
+                            else if(head1->posJogador.x<300 && head1->posJogador.x>50){
+                                head1->posJogador.x -=2;
+                            }
+                            
+                            if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y<330){
+                                head1->posJogador.y -= 2;
+                            }
+                            else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y>10){
+                                head1->posJogador.y +=2;
+                            }
+                            //
+                            if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
+                                head1->isMovendo = 1;
+                            }
+                            else{
+                                head1->isMovendo = 0;
+                            }
+                            head1->rectJogador.x = head1->posJogador.x;
+                            head1->rectJogador.y = head1->posJogador.y;
                         }
                         else if(head1->funcaoDoJogador == 2){
                             if(head1->posJogador.x<720){
                                 head1->posJogador.x+=2;
-                                head1->rectJogador.x = head1->posJogador.x;
-                                head1->isMovendo = 1;
                             }
                             if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y -= 2;
-                                head1->rectJogador.y = head1->posJogador.y;
-                                head1->isMovendo = 1;
                             }
                             else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
                                 head1->posJogador.y +=2;
-                                head1->rectJogador.y = head1->posJogador.y;
+                            }
+                            //
+                            if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                                 head1->isMovendo = 1;
                             }
+                            else{
+                                head1->isMovendo = 0;
+                            }
+                            head1->rectJogador.x = head1->posJogador.x;
+                            head1->rectJogador.y = head1->posJogador.y;
+
                         }
                         else if(head1->funcaoDoJogador == 3){
                             if(head1->posJogador.x<650){
                                 head1->posJogador.x += 2;
-                                head1->rectJogador.x = head1->posJogador.y;
-                                head1->isMovendo = 1;
+                               
                             }
                             if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y -= 2;
-                                head1->rectJogador.y = head1->posJogador.y;
-                                head1->isMovendo = 1;
+                                
                             }
                             else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
                                 head1->posJogador.y +=2;
-                                head1->rectJogador.y = head1->posJogador.y;
+                            }
+                            //
+                            if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                                 head1->isMovendo = 1;
                             }
+                            else{
+                                head1->isMovendo = 0;
+                            }
+                            head1->rectJogador.x = head1->posJogador.x;
+                            head1->rectJogador.y = head1->posJogador.y;
                         }
                         
                     }
@@ -1024,60 +1059,76 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(head1->funcaoDoJogador == 1){
                             if(head1->posJogador.x<300 && head1->posJogador.x>50){
                               head1->posJogador.x -= 2;
-                              head1->rectJogador.x = head1->posJogador.x;  
-                              head1->isMovendo = 1;
+                              
                             } 
-                            if(head1->posJogador.y>jogadorControladoTime1->posJogador.y && head1->posJogador.y>10){
+                            if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y -=2;
-                                head1->rectJogador.y = head1->posJogador.y;
-                                head1->isMovendo = 1;
+                                
                             }
-                            else if(head1->posJogador.y<jogadorControladoTime1->posJogador.y && head1->posJogador.x<330){
+                            else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.x<330){
                                 head1->posJogador.y +=2;
-                                head1->rectJogador.y = head1->posJogador.y;
+                            }
+                            //
+                            if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                                 head1->isMovendo = 1;
                             }
+                            else{
+                                head1->isMovendo = 0;
+                            }
+                            head1->rectJogador.x = head1->posJogador.x;
+                            head1->rectJogador.y = head1->posJogador.y;
                         }
                         else if(head1->funcaoDoJogador == 2){
 
                             if(head1->posJogador.x>550){
                                 head1->posJogador.x-=2;
-                                head1->rectJogador.x = head1->posJogador.x;
-                                head1->isMovendo = 1;
+                             
                             }
                             else if(head1->posJogador.x<405){
                                 head1->posJogador.x +=2;
-                                head1->rectJogador.x = head1->posJogador.x;
-                                head1->isMovendo = 1;
+                                
                             }
                             if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y -= 2;
-                                head1->rectJogador.y = head1->posJogador.y;
-                                head1->isMovendo = 1;
+                                
                             }
                             else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
                                 head1->posJogador.y +=2;
-                                head1->rectJogador.y = head1->posJogador.y;
+                                
+                            }
+
+                            if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                                 head1->isMovendo = 1;
                             }
+                            else{
+                                head1->isMovendo = 0;
+                            }
+                            head1->rectJogador.x = head1->posJogador.x;
+                            head1->rectJogador.y = head1->posJogador.y;
                         }
 
                         else if(head1->funcaoDoJogador == 3){
                             if(head1->posJogador.x > 405){
                                 head1->posJogador.x -=2;
-                                head1->rectJogador.x = head1->posJogador.x;
-                                head1->isMovendo = 1;
+                         
                             }
                             if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                                 head1->posJogador.y -= 2;
-                                head1->rectJogador.y = head1->posJogador.y;
-                                head1->isMovendo = 1;
+                                
                             }
                             else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
                                 head1->posJogador.y +=2;
-                                head1->rectJogador.y = head1->posJogador.y;
+                                
+                            }
+
+                            if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                                 head1->isMovendo = 1;
                             }
+                            else{
+                                head1->isMovendo = 0;
+                            }
+                            head1->rectJogador.x = head1->posJogador.x;
+                            head1->rectJogador.y = head1->posJogador.y;
                         }
                     }
                 }
@@ -1085,77 +1136,90 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                     if(head2->funcaoDoJogador == 1){
                         if(head2->posJogador.x>bola->posBola.x && head2->posJogador.x>400){
                             head2->posJogador.x-=2;
-                            head2->rectJogador.x = head2->posJogador.x;
-                            head2->isMovendo = 1;
                         }
                         else if(head2->posJogador.x<bola->posBola.x && head2->posJogador.x<790){
                             head2->posJogador.x+=2;
-                            head2->rectJogador.x = head2->posJogador.x;
-                            head2->isMovendo = 1;
+                            
                         }
 
                         if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                             head2->posJogador.y -=2;
-                            head2->rectJogador.y= head2->posJogador.y;
-                            head2->isMovendo = 1;
+                            
                         }
                         else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y <330){
                             head2->posJogador.y +=2;
-                            head2->rectJogador.y = head2->posJogador.y;
+                        }
+                        //  
+                        if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                             head2->isMovendo = 1;
-                        }                    
+                        }
+                        else{
+                            head2->isMovendo = 0;
+                        }
+                        head2->rectJogador.x = head2->posJogador.x;
+                        head2->rectJogador.y = head2->posJogador.y;
+                                          
                     }
                     else if(head2->funcaoDoJogador == 2){
                         if(jogadorControladoTime1->posJogador.x<270){
                             if(head2->posJogador.x>jogadorControladoTime1->posJogador.x && head2->posJogador.x>50){
                                 head2->posJogador.x -=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
+
                             }
                             else if(head2->posJogador.x<jogadorControladoTime1->posJogador.x && head2->posJogador.x<785){
                                 head2->posJogador.x +=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
+
                             }
                             
                             if(head2->posJogador.y>jogadorControladoTime1->posJogador.y && head2->posJogador.y>10){
                                 head2->posJogador.y -=2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<jogadorControladoTime1->posJogador.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+                            }
+
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }   
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
+                            
+                            
                         }
                     }
                     else if(head2->funcaoDoJogador ==3){
                         if(head2->posJogador.x>400){
                             head2->posJogador.x -= 2;
-                            head2->rectJogador.x = head2->posJogador.x;
-                            head2->isMovendo = 1;
+
                         }
                         if(head2->posJogador.x<380 && head2->posJogador.x>bola->posBola.x){
                             head2->posJogador.x -=2;
-                            head2->rectJogador.x = head2->posJogador.x;
-                            head2->isMovendo = 1;
+
                         }
                         if(head2->posJogador.x<380 && head2->posJogador.x<bola->posBola.x){
                             head2->posJogador.x +=2;
-                            head2->rectJogador.x = head2->posJogador.x;
-                            head2->isMovendo = 1;
+
                         }
                         if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                             head2->posJogador.y -= 2;
-                            head2->rectJogador.y = head2->posJogador.y;
-                            head2->isMovendo = 1;
+
                         }
                         else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                             head2->posJogador.y +=2;
-                            head2->rectJogador.y = head2->posJogador.y;
+                        }
+
+                    
+                        if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                             head2->isMovendo = 1;
                         }
+                        else{
+                            head2->isMovendo = 0;
+                        }
+                        head2->rectJogador.x = head2->posJogador.x;
+                        head2->rectJogador.y = head2->posJogador.y;
                     }
                 }
             }
@@ -1165,60 +1229,68 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(head2->funcaoDoJogador == 1){
                             if(head2->posJogador.x <415 && head2->posJogador.x<785){
                                 head2->posJogador.x+=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.x<300 && head2->posJogador.x>50){
                                 head2->posJogador.x -=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
                             }
 
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y -= 2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y>20){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+                            }
+                            
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
                     
                         }
                         else if(head2->funcaoDoJogador == 2){
                             if(head2->posJogador.x<750){
                                 head2->posJogador.x+=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
                             }
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -= 2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+                            }
+                            
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
                         }
                         else if(head2->funcaoDoJogador == 3){
                             if(head2->posJogador.x < 650){
                                 head2->posJogador.x +=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
                             }
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -= 2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+                            }
+                            //
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
+                            
                         }
                         
                     }
@@ -1227,59 +1299,77 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         if(head2->funcaoDoJogador == 1){
                             if(head2->posJogador.x<300 && head2->posJogador.x>50){
                               head2->posJogador.x -= 2;
-                              head2->rectJogador.x = head2->posJogador.x;  
-                              head2->isMovendo = 1;
+                    
                             } 
-                            if(head2->posJogador.y>jogadorControladoTime2->posJogador.y && head2->posJogador.y>10){
+                            if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -=2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
+
                             }
-                            else if(head2->posJogador.y<jogadorControladoTime2->posJogador.y && head2->posJogador.x<330){
+                            else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.x<330){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+                                
+                            }
+
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
+                            
                         }
                         else if(head2->funcaoDoJogador == 2){
 
                             if(head2->posJogador.x>405){
                                 head2->posJogador.x-=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
                             }
                             else if(head2->posJogador.x<405){
                                 head2->posJogador.x +=2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
+
                             }
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -= 2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
+
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+
+                            }
+
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
                         }
                         else if(head2->funcaoDoJogador == 3){
                             if(head2->posJogador.x>350){
                                 head2->posJogador.x -= 2;
-                                head2->rectJogador.x = head2->posJogador.x;
-                                head2->isMovendo = 1;
+
                             }
                             if(head2->posJogador.y>bola->posBola.y && head2->posJogador.y>10){
                                 head2->posJogador.y -= 2;
-                                head2->rectJogador.y = head2->posJogador.y;
-                                head2->isMovendo = 1;
+
                             }
                             else if(head2->posJogador.y<bola->posBola.y && head2->posJogador.y<330){
                                 head2->posJogador.y +=2;
-                                head2->rectJogador.y = head2->posJogador.y;
+
+        
+                            }
+
+                            if(head2->posJogador.x != head2->rectJogador.x || head2->posJogador.y!=head2->rectJogador.y){
                                 head2->isMovendo = 1;
                             }
+                            else{
+                                head2->isMovendo = 0;
+                            }
+                            head2->rectJogador.x = head2->posJogador.x;
+                            head2->rectJogador.y = head2->posJogador.y;
                         }
                     }
             }
@@ -1287,84 +1377,88 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                 if(head1->funcaoDoJogador == 1){
                     if(head1->posJogador.x>bola->posBola.x && head1->posJogador.x>300){
                         head1->posJogador.x-=2;
-                        head1->rectJogador.x = head1->posJogador.x;
-                        head1->isMovendo = 1;
                     }
                     else if(head1->posJogador.x<bola->posBola.x && head1->posJogador.x && head1->posJogador.x<790){
                         head1->posJogador.x+=2;
-                        head1->rectJogador.x = head1->posJogador.x;
-                        head1->isMovendo = 1;
                     }
 
                     if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
                         head1->posJogador.y -=2;
-                        head1->rectJogador.y= head1->posJogador.y;
-                        head1->isMovendo = 1;
+
                     }
                     else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y <330){
                         head1->posJogador.y +=2;
-                        head1->rectJogador.y = head2->posJogador.y;
+                    }
+                    
+                    if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                         head1->isMovendo = 1;
-                    }                    
+                    }
+                    else{
+                        head1->isMovendo = 0;
+                    }
+                    head1->rectJogador.x = head1->posJogador.x;
+                    head1->rectJogador.y = head1->posJogador.y;
                 }
                 else if(head1->funcaoDoJogador == 2){
                     if(jogadorControladoTime2->posJogador.x<270){
                         if(head1->posJogador.x>jogadorControladoTime2->posJogador.x && head1->posJogador.x>50){
                             head1->posJogador.x -=2;
-                            head1->rectJogador.x = head1->posJogador.x;
-                            head1->isMovendo = 1;
                         }
                         else if(head1->posJogador.x<jogadorControladoTime2->posJogador.x && head1->posJogador.x<785){
                             head1->posJogador.x +=2;
-                            head1->rectJogador.x = head1->posJogador.x;
-                            head1->isMovendo = 1;
+
                         }
                         
                         if(head1->posJogador.y>jogadorControladoTime2->posJogador.y && head1->posJogador.y>10){
                             head1->posJogador.y -=2;
-                            head1->rectJogador.y = head1->posJogador.y;
-                            head1->isMovendo = 1;
                         }
                         else if(head1->posJogador.y<jogadorControladoTime2->posJogador.y && head1->posJogador.y<330){
                             head1->posJogador.y +=2;
-                            head1->rectJogador.y = head2->posJogador.y;
+                        }
+
+                        if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
                             head1->isMovendo = 1;
                         }
+                        else{
+                            head1->isMovendo = 0;
+                        }
+                        head1->rectJogador.x = head1->posJogador.x;
+                        head1->rectJogador.y = head1->posJogador.y;
+
+                        
                     }
                 }
                 else if(head1->funcaoDoJogador ==3){
-                        if(head1->posJogador.x>400){
-                            head1->posJogador.x -= 2;
-                            head1->rectJogador.x = head1->posJogador.x;
-                            head1->isMovendo = 1;
-                        }
-                        if(head1->posJogador.x<380 && head1->posJogador.x>bola->posBola.x){
-                            head1->posJogador.x -=2;
-                            head1->rectJogador.x = head1->posJogador.x;
-                            head1->isMovendo = 1;
-                        }
-                        if(head1->posJogador.x<380 && head1->posJogador.x<bola->posBola.x){
-                            head1->posJogador.x +=2;
-                            head1->rectJogador.y = head1->posJogador.y;
-                            head1->isMovendo = 1;
-                        }
-                        if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
-                            head1->posJogador.y -= 2;
-                            head1->rectJogador.y = head1->posJogador.y;
-                            head1->isMovendo = 1;
-                        }
-                        else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
-                            head1->posJogador.y +=2;
-                            head1->rectJogador.y = head1->posJogador.y;
-                            head1->isMovendo = 1;
-                        }
+                    if(head1->posJogador.x>400){
+                        head1->posJogador.x -= 2;
                     }
+                    if(head1->posJogador.x<380 && head1->posJogador.x>bola->posBola.x){
+                        head1->posJogador.x -=2;
+                    }
+                    if(head1->posJogador.x<380 && head1->posJogador.x<bola->posBola.x){
+                        head1->posJogador.x +=2;
+                    }
+                    if(head1->posJogador.y>bola->posBola.y && head1->posJogador.y>10){
+                        head1->posJogador.y -= 2;
+                    }
+                    else if(head1->posJogador.y<bola->posBola.y && head1->posJogador.y<330){
+                        head1->posJogador.y +=2;
+                    }
+
+                    if(head1->posJogador.x != head1->rectJogador.x || head1->posJogador.y!=head1->rectJogador.y){
+                        head1->isMovendo = 1;
+                    }
+                    else{
+                        head1->isMovendo = 0;
+                    }
+                    head1->rectJogador.x = head1->posJogador.x;
+                    head1->rectJogador.y = head1->posJogador.y;
+                }
             }
         }
             head1 = head1->prox;
             head2 = head2->prox;
-            head1->isMovendo = 0;
-            head2->isMovendo = 0;
+
 
         }while(head1!=tail1->prox && head2!=tail2->prox);
 
