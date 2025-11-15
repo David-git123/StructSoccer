@@ -7,7 +7,7 @@
 #include "../include/tempo.h"
 #include "../include/menu.h"
 #include "../include/structsoccer.h"
-#include "../include/modes.h"                
+#include "../include/modes.h" 
 
 //Controles: JOGADOR 1: UP, DOWN , LEFT RIGTH. SHIT DIREITO (TROCA). Ç PASSE . CHUTA;
 //Controles: JOGADOR 2: W, S , A ,D. SHIT ESQUERDO (TROCA). C PASSE. LEFT CONTROL CHUTE;
