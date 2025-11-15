@@ -703,7 +703,10 @@ void TratamentoColisaoJogadorBola(Jogador * jogadorControladoTime1,Jogador * jog
 }
 
 void AtualizarCamera(Camera2D * camera, Jogo  * jogo, Jogador * jogadorControladoTime1, Jogador* jogadorControladoTime2,Bola * bola){
-    if(jogo->timeComBola == 0){
+    if(jogo->voltandoDoGol == 1){
+        camera->target =  jogadorControladoTime1->posJogador;  
+    }
+    else if(jogo->timeComBola == 0){
         camera->target = bola->posBola;
     }
     else if(jogo->timeComBola == 1){
@@ -880,7 +883,8 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
     
 }
 
-void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogador *head2, Jogador * tail2){
+void tratarGol(Jogo *jogo, Bola *bola, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2)
+{
 
     if(jogo->voltandoDoGol == 1){
         int estaNaInicial = 1;
@@ -947,7 +951,6 @@ void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador * tail1, Jogad
         }while(aux!=tail1->prox && aux2!=tail2->prox);
     
     }
-
 }
 
 void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador * head2, Jogador *tail2){

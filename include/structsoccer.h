@@ -54,7 +54,8 @@ typedef struct Jogador {
     Vector2 posJogador;
     Vector2 posJogadorInicial;
     Rectangle rectJogador;
-    float velocidadeBonus;   
+    float velocidadeBonus;
+    int gols;   
 } Jogador;
 
 typedef struct RectangleSprites {

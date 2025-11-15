@@ -111,7 +111,8 @@
                 if (coletor->time == 1)
                     jogo->congeladoTimerTime2 = 3.0f;   
                 else
-                    jogo->congeladoTimerTime1 = 3.0f;  
+                    jogo->congeladoTimerTime1 = 3.0f;
+                  
             }
 
             // remove da lista
