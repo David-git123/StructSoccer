@@ -13,7 +13,8 @@ extern "C" {
 typedef enum {
     PW_VELOCIDADE = 0,
     PW_CONGELAR   = 1,
-    PW_MAX_TIPOS  = 2
+    PW_SUPERCHUTE = 2,
+    PW_MAX_TIPOS  = 3
 } TipoPowerUp;
 
 typedef struct PowerUp {
@@ -54,7 +55,8 @@ typedef struct Jogador {
     Vector2 posJogador;
     Vector2 posJogadorInicial;
     Rectangle rectJogador;
-    float velocidadeBonus;   
+    float velocidadeBonus;
+    int gols;   
 } Jogador;
 
 typedef struct RectangleSprites {
@@ -93,7 +95,9 @@ typedef struct Jogo {
     struct PowerUp *listaPowerUps;
     float buffVelocidadeTimer; 
     float congeladoTimerTime1;   
-    float congeladoTimerTime2; 
+    float congeladoTimerTime2;
+    float superChuteTimerTime1;
+    float superChuteTimerTime2;
 } Jogo;
 
 /* ─── Variáveis globais (somente declaração) ───────────────────────────── */
@@ -104,7 +108,7 @@ extern pthread_mutex_t lock;
 
 void* DefinirJogadorControlado(void* jogadorAtual);
 void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2,Jogo * jogo);
-void   EstadoBola(Bola* bola, Jogador* jogador, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * goleiro1,Jogador * goleiro2,Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
+void   EstadoBola(Bola* bola, Jogador* jogador, Jogador ** jogadorControladoTime1, Jogador ** jogadorControladoTime2, Jogador * goleiro1,Jogador * goleiro2,Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   Atrito(Bola* bola);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
 void   MudarPosicaoBola(Bola* bola);
@@ -115,10 +119,11 @@ void   desenharTexturaBola(Texture2D bola, Bola* bola1, int contadorFrames, Joga
 void   desenharTexturaJogador(Texture2D jogador, Bola* bola1, Jogador* jogador1, RectangleSprites** headSprites, int contadorFramesJogador, Jogo * jogo);
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
-void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1,Jogador * tail1, Jogador *head2, Jogador * tail2);
-void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1,Jogador * head2, Jogador * tail2);
-void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * head1,Jogador * tail1, Jogador * head2,Jogador * tail2);
-void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
+void tratarGol(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2);
+void movimentoAutomatico(Jogo *jogo, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2);
+void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
+void movimentarGoleiro(Jogador *goleiro, Jogo *jogo, Bola *bola);
+void mudarPosicaoJogadorVelocidade(Jogador *jogador);
 
 #ifdef __cplusplus
 }

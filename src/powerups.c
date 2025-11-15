@@ -7,7 +7,7 @@
 
     extern pthread_mutex_t lock;
     void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
-    void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
+    void EstadoBola(Bola * bola, Jogador * jogador,Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
     void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
     void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
     void Atrito(Bola * bola);
@@ -17,21 +17,19 @@
     void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador, Jogo * jogo);
     void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
     void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
-    void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2, Jogador * tail1, Jogador * tail2);
-    void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * head1,Jogador * tail1, Jogador * head2,Jogador * tail2);
+    void tratarGol(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2); void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
     void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
+    void mudarPosicaoJogadorVelocidade(Jogador *jogador);
 
 
-
-
-    // Cria um novo power-up
-        PowerUp* CriarPowerUp(TipoPowerUp tipo, float x, float y) {
+    PowerUp *CriarPowerUp(TipoPowerUp tipo, float x, float y)
+    {
         PowerUp *p = (PowerUp*)malloc(sizeof(PowerUp));
         if (!p) return NULL;
 
         p->tipo  = tipo;
         p->ativo = 1;
-        p->caixa = (Rectangle){ x, y, 16.0f, 16.0f }; // quadradinho 16x16
+        p->caixa = (Rectangle){ x, y, 16.0f, 16.0f }; 
         p->prox  = NULL;
         return p;
     }
@@ -64,8 +62,10 @@
                 Color cor;
                 if (p->tipo == PW_VELOCIDADE) {
                     cor = BLUE;
-                } else {
+                } else if(p->tipo == PW_CONGELAR){
                     cor = RED;
+                } else if (p->tipo == PW_SUPERCHUTE) {
+                    cor =  YELLOW;
                 }
                 DrawRectangleRec(p->caixa, cor);
             }
@@ -109,9 +109,12 @@
             
             else if (p->tipo == PW_CONGELAR) {
                 if (coletor->time == 1)
-                    jogo->congeladoTimerTime2 = 3.0f;   
+                    jogo->congeladoTimerTime2 = 3.0f;
+                
+                   
                 else
-                    jogo->congeladoTimerTime1 = 3.0f;  
+                    jogo->congeladoTimerTime1 = 3.0f;
+                  
             }
 
             // remove da lista
@@ -134,11 +137,22 @@
 
         SetTargetFPS(60);
         ReiniciarCronometro(ctx->jogo, 60);
-        float tempoAteProximoSpawn = 2.0f;
+        float tempoAteProximoSpawn = 2.0f;    
+
 
         while (!WindowShouldClose()) {
             float dt = GetFrameTime();
             AtualizarCronometro(ctx->jogo, dt);
+
+        if (ctx->jogo->superChuteTimerTime1 > 0.0f) {
+            ctx->jogo->superChuteTimerTime1 -= dt;
+            if (ctx->jogo->superChuteTimerTime1 < 0.0f) ctx->jogo->superChuteTimerTime1 = 0.0f;
+        }
+        if (ctx->jogo->superChuteTimerTime2 > 0.0f) {
+            ctx->jogo->superChuteTimerTime2 -= dt;
+            if (ctx->jogo->superChuteTimerTime2 < 0.0f) ctx->jogo->superChuteTimerTime2 = 0.0f;
+        }
+
             // Atualiza timers de power-ups
             if (ctx->jogo->buffVelocidadeTimer > 0) {
                 ctx->jogo->buffVelocidadeTimer -= dt;
@@ -179,11 +193,16 @@
             if (!fimDeJogo) {
                 movimentarGoleiro(ctx->goleiro1,ctx->jogo,ctx->bola1);
                 movimentarGoleiro(ctx->goleiro2,ctx->jogo,ctx->bola1);
-                movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
+                movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1);
+                movimentoAutomaticoJogo(ctx->jogo, ctx->bola1, (*ctx->ctrl1), (*ctx->ctrl2), ctx->head2, ctx->tail2);
+                EstadoBola(ctx->bola1, ctx->j1, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j2, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j3, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j4, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j5, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j6, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
                 AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
-                EstadoBola(ctx->bola1, *(ctx->ctrl1),*(ctx->ctrl1),*(ctx->ctrl2),ctx->goleiro1,ctx->goleiro2,ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-                EstadoBola(ctx->bola1, *(ctx->ctrl2),*(ctx->ctrl1),*(ctx->ctrl2),ctx->goleiro1,ctx->goleiro2, ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
 
                 if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                     Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
@@ -220,7 +239,7 @@
                 }
             }
 
-            tratarGol(ctx->jogo,ctx->bola1,ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);\
+            tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
             if (!fimDeJogo) {
                 AtualizarColetaPowerUps(ctx);
             }
@@ -252,7 +271,7 @@
 
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
 
-                // ⬇⬇ AGORA os power-ups são desenhados NO MESMO MUNDO (com câmera) ⬇⬇
+                //  power-ups são desenhados NO MESMO MUNDO (com câmera) 
                 DesenharPowerUps(ctx->jogo);
             EndMode2D();
 

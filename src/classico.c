@@ -8,7 +8,7 @@
 // ---- declarações das funções ----
 extern pthread_mutex_t lock;
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
-void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1,Jogador * jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
+void EstadoBola(Bola * bola, Jogador * jogador,Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
 void Atrito(Bola * bola);
@@ -18,13 +18,14 @@ void desenharTexturaBola(Texture2D bola, Bola * bola1, int contadorFrames, Jogad
 void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1, RectangleSprites ** headSprites, int contadorFramesJogador, Jogo * jogo);
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo);
 void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,Jogo * jogo);
-void tratarGol(Jogo * jogo, Bola * bola, Jogador * head1, Jogador *head2, Jogador * tail1, Jogador * tail2);
-void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * head1,Jogador * tail1, Jogador * head2,Jogador * tail2);
-void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
+void tratarGol(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2); 
+void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
+void movimentarGoleiro(Jogador *goleiro, Jogo *jogo, Bola *bola);
+void mudarPosicaoJogadorVelocidade(Jogador *jogador);
+    // ---------------------------------------------
 
-// ---------------------------------------------
-
-void RunModoClassico(GameCtx* ctx) {
+    void RunModoClassico(GameCtx *ctx)
+{
     int contFramesBola = 0;
     int contadorFramesJogador = 0;
 
@@ -53,12 +54,19 @@ void RunModoClassico(GameCtx* ctx) {
         if (!fimDeJogo) {
             movimentarGoleiro(ctx->goleiro1,ctx->jogo,ctx->bola1);
             movimentarGoleiro(ctx->goleiro2,ctx->jogo,ctx->bola1);
-            movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
+            movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1);
+            movimentoAutomaticoJogo(ctx->jogo, ctx->bola1, (*ctx->ctrl1), (*ctx->ctrl2), ctx->head2, ctx->tail2);
+
+            EstadoBola(ctx->bola1, ctx->j1,ctx->ctrl1,ctx->ctrl2,ctx->goleiro1,ctx->goleiro2,ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, ctx->j2,ctx->ctrl1,ctx->ctrl2,ctx->goleiro1,ctx->goleiro2, ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, ctx->j3, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, ctx->j4, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, ctx->j5, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            EstadoBola(ctx->bola1, ctx->j6, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+            
             AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
             AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl1),*(ctx->ctrl1),*(ctx->ctrl2),ctx->goleiro1,ctx->goleiro2,ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-            EstadoBola(ctx->bola1, *(ctx->ctrl2),*(ctx->ctrl1),*(ctx->ctrl2),ctx->goleiro1,ctx->goleiro2, ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
-            
+
             if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                 Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
                 Chutar(ctx->bola1, *(ctx->ctrl1), ctx->jogo);
@@ -98,7 +106,7 @@ void RunModoClassico(GameCtx* ctx) {
             }
         }
         
-        tratarGol(ctx->jogo,ctx->bola1,ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
+        tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
 
         BeginDrawing();
             ClearBackground(ctx->corVerdeGrama);
