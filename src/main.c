@@ -382,15 +382,15 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
     float vel = 3.0f + jogador->velocidadeBonus; 
 
     if(jogador->time == 1 && jogo->voltandoDoGol == 0){
-        if (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = 3.0f;
-        if (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -3.0f;
-        if (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -3.0f;
-        if (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = 3.0f;
+        if (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = vel;
+        if (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -vel;
+        if (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -vel;
+        if (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = vel;
     }else if(jogador->time==2 && jogo->voltandoDoGol == 0){
-        if (IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = 3.0f;
-        if (IsKeyDown(KEY_A) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -3.0f;
-        if (IsKeyDown(KEY_W) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -3.0f;
-        if (IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = 3.0f;
+        if (IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = vel;
+        if (IsKeyDown(KEY_A) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -vel;
+        if (IsKeyDown(KEY_W) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -vel;
+        if (IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = vel;
     }
 
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeCima,jogo);
@@ -408,7 +408,7 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
     if(jogador->velocidadeJogador.x != 0.0f || jogador->velocidadeJogador.y != 0.0f){
         jogador->isMovendo = 1;
     }
-    else if(jogo->voltandoDoGol == 0){
+    else{
         jogador->isMovendo = 0;
     }
 
