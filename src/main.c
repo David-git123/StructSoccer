@@ -367,15 +367,15 @@ void main() {
 
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, Jogo * jogo) {
     if(jogador->time == 1 && jogo->voltandoDoGol == 0){
-        if (IsKeyDown(KEY_RIGHT)) jogador->velocidadeJogador.x = 3.0f;
-        if (IsKeyDown(KEY_LEFT)) jogador->velocidadeJogador.x = -3.0f;
-        if (IsKeyDown(KEY_UP)) jogador->velocidadeJogador.y = -3.0f;
-        if (IsKeyDown(KEY_DOWN)) jogador->velocidadeJogador.y = 3.0f;
+        if (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = 3.0f;
+        if (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -3.0f;
+        if (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -3.0f;
+        if (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = 3.0f;
     }else if(jogador->time==2 && jogo->voltandoDoGol == 0){
-        if (IsKeyDown(KEY_D)) jogador->velocidadeJogador.x = 3.0f;
-        if (IsKeyDown(KEY_A)) jogador->velocidadeJogador.x = -3.0f;
-        if (IsKeyDown(KEY_W)) jogador->velocidadeJogador.y = -3.0f;
-        if (IsKeyDown(KEY_S)) jogador->velocidadeJogador.y = 3.0f;
+        if (IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = 3.0f;
+        if (IsKeyDown(KEY_A) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -3.0f;
+        if (IsKeyDown(KEY_W) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -3.0f;
+        if (IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = 3.0f;
     }
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeCima,jogo);
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeBaixo,jogo);
@@ -514,7 +514,7 @@ void Atrito(Bola * bola) {
 }
 
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2) {
-    if((jogador->temDominio && jogador->time ==1 && IsKeyDown(KEY_SEMICOLON)) || (jogador->temDominio && jogador->time ==2 && IsKeyDown(KEY_C)) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_FACE_DOWN) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
+    if((jogador->temDominio && jogador->time ==1 && IsKeyDown(KEY_SEMICOLON)) || (jogador->temDominio && jogador->time ==2 && IsKeyDown(KEY_C)) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_FACE_DOWN) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
         if (bola->ladoBola == 0) {
             bola->velocidadeAtual.x += 10.0f;
         }
@@ -555,7 +555,7 @@ void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorContro
 }
 
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
-    if ((jogador->temDominio && jogador->time== 1 && IsKeyPressed(KEY_PERIOD)) || (jogador->temDominio && jogador->time==2 && IsKeyDown(KEY_LEFT_CONTROL)) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
+    if ((jogador->temDominio && jogador->time== 1 && IsKeyPressed(KEY_PERIOD)) || (jogador->temDominio && jogador->time==2 && IsKeyDown(KEY_LEFT_CONTROL)) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) || IsGamepadButtonPressed(1,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
         
         if (bola->ladoBola == 0) {
             bola->velocidadeAtual.x += 20.0f;
@@ -601,7 +601,7 @@ void * DefinirJogadorControlado(void * jogadorAtual){
         Jogador ** jogador1 = (Jogador **)jogadorAtual;
 
         if((*jogador1)->temDominio == 0 && (*jogador1)->time == 1){
-            while((!IsKeyPressed(KEY_RIGHT_SHIFT) && !IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && (*jogador1)->temDominio == 0);
+            while((!IsKeyPressed(KEY_RIGHT_SHIFT) && !IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && (*jogador1)->temDominio == 0);
             if((*jogador1)->temDominio == 0){
                 pthread_mutex_lock(&lock);
                 *jogador1 = (*jogador1)->prox;
@@ -610,7 +610,7 @@ void * DefinirJogadorControlado(void * jogadorAtual){
             }
         }
         else if((*jogador1)->temDominio == 0 && (*jogador1)->time == 2){
-            while((!IsKeyPressed(KEY_LEFT_SHIFT)&& !IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && (*jogador1)->temDominio == 0 );
+            while((!IsKeyPressed(KEY_LEFT_SHIFT)&& !IsGamepadButtonPressed(1,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && (*jogador1)->temDominio == 0 );
             if((*jogador1)->temDominio == 0){
                 pthread_mutex_lock(&lock);
                 *jogador1 = (*jogador1)->prox;
@@ -844,8 +844,8 @@ void TratarColisoesJogadorParede(Jogador * jogador, Rectangle rectangleParede ,J
             (rectangleParede.x == jogo->rectangleParedeFundoEsq2.x && rectangleParede.y == jogo->rectangleParedeFundoEsq2.y ))){
                 jogador->velocidadeJogador.x = 0.0f;
             }
-            else if((IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
-            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y )))){
+            else if((IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) && ((rectangleParede.x == jogo->rectangleParedeFundoDir1.x && rectangleParede.y == jogo->rectangleParedeFundoDir1.y ) || 
+            (rectangleParede.x == jogo->rectangleParedeFundoDir2.x && rectangleParede.y == jogo->rectangleParedeFundoDir2.y ))){
                 jogador->velocidadeJogador.x = 0.0f;
             }
             else if((IsKeyDown(KEY_D) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) && (rectangleParede.x == jogo->linhaGolFim1.x && rectangleParede.y == jogo->linhaGolFim1.y)){
