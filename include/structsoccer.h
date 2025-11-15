@@ -125,6 +125,7 @@ void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoT
 void movimentarGoleiro(Jogador *goleiro, Jogo *jogo, Bola *bola);
 void mudarPosicaoJogadorVelocidade(Jogador *jogador);
 void DesenharPlacarHUD(const Jogo *jogo);
+void ordernarPorGols(Jogador *head1, Jogador *tail1);
 
 #ifdef __cplusplus
 }

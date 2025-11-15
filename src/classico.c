@@ -22,6 +22,7 @@ void tratarGol(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador 
 void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
 void movimentarGoleiro(Jogador *goleiro, Jogo *jogo, Bola *bola);
 void mudarPosicaoJogadorVelocidade(Jogador *jogador);
+void ordernarPorGols(Jogador *head1, Jogador *tail1);
     // ---------------------------------------------
 
     void RunModoClassico(GameCtx *ctx)
@@ -158,7 +159,9 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
             if (fimDeJogo) {
                 int sw = GetScreenWidth();
                 int sh = GetScreenHeight();
-
+                ordernarPorGols(ctx->head1,ctx->tail1);
+                ordernarPorGols(ctx->head2,ctx->tail2);
+                
                 DrawRectangle(0, 0, sw, sh, (Color){0,0,0,150});
 
                 int panelW = 400;

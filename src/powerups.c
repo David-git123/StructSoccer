@@ -20,9 +20,9 @@
     void tratarGol(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2); void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
     void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
     void mudarPosicaoJogadorVelocidade(Jogador *jogador);
+    void ordernarPorGols(Jogador *head1, Jogador *tail1);
 
-
-    PowerUp *CriarPowerUp(TipoPowerUp tipo, float x, float y)
+        PowerUp *CriarPowerUp(TipoPowerUp tipo, float x, float y)
     {
         PowerUp *p = (PowerUp*)malloc(sizeof(PowerUp));
         if (!p) return NULL;
@@ -267,7 +267,8 @@
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador, ctx->jogo);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j5, ctx->headSprites, contadorFramesJogador, ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j6, ctx->headSprites, contadorFramesJogador, ctx->jogo);
-
+                desenharTexturaJogador(ctx->txtGoleiro, ctx->bola1, ctx->goleiro1, ctx->headSprites, contadorFramesJogador, ctx->jogo);
+                desenharTexturaJogador(ctx->txtGoleiro, ctx->bola1, ctx->goleiro2, ctx->headSprites, contadorFramesJogador, ctx->jogo);
                 DrawTexture(ctx->txtJogadorControlado1, (*ctx->ctrl1)->posJogador.x, (*ctx->ctrl1)->posJogador.y - 8, WHITE);
                 DrawTexture(ctx->txtJogadorControlado2, (*ctx->ctrl2)->posJogador.x + 7, (*ctx->ctrl2)->posJogador.y - 8, WHITE);
 

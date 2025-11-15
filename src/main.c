@@ -83,7 +83,6 @@ void main() {
     jogador5->prox = jogador2;
     jogador2->prox = head1Jogador;
     tail1Jogador = jogador2;
-    Rectangle src1 = {0,0,24,32};
     
     head2Jogador = jogador3;
     jogador3->prox = jogador6;
@@ -91,6 +90,7 @@ void main() {
     jogador4->prox = head2Jogador;
     tail2Jogador = jogador4;
     
+    Rectangle src1 = {0,0,24,32};
     //Sprites de jogador correndo
     RectangleSprites * headSpritesJogador;
     Rectangle srcJ2 = {0,32,24,32};
@@ -993,6 +993,7 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador 
                 head1->isMovendo = 1;
                 head1->posJogador.x +=1;
             }
+            
 
             if(head1->posJogador.y >head1->posJogadorInicial.y){
                 head1->isMovendo = 1;
@@ -1002,6 +1003,10 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador 
                 head1->isMovendo = 1;
                 head1->posJogador.y +=1;
             }
+
+            head1->rectJogador.x = head1->posJogador.x;
+            head1->rectJogador.y = head1->posJogador.y;
+
 
             if(head2->posJogador.x > head2->posJogadorInicial.x){
                 head2->isMovendo = 1;
@@ -1020,6 +1025,9 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador 
                 head2->isMovendo = 1;
                 head2->posJogador.y +=1;
             }
+            head2->rectJogador.x = head2->posJogador.x;
+            head2->rectJogador.y = head2->posJogador.y;
+
             head1 = head1->prox;
             head2 = head2->prox;
         }while(head1!=tail1->prox && head2!=tail2->prox);
@@ -1028,11 +1036,12 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador 
 }
 
 void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * headDaVez,Jogador * tailDaVez){
-    if (jogo->voltandoDoGol == 0 || (headDaVez->time == 1 && jogo->congeladoTimerTime1 == 0.0f) || (headDaVez->time == 2 && jogo->congeladoTimerTime2 == 0.0f))
-    {
+    if (jogo->voltandoDoGol == 0 && ((headDaVez->time == 1 && jogo->congeladoTimerTime1 == 0.0f) || (headDaVez->time == 2 && jogo->congeladoTimerTime2 == 0.0f))){
+
         int timeComBola = 0;
         if(jogadorControladoTime1->temDominio == 1) timeComBola = 1;
         else if(jogadorControladoTime2->temDominio == 1) timeComBola = 2;
+
 
         do{
             if (headDaVez->funcaoDoJogador == 1 && headDaVez != jogadorControladoTime1 && headDaVez != jogadorControladoTime2){   
@@ -1056,7 +1065,7 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                     else{
                         headDaVez->velocidadeJogador.y = 0.0f;
                     }
-
+                    
                     mudarPosicaoJogadorVelocidade(headDaVez);
                 }
                 else if ( ((timeComBola == 1 && headDaVez->time == 1) || (timeComBola == 2 && headDaVez->time == 2) && ((headDaVez->time == 1 && headDaVez->posJogador.x > 300) || (headDaVez->time == 2 && headDaVez->posJogador.x < 670)) && headDaVez->posJogador.y < 330 && headDaVez->posJogador.y > 50)){
@@ -1124,8 +1133,8 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
 
                     }
                     
-
                     mudarPosicaoJogadorVelocidade(headDaVez);
+
                 }
                 else if((headDaVez->time == 1 && bola->posBola.x>650) || (headDaVez->time == 2 && bola->posBola.x<300)){
                     if(headDaVez->posJogador.x>bola->posBola.x){
@@ -1160,20 +1169,27 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
 }
 
 void mudarPosicaoJogadorVelocidade(Jogador * jogador){
+    if(jogador->posJogador.x>770 || jogador->posJogador.x<60){
+        jogador->velocidadeJogador.x = - jogador->velocidadeJogador.x;
+    }
+
+
     jogador->posJogador.x += jogador->velocidadeJogador.x;
     jogador->posJogador.y += jogador->velocidadeJogador.y;
 
-    jogador->rectJogador.x = jogador->posJogador.x;
-    jogador->rectJogador.y = jogador->posJogador.y;
-
-    if (jogador->velocidadeJogador.x == 0.0f && jogador->velocidadeJogador.y == 0.0f)
-    {
+    if (jogador->velocidadeJogador.x == 0.0f && jogador->velocidadeJogador.y == 0.0f){
         jogador->isMovendo = 0;
     }
-    else
-    {
+    else if(jogador->posJogador.x == jogador->rectJogador.x && jogador->posJogador.y == jogador->rectJogador.y){
+
+        jogador->isMovendo = 0;
+    }
+    else if(jogador->velocidadeJogador.x != 0.0f || jogador->velocidadeJogador.y != 0.0f){
         jogador->isMovendo = 1;
     }
+
+    jogador->rectJogador.x = jogador->posJogador.x;
+    jogador->rectJogador.y = jogador->posJogador.y;
     jogador->velocidadeJogador.x = 0.0f;
     jogador->velocidadeJogador.y = 0.0f;
 }
