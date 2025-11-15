@@ -1543,3 +1543,28 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
 
 }
 
+void ordernarPorGols (Jogador*head1, Jogador*tail1){
+    Jogador* aux1 = head1;
+
+    do{
+        Jogador* aux = head1;
+
+        while(aux!= tail1) {
+            if (aux->gols > aux->prox->gols){
+                jogador*temp = aux;
+                aux = aux->prox;
+                aux->prox =temp;
+                }
+            aux = aux->prox;
+        }
+        head1 = head1->prox;
+    }while(head1 != tail1->prox);
+
+    
+    do{
+        printf("%d"; aux1->gols);
+        aux1 = aux1->prox;
+    }while(aux1 != tail1 ->prox);
+}
+
+
