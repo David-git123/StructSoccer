@@ -8,6 +8,20 @@
 extern "C" {
 #endif
 
+
+/* ─── Powerup ─────────────────────────────────────────────────────────────── */
+typedef enum {
+    PW_VELOCIDADE = 0,
+    PW_CONGELAR   = 1,
+    PW_MAX_TIPOS  = 2
+} TipoPowerUp;
+
+typedef struct PowerUp {
+    TipoPowerUp tipo;     
+    Rectangle caixa;       
+    int ativo;                  
+    struct PowerUp *prox; 
+} PowerUp;
 /* ─── Estado do jogo ─────────────────────────────────────────────────────────────── */
 
 typedef enum {
@@ -40,6 +54,7 @@ typedef struct Jogador {
     Vector2 posJogador;
     Vector2 posJogadorInicial;
     Rectangle rectJogador;
+    float velocidadeBonus;   
 } Jogador;
 
 typedef struct RectangleSprites {
@@ -75,6 +90,10 @@ typedef struct Jogo {
     Rectangle linhaGol2;
     Rectangle rectangleGol1;
     Rectangle rectangleGol2;
+    struct PowerUp *listaPowerUps;
+    float buffVelocidadeTimer; 
+    float congeladoTimerTime1;   
+    float congeladoTimerTime2; 
 } Jogo;
 
 /* ─── Variáveis globais (somente declaração) ───────────────────────────── */

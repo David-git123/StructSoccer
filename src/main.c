@@ -20,6 +20,7 @@ void main() {
     jogo->timeComBola =0;
     jogo->placarTime1 =0;
     jogo->placarTime2 =0;
+    jogo->listaPowerUps = NULL;
     jogo->rectangleParedeCima = (Rectangle){50,20,750,10};
     jogo->rectangleParedeBaixo = (Rectangle){28,355,800,10};
     jogo->rectangleParedeFundoEsq1 = (Rectangle){55,25,10,110};
@@ -366,6 +367,20 @@ void main() {
 }
 
 void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, Jogo * jogo) {
+    // 1) Se o time está congelado, não anda
+    if (jogo->congeladoTimerTime1 > 0 && jogador->time == 1) {
+        jogador->velocidadeJogador = (Vector2){0,0};
+        jogador->isMovendo = 0;
+        return;
+    }
+    if (jogo->congeladoTimerTime2 > 0 && jogador->time == 2) {
+        jogador->velocidadeJogador = (Vector2){0,0};
+        jogador->isMovendo = 0;
+        return;
+    }
+
+    float vel = 3.0f + jogador->velocidadeBonus; 
+
     if(jogador->time == 1 && jogo->voltandoDoGol == 0){
         if (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) jogador->velocidadeJogador.x = 3.0f;
         if (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_FACE_LEFT)) jogador->velocidadeJogador.x = -3.0f;
@@ -377,6 +392,7 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
         if (IsKeyDown(KEY_W) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_UP)) jogador->velocidadeJogador.y = -3.0f;
         if (IsKeyDown(KEY_S) || IsGamepadButtonDown(1,GAMEPAD_BUTTON_LEFT_FACE_DOWN)) jogador->velocidadeJogador.y = 3.0f;
     }
+
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeCima,jogo);
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeBaixo,jogo);
     TratarColisoesJogadorParede(jogador,jogo->rectangleParedeFundoEsq1,jogo);
@@ -388,18 +404,21 @@ void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, J
 
     jogador->posJogador.x += jogador->velocidadeJogador.x;
     jogador->posJogador.y += jogador->velocidadeJogador.y;
+
     if(jogador->velocidadeJogador.x != 0.0f || jogador->velocidadeJogador.y != 0.0f){
-        jogador->isMovendo =1;
+        jogador->isMovendo = 1;
     }
     else if(jogo->voltandoDoGol == 0){
         jogador->isMovendo = 0;
     }
+
     jogador->rectJogador.x = jogador->posJogador.x;
     jogador->rectJogador.y = jogador->posJogador.y;
 
     jogador->velocidadeJogador.x = 0;
     jogador->velocidadeJogador.y = 0;
 }
+
 
 void EstadoBola(Bola * bola, Jogador * jogador,Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador  * head1, Jogador * tail1,Jogador * head2,Jogador * tail2, Jogo * jogo) {
     TratamentoColisaoJogadorBola(jogadorControladoTime1,jogadorControladoTime2,goleiro1,goleiro2,bola,head1,tail1,head2,tail2, jogo);
