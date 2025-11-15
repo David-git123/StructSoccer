@@ -13,7 +13,8 @@ extern "C" {
 typedef enum {
     PW_VELOCIDADE = 0,
     PW_CONGELAR   = 1,
-    PW_MAX_TIPOS  = 2
+    PW_SUPERCHUTE = 2,
+    PW_MAX_TIPOS  = 3
 } TipoPowerUp;
 
 typedef struct PowerUp {
@@ -94,7 +95,9 @@ typedef struct Jogo {
     struct PowerUp *listaPowerUps;
     float buffVelocidadeTimer; 
     float congeladoTimerTime1;   
-    float congeladoTimerTime2; 
+    float congeladoTimerTime2;
+    float superChuteTimerTime1;
+    float superChuteTimerTime2;
 } Jogo;
 
 /* ─── Variáveis globais (somente declaração) ───────────────────────────── */
@@ -104,7 +107,7 @@ extern pthread_mutex_t lock;
 /* ─── Funções (protótipos) ─────────────────────────────────────────────── */
 
 void* DefinirJogadorControlado(void* jogadorAtual);
-void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2,Jogo * jogo);
+void AtualizarPosJogador(Jogador * jogador, Jogador * head1 ,Jogador *tail1, Jogador * head2,Jogador *tail2, Jogo * jogo);
 void   EstadoBola(Bola* bola, Jogador* jogador, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * goleiro1,Jogador * goleiro2,Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   Atrito(Bola* bola);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
