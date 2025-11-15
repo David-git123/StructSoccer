@@ -195,14 +195,16 @@
                 movimentarGoleiro(ctx->goleiro2,ctx->jogo,ctx->bola1);
                 movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1);
                 movimentoAutomaticoJogo(ctx->jogo, ctx->bola1, (*ctx->ctrl1), (*ctx->ctrl2), ctx->head2, ctx->tail2);
-                EstadoBola(ctx->bola1, ctx->j1, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-                EstadoBola(ctx->bola1, ctx->j2, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+
+                EstadoBola(ctx->bola1, ctx->j1,ctx->ctrl1,ctx->ctrl2,ctx->goleiro1,ctx->goleiro2,ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j2,ctx->ctrl1,ctx->ctrl2,ctx->goleiro1,ctx->goleiro2, ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j3, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j4, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j5, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j6, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-                AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->tail1,ctx->head2,ctx->tail2, ctx->jogo);
-                AtualizarPosJogador(*(ctx->ctrl2), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2 ,ctx->jogo);
+                
+                AtualizarPosJogador(*(ctx->ctrl1), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
+                AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->tail1,ctx->head2, ctx->tail2,ctx->jogo);
 
                 if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                     Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
@@ -211,33 +213,33 @@
                     Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
                     Chutar(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
                 }
+        } else {
+            if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
                 pthread_mutex_unlock(&lock);
-
-                Atrito(ctx->bola1);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeCima,     ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeBaixo,   ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir1, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir2, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq1, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq2, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim1,ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim2,ctx->jogo);
-                MudarPosicaoBola(ctx->bola1);
-                AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);
-            } else {
-                if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) {
-                    opcaoFim = 1 - opcaoFim;
-                }
-                if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
-                    if (opcaoFim == 0) {
-                        ReiniciarCronometro(ctx->jogo, ctx->jogo->tempoInicial);
-                        fimDeJogo = false;
-                    } else {
-                        pthread_mutex_unlock(&lock);
-                        return;
-                    }
-                }
+                return;
             }
+        }
+
+        pthread_mutex_unlock(&lock);
+
+        if (!fimDeJogo) {
+            Atrito(ctx->bola1);
+
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeCima,     ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeBaixo,   ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir1, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir2, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq1, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq2, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim1,ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim2,ctx->jogo);
+
+            MudarPosicaoBola(ctx->bola1);
+
+            AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);
+
+            tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
+        }
 
             tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
             if (!fimDeJogo) {
@@ -275,17 +277,25 @@
                 DesenharPowerUps(ctx->jogo);
             EndMode2D();
 
+            DesenharPlacarHUD(ctx->jogo);
+
             DrawText("MODO: POWERUPS", 20, 20, 22, WHITE);
             DesenharCronometroHUD(ctx->jogo, 20, 50);
 
             if (fimDeJogo) {
                 int sw = GetScreenWidth();
                 int sh = GetScreenHeight();
+
                 DrawRectangle(0, 0, sw, sh, (Color){0,0,0,150});
 
                 int panelW = 400;
-                int panelH = 200;
-                Rectangle panel = { sw/2 - panelW/2, sh/2 - panelH/2, panelW, panelH };
+                int panelH = 160;
+                Rectangle panel = {
+                    sw/2 - panelW/2,
+                    sh/2 - panelH/2,
+                    panelW,
+                    panelH
+                };
 
                 DrawRectangleRec(panel, (Color){30,30,40,240});
                 DrawRectangleLines(panel.x, panel.y, panel.width, panel.height, RAYWHITE);
@@ -293,18 +303,14 @@
                 const char *titulo = "Fim de partida!";
                 int fontTitulo = 30;
                 int tw = MeasureText(titulo, fontTitulo);
-                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 20, fontTitulo, YELLOW);
+                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 25, fontTitulo, YELLOW);
 
-                const char *opt0 = "Jogar novamente";
-                const char *opt1 = "Voltar";
-                int fontOpt = 22;
-                Color c0 = (opcaoFim == 0) ? YELLOW : LIGHTGRAY;
-                Color c1 = (opcaoFim == 1) ? YELLOW : LIGHTGRAY;
-                int o0w = MeasureText(opt0, fontOpt);
-                int o1w = MeasureText(opt1, fontOpt);
-                DrawText(opt0, panel.x + (panel.width - o0w)/2, panel.y + 80,  fontOpt, c0);
-                DrawText(opt1, panel.x + (panel.width - o1w)/2, panel.y + 120, fontOpt, c1);
+                const char *msg = "Pressione ENTER para voltar.";
+                int fontMsg = 20;
+                int mw = MeasureText(msg, fontMsg);
+                DrawText(msg, panel.x + (panel.width - mw)/2, panel.y + 90, fontMsg, RAYWHITE);
             }
+
             EndDrawing();
 
             contFramesBola++;

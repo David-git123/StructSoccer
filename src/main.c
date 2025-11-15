@@ -1257,4 +1257,70 @@ void ordernarPorGols (Jogador*head1, Jogador*tail1){
     }while(aux1 != tail1 ->prox);
 }
 
+void DesenharPlacarHUD(const Jogo *jogo) {
+    int sw = GetScreenWidth();
+
+    int boxW = 280;
+    int boxH = 70;
+    int x = sw/2 - boxW/2;
+    int y = 10;
+
+    DrawRectangleRounded(
+        (Rectangle){ x, y, boxW, boxH },
+        0.3f, 8,
+        (Color){ 10, 10, 20, 230 }
+    );
+
+    DrawRectangleRounded(
+        (Rectangle){ x, y, boxW/2, boxH },
+        0.3f, 8,
+        (Color){ 0, 120, 255, 180 }  
+    );
+
+
+    DrawRectangleRounded(
+        (Rectangle){ x + boxW/2, y, boxW/2, boxH },
+        0.3f, 8,
+        (Color){ 220, 30, 60, 180 }   
+    );
+
+    int fontLabel = 18;
+    const char *lbl1 = "P2";
+    const char *lbl2 = "P1";
+    int lbl1W = MeasureText(lbl1, fontLabel);
+    int lbl2W = MeasureText(lbl2, fontLabel);
+
+    DrawText(lbl1,
+             x + boxW/4 - lbl1W/2,
+             y + 8,
+             fontLabel,
+             WHITE);
+
+    DrawText(lbl2,
+             x + (3*boxW)/4 - lbl2W/2,
+             y + 8,
+             fontLabel,
+             WHITE);
+
+    char txt1[8];
+    char txt2[8];
+    sprintf(txt1, "%d", jogo->placarTime1);
+    sprintf(txt2, "%d", jogo->placarTime2);
+
+    int fontScore = 32;
+    int t1W = MeasureText(txt1, fontScore);
+    int t2W = MeasureText(txt2, fontScore);
+
+    DrawText(txt1,
+             x + boxW/4 - t1W/2,
+             y + 30,
+             fontScore,
+             WHITE);
+
+    DrawText(txt2,
+             x + (3*boxW)/4 - t2W/2,
+             y + 30,
+             fontScore,
+             WHITE);
+}
 

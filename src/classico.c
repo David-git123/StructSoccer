@@ -50,7 +50,7 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
         if (contadorFramesJogador == 60) contadorFramesJogador = 0;
       
         pthread_mutex_lock(&lock);
-        
+
         if (!fimDeJogo) {
             movimentarGoleiro(ctx->goleiro1,ctx->jogo,ctx->bola1);
             movimentarGoleiro(ctx->goleiro2,ctx->jogo,ctx->bola1);
@@ -74,8 +74,17 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
                 Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
                 Chutar(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
             }
-            pthread_mutex_unlock(&lock);
+        } else {
+            // 👉 NESSA TELA FINAL: só volta pro início
+            if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+                pthread_mutex_unlock(&lock);
+                return;  // volta para quem chamou (main)
+            }
+        }
 
+        pthread_mutex_unlock(&lock);
+
+        if (!fimDeJogo) {
             Atrito(ctx->bola1);
 
             TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeCima,     ctx->jogo);
@@ -90,21 +99,10 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
             MudarPosicaoBola(ctx->bola1);
 
             AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);
-        } else {
-            if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) {
-                opcaoFim = 1 - opcaoFim;
-            }
 
-            if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
-                if (opcaoFim == 0) {
-                    ReiniciarCronometro(ctx->jogo, ctx->jogo->tempoInicial);
-                    fimDeJogo = false;
-                } else {
-                    pthread_mutex_unlock(&lock);
-                    return;
-                }
-            }
+            tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
         }
+
         
         tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
 
@@ -150,6 +148,8 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
             EndMode2D();
 
+            DesenharPlacarHUD(ctx->jogo);
+
             DrawText("MODO: CLASSICO", 20, 20, 22, WHITE);
             DesenharCronometroHUD(ctx->jogo, 20, 50);
 
@@ -162,7 +162,7 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
                 DrawRectangle(0, 0, sw, sh, (Color){0,0,0,150});
 
                 int panelW = 400;
-                int panelH = 200;
+                int panelH = 160;
                 Rectangle panel = {
                     sw/2 - panelW/2,
                     sh/2 - panelH/2,
@@ -176,20 +176,12 @@ void mudarPosicaoJogadorVelocidade(Jogador *jogador);
                 const char *titulo = "Fim de partida!";
                 int fontTitulo = 30;
                 int tw = MeasureText(titulo, fontTitulo);
-                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 20, fontTitulo, YELLOW);
+                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 25, fontTitulo, YELLOW);
 
-                const char *opt0 = "Jogar novamente";
-                const char *opt1 = "Voltar";
-
-                int fontOpt = 22;
-                Color c0 = (opcaoFim == 0) ? YELLOW : LIGHTGRAY;
-                Color c1 = (opcaoFim == 1) ? YELLOW : LIGHTGRAY;
-
-                int o0w = MeasureText(opt0, fontOpt);
-                int o1w = MeasureText(opt1, fontOpt);
-
-                DrawText(opt0, panel.x + (panel.width - o0w)/2, panel.y + 80,  fontOpt, c0);
-                DrawText(opt1, panel.x + (panel.width - o1w)/2, panel.y + 120, fontOpt, c1);
+                const char *msg = "Pressione ENTER para voltar.";
+                int fontMsg = 20;
+                int mw = MeasureText(msg, fontMsg);
+                DrawText(msg, panel.x + (panel.width - mw)/2, panel.y + 90, fontMsg, RAYWHITE);
             }
 
         EndDrawing();
