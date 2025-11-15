@@ -366,16 +366,22 @@ void main() {
     CloseAudioDevice();
 }
 
-void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2, Jogo * jogo) {
+void AtualizarPosJogador(Jogador * jogador, Jogador * head1 ,Jogador *tail1, Jogador * head2,Jogador *tail2, Jogo * jogo) {
     // 1) Se o time está congelado, não anda
     if (jogo->congeladoTimerTime1 > 0 && jogador->time == 1) {
-        jogador->velocidadeJogador = (Vector2){0,0};
-        jogador->isMovendo = 0;
+        do{
+            jogador->velocidadeJogador = (Vector2){0,0};
+            jogador->isMovendo = 0;
+            head2 = head2->prox;
+        }while(head2 != (tail2)->prox);
         return;
     }
     if (jogo->congeladoTimerTime2 > 0 && jogador->time == 2) {
-        jogador->velocidadeJogador = (Vector2){0,0};
-        jogador->isMovendo = 0;
+        do{
+            jogador->velocidadeJogador = (Vector2){0,0};
+            jogador->isMovendo = 0;
+            head1 = head1->prox;
+        }while(head1 != (tail1)->prox);
         return;
     }
 
@@ -583,36 +589,48 @@ void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorContro
 }
 
 void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo) {
-    if ((jogador->temDominio && jogador->time== 1 && IsKeyPressed(KEY_PERIOD)) || (jogador->temDominio && jogador->time==2 && IsKeyDown(KEY_LEFT_CONTROL)) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) || IsGamepadButtonPressed(1,GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
-        
+    if ((jogador->temDominio && jogador->time== 1 && IsKeyPressed(KEY_PERIOD)) ||
+        (jogador->temDominio && jogador->time== 2 && IsKeyDown(KEY_LEFT_CONTROL)) ||
+        IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) ||
+        IsGamepadButtonPressed(1, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
+
+        float mult = 1.0f;
+
+        if (jogador->time == 1 && jogo->superChuteTimerTime1 > 0.0f) {
+            mult = 2.0f;   
+        } else if (jogador->time == 2 && jogo->superChuteTimerTime2 > 0.0f) {
+            mult = 2.0f;   
+        }
+
         if (bola->ladoBola == 0) {
-            bola->velocidadeAtual.x += 20.0f;
+            bola->velocidadeAtual.x += 20.0f * mult;
         }
         else if (bola->ladoBola == 1) {
-            bola->velocidadeAtual.x -= 20.0f;
+            bola->velocidadeAtual.x -= 20.0f * mult;
         }
         else if (bola->ladoBola == 2) {
-            bola->velocidadeAtual.y -= 20.0f;
+            bola->velocidadeAtual.y -= 20.0f * mult;
         }
         else if (bola->ladoBola == 3) {
-            bola->velocidadeAtual.y += 20.0f;
+            bola->velocidadeAtual.y += 20.0f * mult;
         }
-        else if(bola->ladoBola == 4){
-            bola->velocidadeAtual.x -= 12.0f;
-            bola->velocidadeAtual.y -= 12.0f;
+        else if (bola->ladoBola == 4) {
+            bola->velocidadeAtual.x -= 12.0f * mult;
+            bola->velocidadeAtual.y -= 12.0f * mult;
         }
-        else if(bola->ladoBola == 5){
-            bola->velocidadeAtual.x += 12.0f;
-            bola->velocidadeAtual.y -= 12.0f;
+        else if (bola->ladoBola == 5) {
+            bola->velocidadeAtual.x += 12.0f * mult;
+            bola->velocidadeAtual.y -= 12.0f * mult;
         }
-        else if(bola->ladoBola ==  6){
-            bola->velocidadeAtual.x -= 12.0f;
-            bola->velocidadeAtual.y += 12.0f;
+        else if (bola->ladoBola == 6) {
+            bola->velocidadeAtual.x -= 12.0f * mult;
+            bola->velocidadeAtual.y += 12.0f * mult;
         }
-        else if(bola->ladoBola == 7){
-            bola->velocidadeAtual.x += 12.0f;
-            bola->velocidadeAtual.y +=12.0f;
+        else if (bola->ladoBola == 7) {
+            bola->velocidadeAtual.x += 12.0f * mult;
+            bola->velocidadeAtual.y += 12.0f * mult;
         }
+
         jogador->temDominio = 0;
         jogo->timeComBola = 0;
     }

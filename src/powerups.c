@@ -29,7 +29,7 @@
 
         p->tipo  = tipo;
         p->ativo = 1;
-        p->caixa = (Rectangle){ x, y, 16.0f, 16.0f }; // quadradinho 16x16
+        p->caixa = (Rectangle){ x, y, 16.0f, 16.0f }; 
         p->prox  = NULL;
         return p;
     }
@@ -62,8 +62,10 @@
                 Color cor;
                 if (p->tipo == PW_VELOCIDADE) {
                     cor = BLUE;
-                } else {
+                } else if(p->tipo == PW_CONGELAR){
                     cor = RED;
+                } else if (p->tipo == PW_SUPERCHUTE) {
+                    cor =  YELLOW;
                 }
                 DrawRectangleRec(p->caixa, cor);
             }
@@ -107,7 +109,9 @@
             
             else if (p->tipo == PW_CONGELAR) {
                 if (coletor->time == 1)
-                    jogo->congeladoTimerTime2 = 3.0f;   
+                    jogo->congeladoTimerTime2 = 3.0f;
+                
+                   
                 else
                     jogo->congeladoTimerTime1 = 3.0f;
                   
@@ -133,11 +137,22 @@
 
         SetTargetFPS(60);
         ReiniciarCronometro(ctx->jogo, 60);
-        float tempoAteProximoSpawn = 2.0f;
+        float tempoAteProximoSpawn = 2.0f;    
+
 
         while (!WindowShouldClose()) {
             float dt = GetFrameTime();
             AtualizarCronometro(ctx->jogo, dt);
+
+        if (ctx->jogo->superChuteTimerTime1 > 0.0f) {
+            ctx->jogo->superChuteTimerTime1 -= dt;
+            if (ctx->jogo->superChuteTimerTime1 < 0.0f) ctx->jogo->superChuteTimerTime1 = 0.0f;
+        }
+        if (ctx->jogo->superChuteTimerTime2 > 0.0f) {
+            ctx->jogo->superChuteTimerTime2 -= dt;
+            if (ctx->jogo->superChuteTimerTime2 < 0.0f) ctx->jogo->superChuteTimerTime2 = 0.0f;
+        }
+
             // Atualiza timers de power-ups
             if (ctx->jogo->buffVelocidadeTimer > 0) {
                 ctx->jogo->buffVelocidadeTimer -= dt;
@@ -256,7 +271,7 @@
 
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
 
-                // ⬇⬇ AGORA os power-ups são desenhados NO MESMO MUNDO (com câmera) ⬇⬇
+                //  power-ups são desenhados NO MESMO MUNDO (com câmera) 
                 DesenharPowerUps(ctx->jogo);
             EndMode2D();
 

@@ -13,7 +13,8 @@ extern "C" {
 typedef enum {
     PW_VELOCIDADE = 0,
     PW_CONGELAR   = 1,
-    PW_MAX_TIPOS  = 2
+    PW_SUPERCHUTE = 2,
+    PW_MAX_TIPOS  = 3
 } TipoPowerUp;
 
 typedef struct PowerUp {
@@ -94,7 +95,9 @@ typedef struct Jogo {
     struct PowerUp *listaPowerUps;
     float buffVelocidadeTimer; 
     float congeladoTimerTime1;   
-    float congeladoTimerTime2; 
+    float congeladoTimerTime2;
+    float superChuteTimerTime1;
+    float superChuteTimerTime2;
 } Jogo;
 
 /* ─── Variáveis globais (somente declaração) ───────────────────────────── */
