@@ -1028,7 +1028,7 @@ void movimentoAutomatico(Jogo * jogo, Jogador * head1, Jogador * tail1, Jogador 
 }
 
 void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControladoTime1, Jogador * jogadorControladoTime2, Jogador * headDaVez,Jogador * tailDaVez){
-    if (jogo->voltandoDoGol == 0 || (headDaVez->time == 1 && jogo->congeladoTimerTime1 != 0.0f) || (headDaVez->time == 2 && jogo->congeladoTimerTime2 != 0.0f))
+    if (jogo->voltandoDoGol == 0 || (headDaVez->time == 1 && jogo->congeladoTimerTime1 == 0.0f) || (headDaVez->time == 2 && jogo->congeladoTimerTime2 == 0.0f))
     {
         int timeComBola = 0;
         if(jogadorControladoTime1->temDominio == 1) timeComBola = 1;
