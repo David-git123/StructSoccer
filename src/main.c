@@ -233,7 +233,9 @@ void main() {
     Texture2D texturaJogadorControlado2 = LoadTexture("assets/art/props/2p.png");
     Texture2D texturaGoleiro = LoadTexture("assets/art/characters/GOLEIRO.png");
     Texture2D goalMensagem = LoadTexture("assets/art/ui/goal.png");
-    
+    Music gameplayMusic = LoadMusicStream("assets/music/gameplay.mp3");
+    Music tournamentMusic = LoadMusicStream("assets/music/tournament.mp3");
+
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
     .itens = {"Classico", "PowerUps"},
@@ -315,6 +317,8 @@ void main() {
         .srcBarraEsquerda = srcBarraEsquerda,
         .destBarraEsquerda = destBarraEsquerda,
         .goalMensagemTex = goalMensagem,
+        .musicPartida = gameplayMusic,
+        .musicTorneio = tournamentMusic,
 
         .jogo = jogo,
         .bola1 = bola1,
@@ -362,6 +366,7 @@ void main() {
     UnloadTexture(paredeLadoBaixo);
     UnloadTexture(barra);
     UnloadTexture(barraTopo);
+    UnloadMusicStream(ctx.musicPartida);
 
     CloseWindow();
     CloseAudioDevice();

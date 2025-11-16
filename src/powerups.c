@@ -132,6 +132,9 @@
         int contFramesBola = 0;
         int contadorFramesJogador = 0;
 
+        PlayMusicStream(ctx->musicTorneio);
+        SetMusicVolume(ctx->musicTorneio, 0.8f);
+
         bool fimDeJogo = false; 
         int  opcaoFim  = 0;    
 
@@ -141,6 +144,7 @@
 
 
         while (!WindowShouldClose()) {
+            UpdateMusicStream(ctx->musicTorneio);
             float dt = GetFrameTime();
             AtualizarCronometro(ctx->jogo, dt);
 
@@ -223,6 +227,7 @@
                 }
         } else {
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+                StopMusicStream(ctx->musicTorneio);
                 pthread_mutex_unlock(&lock);
                 return;
             }

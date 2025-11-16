@@ -51,6 +51,8 @@ typedef struct GameCtx {
 
     RectangleSprites** headSprites;
 
+    Music musicPartida;
+    Music musicTorneio;
 
 } GameCtx;
 
