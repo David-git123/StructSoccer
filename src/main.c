@@ -228,11 +228,11 @@ void main() {
     Texture2D barraTopo = LoadTexture("assets/art/backgrounds/goal-top.png");
     Texture2D menuBg   = LoadTexture("assets/art/ui/mainmenu/menu-background.png");     
     Texture2D menuLogo = LoadTexture("assets/art/ui/mainmenu/title.png");
-    Texture2D goalMensagem = LoadTexture("assets/art/ui/goal.png");
     Texture2D time2Textura = LoadTexture("assets/art/characters/struct_soccer_t2.png");
     Texture2D texturaJogadorControlado1 = LoadTexture("assets/art/props/1p.png");
     Texture2D texturaJogadorControlado2 = LoadTexture("assets/art/props/2p.png");
     Texture2D texturaGoleiro = LoadTexture("assets/art/characters/GOLEIRO.png");
+    Texture2D goalMensagem = LoadTexture("assets/art/ui/goal.png");
     
     EstadoDoJogo estado = ST_MENU;
     Menu menu = {
@@ -314,6 +314,7 @@ void main() {
         .destParedeFundoCampoDir2 = destParedeFundoCampoDir2,
         .srcBarraEsquerda = srcBarraEsquerda,
         .destBarraEsquerda = destBarraEsquerda,
+        .goalMensagemTex = goalMensagem,
 
         .jogo = jogo,
         .bola1 = bola1,
@@ -952,6 +953,9 @@ void tratarGol(Jogo *jogo, Bola *bola,Jogador * jogadorControladoTime1,Jogador *
         jogo->placarTime2+=1;
         jogadorControladoTime2->gols +=1;
         jogo->voltandoDoGol = 1;
+
+        jogo->tempoMostrarGol = 2.0f;
+
         Jogador * aux = head1;
         Jogador * aux2 = head2;
         do{
@@ -968,6 +972,9 @@ void tratarGol(Jogo *jogo, Bola *bola,Jogador * jogadorControladoTime1,Jogador *
         jogo->placarTime1+=1;
         jogo->voltandoDoGol = 1;
         jogadorControladoTime1->gols +=1;
+
+        jogo->tempoMostrarGol = 2.0f;
+
         Jogador * aux = head1;
         Jogador * aux2 = head2;
         do{

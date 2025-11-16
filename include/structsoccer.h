@@ -98,6 +98,7 @@ typedef struct Jogo {
     float congeladoTimerTime2;
     float superChuteTimerTime1;
     float superChuteTimerTime2;
+    float tempoMostrarGol;
 } Jogo;
 
 /* ─── Variáveis globais (somente declaração) ───────────────────────────── */

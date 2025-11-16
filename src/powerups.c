@@ -144,6 +144,14 @@
             float dt = GetFrameTime();
             AtualizarCronometro(ctx->jogo, dt);
 
+        // NOVO: atualizar timer do sprite de GOL
+        if (ctx->jogo->tempoMostrarGol > 0.0f) {
+            ctx->jogo->tempoMostrarGol -= dt;
+            if (ctx->jogo->tempoMostrarGol < 0.0f) {
+                ctx->jogo->tempoMostrarGol = 0.0f;
+            }
+        }
+
         if (ctx->jogo->superChuteTimerTime1 > 0.0f) {
             ctx->jogo->superChuteTimerTime1 -= dt;
             if (ctx->jogo->superChuteTimerTime1 < 0.0f) ctx->jogo->superChuteTimerTime1 = 0.0f;
@@ -282,6 +290,20 @@
 
             DrawText("MODO: POWERUPS", 20, 20, 22, WHITE);
             DesenharCronometroHUD(ctx->jogo, 20, 50);
+
+            // --- NOVO: sprite de GOL no modo POWERUPS ---
+            if (ctx->jogo->voltandoDoGol == 1) {
+                int sw = GetScreenWidth();
+                int sh = GetScreenHeight();
+                int tw = ctx->goalMensagemTex.width;
+                int th = ctx->goalMensagemTex.height;
+
+                int x = sw/2 - tw/2;
+                int y = sh/2 - th/2;
+
+                DrawRectangle(0, 0, sw, sh, (Color){0, 0, 0, 120});
+                DrawTexture(ctx->goalMensagemTex, x, y, WHITE);
+            }
 
             if (fimDeJogo) {
                 int sw = GetScreenWidth();

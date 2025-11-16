@@ -41,6 +41,13 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1);
         
         float dt = GetFrameTime();
         AtualizarCronometro(ctx->jogo, dt);
+
+        if (ctx->jogo->tempoMostrarGol > 0.0f) {
+            ctx->jogo->tempoMostrarGol -= dt;
+            if (ctx->jogo->tempoMostrarGol < 0.0f) {
+                ctx->jogo->tempoMostrarGol = 0.0f;
+            }
+        }
         
         if (!fimDeJogo && ctx->jogo->tempoRestante <= 0.0f) {
             ctx->jogo->tempoRestante = 0.0f;
@@ -154,6 +161,22 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1);
             DrawText("MODO: CLASSICO", 20, 20, 22, WHITE);
             DesenharCronometroHUD(ctx->jogo, 20, 50);
 
+            // --- NOVO: sprite de GOL no centro da tela ---
+            if (ctx->jogo->voltandoDoGol == 1) {
+                int sw = GetScreenWidth();
+                int sh = GetScreenHeight();
+
+                int tw = ctx->goalMensagemTex.width;
+                int th = ctx->goalMensagemTex.height;
+
+                int x = sw/2 - tw/2;
+                int y = sh/2 - th/2;
+
+                // se quiser escurecer o fundo um pouco:
+                DrawRectangle(0, 0, sw, sh, (Color){0, 0, 0, 120});
+
+                DrawTexture(ctx->goalMensagemTex, x, y, WHITE);
+            }
 
             // menu para o fim do jogo (caio: vou ajeitar ainda pra ficar 100%)
             if (fimDeJogo) {
