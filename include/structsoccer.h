@@ -98,6 +98,7 @@ typedef struct Jogo {
     float congeladoTimerTime2;
     float superChuteTimerTime1;
     float superChuteTimerTime2;
+    float tempoMostrarGol;
 } Jogo;
 
 /* ─── Variáveis globais (somente declaração) ───────────────────────────── */
@@ -107,7 +108,7 @@ extern pthread_mutex_t lock;
 /* ─── Funções (protótipos) ─────────────────────────────────────────────── */
 
 void* DefinirJogadorControlado(void* jogadorAtual);
-void   AtualizarPosJogador(Jogador* jogador, Jogador* head1, Jogador* head2,Jogo * jogo);
+void   AtualizarPosJogador(Jogador* jogador, Jogador* head1,Jogador * tail1, Jogador* head2,Jogador * tail2,Jogo * jogo);
 void   EstadoBola(Bola* bola, Jogador* jogador, Jogador ** jogadorControladoTime1, Jogador ** jogadorControladoTime2, Jogador * goleiro1,Jogador * goleiro2,Jogador* head1, Jogador * tail1, Jogador* head2, Jogador * tail2, Jogo* jogo);
 void   Atrito(Bola* bola);
 void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
@@ -124,6 +125,8 @@ void movimentoAutomatico(Jogo *jogo, Jogador *head1, Jogador *tail1, Jogador *he
 void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
 void movimentarGoleiro(Jogador *goleiro, Jogo *jogo, Bola *bola);
 void mudarPosicaoJogadorVelocidade(Jogador *jogador);
+void DesenharPlacarHUD(const Jogo *jogo);
+void ordernarPorGols(Jogador *head1, Jogador *tail1);
 
 #ifdef __cplusplus
 }

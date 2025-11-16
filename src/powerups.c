@@ -6,7 +6,7 @@
     #include <stdlib.h>  
 
     extern pthread_mutex_t lock;
-    void AtualizarPosJogador(Jogador * jogador, Jogador * head1 , Jogador * head2,Jogo * jogo);
+    void AtualizarPosJogador(Jogador *jogador, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2, Jogo *jogo);
     void EstadoBola(Bola * bola, Jogador * jogador,Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
     void Passe(Bola * bola, Jogador * jogador, Jogo * jogo, Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2);
     void Chutar(Bola* bola, Jogador* jogador, Jogo * jogo);
@@ -20,9 +20,9 @@
     void tratarGol(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2); void movimentoAutomaticoJogo(Jogo *jogo, Bola *bola, Jogador *jogadorControladoTime1, Jogador *jogadorControladoTime2, Jogador *headDaVez, Jogador *tailDaVez);
     void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola);
     void mudarPosicaoJogadorVelocidade(Jogador *jogador);
+    void ordernarPorGols(Jogador *head1, Jogador *tail1);
 
-
-    PowerUp *CriarPowerUp(TipoPowerUp tipo, float x, float y)
+        PowerUp *CriarPowerUp(TipoPowerUp tipo, float x, float y)
     {
         PowerUp *p = (PowerUp*)malloc(sizeof(PowerUp));
         if (!p) return NULL;
@@ -132,6 +132,9 @@
         int contFramesBola = 0;
         int contadorFramesJogador = 0;
 
+        PlayMusicStream(ctx->musicTorneio);
+        SetMusicVolume(ctx->musicTorneio, 0.8f);
+
         bool fimDeJogo = false; 
         int  opcaoFim  = 0;    
 
@@ -141,8 +144,17 @@
 
 
         while (!WindowShouldClose()) {
+            UpdateMusicStream(ctx->musicTorneio);
             float dt = GetFrameTime();
             AtualizarCronometro(ctx->jogo, dt);
+
+        // NOVO: atualizar timer do sprite de GOL
+        if (ctx->jogo->tempoMostrarGol > 0.0f) {
+            ctx->jogo->tempoMostrarGol -= dt;
+            if (ctx->jogo->tempoMostrarGol < 0.0f) {
+                ctx->jogo->tempoMostrarGol = 0.0f;
+            }
+        }
 
         if (ctx->jogo->superChuteTimerTime1 > 0.0f) {
             ctx->jogo->superChuteTimerTime1 -= dt;
@@ -167,13 +179,14 @@
                 }
             }
 
-            if (ctx->jogo->congeladoTimerTime1 > 0)
+            if (ctx->jogo->congeladoTimerTime1 > 0){
                 ctx->jogo->congeladoTimerTime1 -= dt;
-
-            if (ctx->jogo->congeladoTimerTime2 > 0)
+                if (ctx->jogo->congeladoTimerTime1 < 0.0f)ctx->jogo->congeladoTimerTime1= 0.0f;
+            }
+            if (ctx->jogo->congeladoTimerTime2 > 0){
                 ctx->jogo->congeladoTimerTime2 -= dt;
-
-
+                if (ctx->jogo->congeladoTimerTime2 < 0.0f) ctx->jogo->congeladoTimerTime2 = 0.0f;
+            }
             if (!fimDeJogo && ctx->jogo->tempoRestante <= 0.0f) {
                 ctx->jogo->tempoRestante = 0.0f;
                 fimDeJogo = true;
@@ -195,14 +208,16 @@
                 movimentarGoleiro(ctx->goleiro2,ctx->jogo,ctx->bola1);
                 movimentoAutomaticoJogo(ctx->jogo,ctx->bola1,(*ctx->ctrl1),(*ctx->ctrl2),ctx->head1,ctx->tail1);
                 movimentoAutomaticoJogo(ctx->jogo, ctx->bola1, (*ctx->ctrl1), (*ctx->ctrl2), ctx->head2, ctx->tail2);
-                EstadoBola(ctx->bola1, ctx->j1, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-                EstadoBola(ctx->bola1, ctx->j2, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+
+                EstadoBola(ctx->bola1, ctx->j1,ctx->ctrl1,ctx->ctrl2,ctx->goleiro1,ctx->goleiro2,ctx->head1,ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
+                EstadoBola(ctx->bola1, ctx->j2,ctx->ctrl1,ctx->ctrl2,ctx->goleiro1,ctx->goleiro2, ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j3, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j4, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j5, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
                 EstadoBola(ctx->bola1, ctx->j6, ctx->ctrl1, ctx->ctrl2, ctx->goleiro1, ctx->goleiro2, ctx->head1, ctx->tail1, ctx->head2, ctx->tail2, ctx->jogo);
-                AtualizarPosJogador(*(ctx->ctrl1), ctx->head1, ctx->head2, ctx->jogo);
-                AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->head2, ctx->jogo);
+                
+                AtualizarPosJogador(*(ctx->ctrl1), ctx->head1,ctx->tail1, ctx->head2,ctx->tail2, ctx->jogo);
+                AtualizarPosJogador(*(ctx->ctrl2), ctx->head1, ctx->tail1,ctx->head2, ctx->tail2,ctx->jogo);
 
                 if (ctx->jogo->timeComBola == 1 || ctx->jogo->timeComBola == 0) {
                     Passe(ctx->bola1, *(ctx->ctrl1), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
@@ -211,33 +226,34 @@
                     Passe(ctx->bola1, *(ctx->ctrl2), ctx->jogo,ctx->ctrl1,ctx->ctrl2);
                     Chutar(ctx->bola1, *(ctx->ctrl2), ctx->jogo);
                 }
+        } else {
+            if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+                StopMusicStream(ctx->musicTorneio);
                 pthread_mutex_unlock(&lock);
-
-                Atrito(ctx->bola1);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeCima,     ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeBaixo,   ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir1, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir2, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq1, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq2, ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim1,ctx->jogo);
-                TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim2,ctx->jogo);
-                MudarPosicaoBola(ctx->bola1);
-                AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);
-            } else {
-                if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) {
-                    opcaoFim = 1 - opcaoFim;
-                }
-                if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
-                    if (opcaoFim == 0) {
-                        ReiniciarCronometro(ctx->jogo, ctx->jogo->tempoInicial);
-                        fimDeJogo = false;
-                    } else {
-                        pthread_mutex_unlock(&lock);
-                        return;
-                    }
-                }
+                return;
             }
+        }
+
+        pthread_mutex_unlock(&lock);
+
+        if (!fimDeJogo) {
+            Atrito(ctx->bola1);
+
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeCima,     ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeBaixo,   ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir1, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoDir2, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq1, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1, ctx->jogo->rectangleParedeFundoEsq2, ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim1,ctx->jogo);
+            TratarColisoesParedeBola(ctx->bola1,ctx->jogo->linhaGolFim2,ctx->jogo);
+
+            MudarPosicaoBola(ctx->bola1);
+
+            AtualizarCamera(ctx->camera, ctx->jogo, *(ctx->ctrl1), *(ctx->ctrl2), ctx->bola1);
+
+            tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
+        }
 
             tratarGol(ctx->jogo,ctx->bola1,*(ctx->ctrl1),*(ctx->ctrl2),ctx->head1,ctx->tail1,ctx->head2,ctx->tail2);
             if (!fimDeJogo) {
@@ -265,7 +281,8 @@
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j4, ctx->headSprites, contadorFramesJogador, ctx->jogo);
                 desenharTexturaJogador(ctx->jogadorTex, ctx->bola1, ctx->j5, ctx->headSprites, contadorFramesJogador, ctx->jogo);
                 desenharTexturaJogador(ctx->texturaTime2, ctx->bola1, ctx->j6, ctx->headSprites, contadorFramesJogador, ctx->jogo);
-
+                desenharTexturaJogador(ctx->txtGoleiro, ctx->bola1, ctx->goleiro1, ctx->headSprites, contadorFramesJogador, ctx->jogo);
+                desenharTexturaJogador(ctx->txtGoleiro, ctx->bola1, ctx->goleiro2, ctx->headSprites, contadorFramesJogador, ctx->jogo);
                 DrawTexture(ctx->txtJogadorControlado1, (*ctx->ctrl1)->posJogador.x, (*ctx->ctrl1)->posJogador.y - 8, WHITE);
                 DrawTexture(ctx->txtJogadorControlado2, (*ctx->ctrl2)->posJogador.x + 7, (*ctx->ctrl2)->posJogador.y - 8, WHITE);
 
@@ -275,17 +292,47 @@
                 DesenharPowerUps(ctx->jogo);
             EndMode2D();
 
+            DesenharPlacarHUD(ctx->jogo);
+
             DrawText("MODO: POWERUPS", 20, 20, 22, WHITE);
             DesenharCronometroHUD(ctx->jogo, 20, 50);
+
+            if (ctx->jogo->tempoMostrarGol > 0.0f) {
+                int sw = GetScreenWidth();
+                int sh = GetScreenHeight();
+
+                float scale = 2.5f;
+
+                float tw = (float)ctx->goalMensagemTex.width;
+                float th = (float)ctx->goalMensagemTex.height;
+
+                float dw = tw * scale;
+                float dh = th * scale;
+
+                float x = (sw - dw) * 0.5f;
+                float y = (sh - dh) * 0.5f;
+
+                DrawRectangle(0, 0, sw, sh, (Color){0, 0, 0, 120});
+
+                DrawTextureEx(ctx->goalMensagemTex, (Vector2){ x, y }, 0.0f, scale, WHITE);
+            }
 
             if (fimDeJogo) {
                 int sw = GetScreenWidth();
                 int sh = GetScreenHeight();
+                ordernarPorGols(ctx->head1, ctx->tail1);
+                ordernarPorGols(ctx->head2, ctx->tail2);
+                
                 DrawRectangle(0, 0, sw, sh, (Color){0,0,0,150});
 
                 int panelW = 400;
-                int panelH = 200;
-                Rectangle panel = { sw/2 - panelW/2, sh/2 - panelH/2, panelW, panelH };
+                int panelH = 160;
+                Rectangle panel = {
+                    sw/2 - panelW/2,
+                    sh/2 - panelH/2,
+                    panelW,
+                    panelH
+                };
 
                 DrawRectangleRec(panel, (Color){30,30,40,240});
                 DrawRectangleLines(panel.x, panel.y, panel.width, panel.height, RAYWHITE);
@@ -293,18 +340,14 @@
                 const char *titulo = "Fim de partida!";
                 int fontTitulo = 30;
                 int tw = MeasureText(titulo, fontTitulo);
-                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 20, fontTitulo, YELLOW);
+                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 25, fontTitulo, YELLOW);
 
-                const char *opt0 = "Jogar novamente";
-                const char *opt1 = "Voltar";
-                int fontOpt = 22;
-                Color c0 = (opcaoFim == 0) ? YELLOW : LIGHTGRAY;
-                Color c1 = (opcaoFim == 1) ? YELLOW : LIGHTGRAY;
-                int o0w = MeasureText(opt0, fontOpt);
-                int o1w = MeasureText(opt1, fontOpt);
-                DrawText(opt0, panel.x + (panel.width - o0w)/2, panel.y + 80,  fontOpt, c0);
-                DrawText(opt1, panel.x + (panel.width - o1w)/2, panel.y + 120, fontOpt, c1);
+                const char *msg = "Pressione ENTER para voltar.";
+                int fontMsg = 20;
+                int mw = MeasureText(msg, fontMsg);
+                DrawText(msg, panel.x + (panel.width - mw)/2, panel.y + 90, fontMsg, RAYWHITE);
             }
+
             EndDrawing();
 
             contFramesBola++;
