@@ -828,7 +828,7 @@ void desenharTexturaJogador(Texture2D jogador, Bola * bola1, Jogador * jogador1,
 void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jogo){
     if(bola->velocidadeAtual.x!= 0.0f || bola->velocidadeAtual.y !=0.0f){
         if(CheckCollisionCircleRec(bola->posBola,bola->raioBola,rectangleParede)){
-          
+            
             if((rectangleParede.x == jogo->rectangleParedeCima.x && rectangleParede.y == jogo->rectangleParedeCima.y) || (rectangleParede.x == jogo->rectangleParedeBaixo.x && rectangleParede.y == jogo->rectangleParedeBaixo.y)){
                 bola->velocidadeAtual.y = -(bola->velocidadeAtual.y);
             }
@@ -841,7 +841,7 @@ void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jog
             }
         }
     }
-    if(bola->posBola.x>770 ){
+    if(bola->posBola.x>790 ){
         bola->posBola.x = 790;
         bola->velocidadeAtual.x = -bola->velocidadeAtual.x;
     }
@@ -1080,7 +1080,7 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                     
                     mudarPosicaoJogadorVelocidade(headDaVez);
                 }
-                else if ( ((timeComBola == 1 && headDaVez->time == 1) || (timeComBola == 2 && headDaVez->time == 2) && ((headDaVez->time == 1 && headDaVez->posJogador.x > 300) || (headDaVez->time == 2 && headDaVez->posJogador.x < 670)) && headDaVez->posJogador.y < 330 && headDaVez->posJogador.y > 50)){
+                else if ( ((timeComBola == 1 && headDaVez->time == 1) || (timeComBola == 2 && headDaVez->time == 2) && ((headDaVez->time == 1 && headDaVez->posJogador.x > 320) || (headDaVez->time == 2 && headDaVez->posJogador.x < 670)) && headDaVez->posJogador.y < 330 && headDaVez->posJogador.y > 50)){
                     if(headDaVez->time == 1){
                         headDaVez->velocidadeJogador.x -=2;
                     }
@@ -1088,7 +1088,7 @@ void movimentoAutomaticoJogo(Jogo * jogo,Bola * bola, Jogador * jogadorControlad
                         headDaVez->velocidadeJogador.x+=2;
                     }
                     else{
-                        headDaVez->velocidadeJogador.y = 0.0f;
+                        headDaVez->velocidadeJogador.x = 0.0f;
                     }
                     mudarPosicaoJogadorVelocidade(headDaVez);
                 }
@@ -1263,26 +1263,28 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
 
 void ordernarPorGols (Jogador*head1, Jogador*tail1){
     Jogador* aux1 = head1;
-
+    
+    Jogador * aux = head1;
     do{
         Jogador* aux = head1;
 
         while(aux!= tail1) {
-            if (aux->gols > aux->prox->gols){
-                Jogador *temp = aux;
-                aux = aux->prox;
-                aux->prox =temp;
-                }
+            if (aux->gols < aux->prox->gols){
+                int temp = aux->gols;
+                int temp1 = aux->funcaoDoJogador;
+
+                aux->gols = aux->prox->gols;
+                aux->funcaoDoJogador = aux->prox->funcaoDoJogador;
+
+                aux->prox->gols = temp;
+                aux->prox->funcaoDoJogador = temp1;
+            }
             aux = aux->prox;
         }
         head1 = head1->prox;
-    }while(head1 != tail1->prox);
+    }while(aux!= tail1->prox);
 
-    
-    do{
-        printf("%d",aux1->gols);
-        aux1 = aux1->prox;
-    }while(aux1 != tail1 ->prox);
+
 }
 
 void DesenharPlacarHUD(const Jogo *jogo) {

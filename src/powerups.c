@@ -179,13 +179,14 @@
                 }
             }
 
-            if (ctx->jogo->congeladoTimerTime1 > 0)
+            if (ctx->jogo->congeladoTimerTime1 > 0){
                 ctx->jogo->congeladoTimerTime1 -= dt;
-
-            if (ctx->jogo->congeladoTimerTime2 > 0)
+                if (ctx->jogo->congeladoTimerTime1 < 0.0f)ctx->jogo->congeladoTimerTime1= 0.0f;
+            }
+            if (ctx->jogo->congeladoTimerTime2 > 0){
                 ctx->jogo->congeladoTimerTime2 -= dt;
-
-
+                if (ctx->jogo->congeladoTimerTime2 < 0.0f) ctx->jogo->congeladoTimerTime2 = 0.0f;
+            }
             if (!fimDeJogo && ctx->jogo->tempoRestante <= 0.0f) {
                 ctx->jogo->tempoRestante = 0.0f;
                 fimDeJogo = true;
@@ -319,7 +320,9 @@
             if (fimDeJogo) {
                 int sw = GetScreenWidth();
                 int sh = GetScreenHeight();
-
+                ordernarPorGols(ctx->head1, ctx->tail1);
+                ordernarPorGols(ctx->head2, ctx->tail2);
+                
                 DrawRectangle(0, 0, sw, sh, (Color){0,0,0,150});
 
                 int panelW = 400;
