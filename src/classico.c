@@ -30,6 +30,9 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1);
     int contFramesBola = 0;
     int contadorFramesJogador = 0;
 
+    PlayMusicStream(ctx->musicPartida);
+    SetMusicVolume(ctx->musicPartida, 0.8f);
+
     bool fimDeJogo = false; 
     int  opcaoFim  = 0;    
 
@@ -38,6 +41,8 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1);
     ReiniciarCronometro(ctx->jogo, 60);
     
     while (!WindowShouldClose()) {
+
+        UpdateMusicStream(ctx->musicPartida);
         
         float dt = GetFrameTime();
         AtualizarCronometro(ctx->jogo, dt);
@@ -85,6 +90,7 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1);
         } else {
             // 👉 NESSA TELA FINAL: só volta pro início
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+                StopMusicStream(ctx->musicPartida);
                 pthread_mutex_unlock(&lock);
                 return;  // volta para quem chamou (main)
             }
