@@ -1276,7 +1276,7 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1)
     Jogador *aux = head1;
     do
     {
-        aux = head1;
+       Jogador * aux = head1;
 
         while (aux != tail1)
         {
