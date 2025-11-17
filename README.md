@@ -81,6 +81,7 @@ cd StructSoccer
 ```
 
 6. **Execução do Jogo**
+1º opção - 
 Para compilar e rodar o jogo
 ```bash
 make run
@@ -92,6 +93,15 @@ make
 Limpar arquivos objeto:
 ```bash
 make clean
+```
+2º opção - 
+Compilar:
+```bash
+gcc src/*.c -o build/main -lraylib -lm -lpthread -ldl -lrt -lGL
+```
+Executar: 
+```bash
+./build/main
 ```
 
 <h1> 🎉 Obrigado por instalar o Struct Soccer! </h1>
