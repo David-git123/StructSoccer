@@ -4,7 +4,7 @@
     #include "../include/modes.h"
     #include "../include/tempo.h"
     #include <stdlib.h>  
-
+    #include <stdio.h>
     extern pthread_mutex_t lock;
     void AtualizarPosJogador(Jogador *jogador, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2, Jogo *jogo);
     void EstadoBola(Bola * bola, Jogador * jogador,Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);

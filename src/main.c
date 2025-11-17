@@ -1269,32 +1269,33 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
 
 }
 
-void ordernarPorGols(Jogador *head1, Jogador *tail1) {
-    if (!head1 || head1 == tail1) return;
+void ordernarPorGols(Jogador *head1, Jogador *tail1)
+{
+    Jogador *aux1 = head1;
 
-    int trocou;
-    do {
-        trocou = 0;
-        Jogador *aux = head1;
+    Jogador *aux = head1;
+    do
+    {
+        aux = head1;
 
-        while (aux != tail1) {
-            if (aux->gols < aux->prox->gols) {
-                int tempG = aux->gols;
-                int tempF = aux->funcaoDoJogador;
+        while (aux != tail1)
+        {
+            if (aux->gols < aux->prox->gols)
+            {
+                int temp = aux->gols;
+                int temp1 = aux->funcaoDoJogador;
 
                 aux->gols = aux->prox->gols;
                 aux->funcaoDoJogador = aux->prox->funcaoDoJogador;
 
-                aux->prox->gols = tempG;
-                aux->prox->funcaoDoJogador = tempF;
-
-                trocou = 1;
+                aux->prox->gols = temp;
+                aux->prox->funcaoDoJogador = temp1;
             }
             aux = aux->prox;
         }
-    } while (trocou);
+        head1 = head1->prox;
+    } while (aux != tail1->prox);
 }
-
 
 void DesenharPlacarHUD(const Jogo *jogo) {
     int sw = GetScreenWidth();
