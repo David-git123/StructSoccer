@@ -4,7 +4,7 @@
     #include "../include/modes.h"
     #include "../include/tempo.h"
     #include <stdlib.h>  
-
+    #include <stdio.h>
     extern pthread_mutex_t lock;
     void AtualizarPosJogador(Jogador *jogador, Jogador *head1, Jogador *tail1, Jogador *head2, Jogador *tail2, Jogo *jogo);
     void EstadoBola(Bola * bola, Jogador * jogador,Jogador ** jogadorControladoTime1,Jogador ** jogadorControladoTime2,Jogador * goleiro1, Jogador * goleiro2,Jogador * head1,Jogador *tail1, Jogador * head2, Jogador * tail2, Jogo * jogo);
@@ -127,6 +127,107 @@
     }
 }
 
+static const char* NomeFuncaoJogador(const Jogador *j) {
+    switch (j->funcaoDoJogador) {
+        case 1: return "Atacante";
+        case 2: return "Defensor";
+        case 3: return "Meia";
+        case 4: return "Goleiro";
+        default: return "Jogador";
+    }
+}
+
+static void DesenharTopScoresFinal(Jogador *head1, Jogador *tail1,
+                                   Jogador *head2, Jogador *tail2,
+                                   Rectangle panel) {
+    Jogador *lista[6];
+    int count = 0;
+
+    if (head1) {
+        Jogador *aux = head1;
+        do {
+            if (count < 6) lista[count++] = aux;
+            if (aux == tail1) break;
+            aux = aux->prox;
+        } while (aux && aux != head1);
+    }
+
+    if (head2) {
+        Jogador *aux = head2;
+        do {
+            if (count < 6) lista[count++] = aux;
+            if (aux == tail2) break;
+            aux = aux->prox;
+        } while (aux && aux != head2);
+    }
+
+    for (int i = 0; i < count - 1; i++) {
+        int best = i;
+        for (int j = i + 1; j < count; j++) {
+            if (lista[j]->gols > lista[best]->gols) {
+                best = j;
+            }
+        }
+        if (best != i) {
+            Jogador *tmp = lista[i];
+            lista[i] = lista[best];
+            lista[best] = tmp;
+        }
+    }
+
+    int maxMostra = 3;
+    if (maxMostra > count) maxMostra = count;
+
+    int cardW = (int)(panel.width - 40);
+    int cardH = 52;
+    int startY = (int)(panel.y + 210);
+
+    for (int i = 0; i < maxMostra; i++) {
+        Jogador *j = lista[i];
+
+        Rectangle card = {
+            panel.x + 20,
+            startY + i * (cardH + 10),
+            (float)cardW,
+            (float)cardH
+        };
+
+        Color bg = (i == 0) ? (Color){60, 50, 20, 240}
+                            : (Color){35, 40, 55, 230};
+        Color borda = (i == 0) ? GOLD : (Color){200, 200, 220, 180};
+
+        DrawRectangleRounded(card, 0.25f, 8, bg);
+        DrawRectangleRoundedLines(card, 0.25f, 8, borda);
+
+        char pos[8];
+        snprintf(pos, sizeof(pos), "%dº", i + 1);
+        int fontPos = 22;
+        int pw = MeasureText(pos, fontPos);
+        int px = (int)(card.x + 10);
+        int py = (int)(card.y + card.height/2 - fontPos/2);
+        DrawText(pos, px, py, fontPos, (i == 0 ? GOLD : RAYWHITE));
+
+        char linha[128];
+        snprintf(linha, sizeof(linha),
+                 "T%d - %s",
+                 j->time,
+                 NomeFuncaoJogador(j));
+        int fontInfo = 18;
+        int lx = px + pw + 12;
+        int ly = (int)card.y + 8;
+        DrawText(linha, lx, ly, fontInfo, RAYWHITE);
+
+        char golsTxt[64];
+        snprintf(golsTxt, sizeof(golsTxt),
+                 "%d gol%s",
+                 j->gols,
+                 (j->gols == 1 ? "" : "s"));
+        int gw = MeasureText(golsTxt, fontInfo);
+        int gx = (int)(card.x + card.width - gw - 16);
+        int gy = (int)(card.y + card.height/2 - fontInfo/2);
+        DrawText(golsTxt, gx, gy, fontInfo, (i == 0 ? GOLD : RAYWHITE));
+    }
+}
 
     void RunModoPowerUps(GameCtx* ctx) {
         int contFramesBola = 0;
@@ -317,16 +418,44 @@
                 DrawTextureEx(ctx->goalMensagemTex, (Vector2){ x, y }, 0.0f, scale, WHITE);
             }
 
+            // ---------------- TELA FINAL ----------------
             if (fimDeJogo) {
                 int sw = GetScreenWidth();
                 int sh = GetScreenHeight();
-                ordernarPorGols(ctx->head1, ctx->tail1);
-                ordernarPorGols(ctx->head2, ctx->tail2);
-                
-                DrawRectangle(0, 0, sw, sh, (Color){0,0,0,150});
 
-                int panelW = 400;
-                int panelH = 160;
+                Jogador *lista[6];
+                int count = 0;
+
+                Jogador *aux = ctx->head1;
+                if (aux) {
+                    do {
+                        lista[count++] = aux;
+                        aux = aux->prox;
+                    } while (aux != ctx->tail1->prox && count < 6);
+                }
+
+                aux = ctx->head2;
+                if (aux) {
+                    do {
+                        lista[count++] = aux;
+                        aux = aux->prox;
+                    } while (aux != ctx->tail2->prox && count < 6);
+                }
+
+                for (int i = 0; i < count - 1; ++i) {
+                    for (int j = i + 1; j < count; ++j) {
+                        if (lista[j]->gols > lista[i]->gols) {
+                            Jogador *tmp = lista[i];
+                            lista[i] = lista[j];
+                            lista[j] = tmp;
+                        }
+                    }
+                }
+
+                DrawRectangle(0, 0, sw, sh, (Color){0, 0, 0, 200});
+
+                int panelW = 760;
+                int panelH = 460;
                 Rectangle panel = {
                     sw/2 - panelW/2,
                     sh/2 - panelH/2,
@@ -334,18 +463,145 @@
                     panelH
                 };
 
-                DrawRectangleRec(panel, (Color){30,30,40,240});
-                DrawRectangleLines(panel.x, panel.y, panel.width, panel.height, RAYWHITE);
+                DrawRectangleRounded(panel, 0.06f, 10, (Color){10, 12, 30, 245});
+                DrawRectangleRoundedLines(panel, 0.06f, 10, (Color){230, 230, 255, 90});
 
-                const char *titulo = "Fim de partida!";
-                int fontTitulo = 30;
+                const char *titulo = "FIM DE PARTIDA";
+                int fontTitulo = 40;
                 int tw = MeasureText(titulo, fontTitulo);
-                DrawText(titulo, panel.x + (panel.width - tw)/2, panel.y + 25, fontTitulo, YELLOW);
+                DrawText(titulo,
+                        (int)(panel.x + (panel.width - tw)/2),
+                        (int)(panel.y + 18),
+                        fontTitulo,
+                        YELLOW);
 
-                const char *msg = "Pressione ENTER para voltar.";
-                int fontMsg = 20;
-                int mw = MeasureText(msg, fontMsg);
-                DrawText(msg, panel.x + (panel.width - mw)/2, panel.y + 90, fontMsg, RAYWHITE);
+                const char *sub = "Pressione ENTER para voltar ao menu";
+                int fontSub = 18;
+                int ts = MeasureText(sub, fontSub);
+                DrawText(sub,
+                        (int)(panel.x + (panel.width - ts)/2),
+                        (int)(panel.y + 65),
+                        fontSub,
+                        RAYWHITE);
+
+                int boxY = (int)(panel.y + 100);
+                int boxH = 64;
+                int boxW = (int)(panel.width/2 - 40);
+
+                Rectangle boxT1 = { panel.x + 24, boxY, boxW, boxH };
+                Rectangle boxT2 = { panel.x + 24 + boxW + 24, boxY, boxW, boxH };
+
+                DrawRectangleRounded(boxT1, 0.30f, 8, (Color){0, 115, 230, 220});
+                DrawRectangleRounded(boxT2, 0.30f, 8, (Color){210, 50, 80, 220});
+
+                const char *lbl1 = "TIME 1";
+                const char *lbl2 = "TIME 2";
+                int fontLbl = 22;
+                int w1 = MeasureText(lbl1, fontLbl);
+                int w2 = MeasureText(lbl2, fontLbl);
+
+                DrawText(lbl1,
+                        (int)(boxT1.x + (boxT1.width - w1)/2),
+                        boxY + 6,
+                        fontLbl,
+                        WHITE);
+
+                DrawText(lbl2,
+                        (int)(boxT2.x + (boxT2.width - w2)/2),
+                        boxY + 6,
+                        fontLbl,
+                        WHITE);
+
+                char s1[8];
+                char s2[8];
+                sprintf(s1, "%d", ctx->jogo->placarTime1); 
+                sprintf(s2, "%d", ctx->jogo->placarTime2); 
+
+                int fontScore = 32;
+                int ws1 = MeasureText(s1, fontScore);
+                int ws2 = MeasureText(s2, fontScore);
+
+                DrawText(s1,
+                        (int)(boxT1.x + (boxT1.width - ws1)/2),
+                        boxY + 30,
+                        fontScore,
+                        WHITE);
+
+                DrawText(s2,
+                        (int)(boxT2.x + (boxT2.width - ws2)/2),
+                        boxY + 30,
+                        fontScore,
+                        WHITE);
+
+                // ---------- TÍTULO DESTAQUES ----------
+                const char *titDest = "Destaques da partida";
+                int fontDest = 24;
+                int wDest = MeasureText(titDest, fontDest);
+                int destY = boxY + boxH + 30;
+                DrawText(titDest,
+                        (int)(panel.x + (panel.width - wDest)/2),
+                        destY,
+                        fontDest,
+                        RAYWHITE);
+
+                // ---------- LISTA TOP 3 ----------
+                int maxRank = (count < 3) ? count : 3;
+                int rowH = 60;
+                int rowX = (int)(panel.x + 24);
+                int rowW = (int)(panel.width - 48);
+                int startY = destY + 30;
+
+                for (int i = 0; i < maxRank; ++i) {
+                    Jogador *p = lista[i];
+                    int y = startY + i * (rowH + 6);
+
+                    Color bg = (i == 0) ? (Color){230, 190, 40, 220} : (Color){25, 25, 45, 230};
+                    Color textColor = (i == 0) ? BLACK : RAYWHITE;
+
+                    DrawRectangleRounded(
+                        (Rectangle){ rowX, y, rowW, rowH },
+                        0.20f, 8,
+                        bg
+                    );
+
+                    char posTxt[8];
+                    sprintf(posTxt, "%do", i + 1);
+                    int fontPos = 20;
+                    DrawText(posTxt,
+                            rowX + 12,
+                            y + rowH/2 - fontPos/2,
+                            fontPos,
+                            textColor);
+
+                    const char *timeStr   = (p->time == 1) ? "T1" : "T2";
+                    const char *funcaoStr = "Jogador";
+                    switch (p->funcaoDoJogador) {
+                        case 1: funcaoStr = "Atacante"; break;
+                        case 2: funcaoStr = "Defensor"; break;
+                        case 3: funcaoStr = "Meia";      break;
+                        case 4: funcaoStr = "Goleiro";   break;
+                    }
+
+                    char linha[64];
+                    sprintf(linha, "%s - %s", timeStr, funcaoStr);
+                    int fontLinha = 20;
+                    DrawText(linha,
+                            rowX + 60,
+                            y + rowH/2 - fontLinha/2,
+                            fontLinha,
+                            textColor);
+
+                    char golsTxt[32];
+                    sprintf(golsTxt, "%d gol%s", p->gols, (p->gols == 1 ? "" : "s"));
+                    int fontG = 20;
+                    int wg = MeasureText(golsTxt, fontG);
+
+                    DrawText(golsTxt,
+                            rowX + rowW - wg - 18,
+                            y + rowH/2 - fontG/2,
+                            fontG,
+                            textColor);
+                }
             }
 
             EndDrawing();

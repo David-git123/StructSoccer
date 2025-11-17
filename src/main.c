@@ -73,9 +73,11 @@ void main() {
 
     goleiro1->rectJogador = (Rectangle){55,153,10,10};
     goleiro1->time = 1;
+    goleiro1->gols = 0;   
     
     goleiro2->rectJogador = (Rectangle){790,145,10,10};
     goleiro2->time = 2;
+    goleiro2->gols = 0;
     
     
     head1Jogador = jogador1;
@@ -135,6 +137,7 @@ void main() {
         jogador1->funcaoDoJogador = 1;
         jogador1->rectJogador = (Rectangle){ jogador1->posJogador.x, jogador1->posJogador.y,jogador1->largura,jogador1->altura };
         jogador1->time =1;
+        jogador1->gols = 0;
     }
     
     if (jogador2) {
@@ -148,6 +151,7 @@ void main() {
         jogador2->funcaoDoJogador = 2;
         jogador2->rectJogador = (Rectangle){ jogador2->posJogador.x, jogador2->posJogador.y,jogador2->largura,jogador2->altura };
         jogador2->time =1;
+        jogador2->gols = 0;
     }
     if(jogador5){
         jogador5->temDominio = 0;
@@ -160,6 +164,7 @@ void main() {
         jogador5->funcaoDoJogador = 3;
         jogador5->rectJogador = (Rectangle){ jogador5->posJogador.x, jogador5->posJogador.y,jogador5->largura,jogador5->altura };
         jogador5->time =1;
+        jogador5->gols = 0;
     }
     
     if (jogador3) {
@@ -173,6 +178,7 @@ void main() {
         jogador3->funcaoDoJogador = 1;
         jogador3->rectJogador = (Rectangle){ jogador3->posJogador.x, jogador3->posJogador.y,jogador3->largura,jogador3->altura };
         jogador3->time =2;
+        jogador3->gols = 0;
     }
     if (jogador4) {
         jogador4->temDominio = 0;
@@ -185,6 +191,7 @@ void main() {
         jogador4->funcaoDoJogador = 2;
         jogador4->rectJogador = (Rectangle){ jogador4->posJogador.x, jogador4->posJogador.y,jogador4->largura,jogador4->altura };
         jogador4->time =2;
+        jogador4->gols = 0;
     }
     if (jogador6) {
         jogador6->temDominio = 0;
@@ -197,6 +204,7 @@ void main() {
         jogador6->funcaoDoJogador = 3;
         jogador6->rectJogador = (Rectangle){ jogador6->posJogador.x, jogador6->posJogador.y,jogador6->largura,jogador6->altura };
         jogador6->time =2;
+        jogador6->gols = 0;
     }
 
     Jogador* jogadorControladoTime1 = jogador1;
@@ -1261,15 +1269,19 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
 
 }
 
-void ordernarPorGols (Jogador*head1, Jogador*tail1){
-    Jogador* aux1 = head1;
-    
-    Jogador * aux = head1;
-    do{
-        Jogador* aux = head1;
+void ordernarPorGols(Jogador *head1, Jogador *tail1)
+{
+    Jogador *aux1 = head1;
 
-        while(aux!= tail1) {
-            if (aux->gols < aux->prox->gols){
+    Jogador *aux = head1;
+    do
+    {
+       Jogador * aux = head1;
+
+        while (aux != tail1)
+        {
+            if (aux->gols < aux->prox->gols)
+            {
                 int temp = aux->gols;
                 int temp1 = aux->funcaoDoJogador;
 
@@ -1282,9 +1294,7 @@ void ordernarPorGols (Jogador*head1, Jogador*tail1){
             aux = aux->prox;
         }
         head1 = head1->prox;
-    }while(aux!= tail1->prox);
-
-
+    } while (aux != tail1->prox);
 }
 
 void DesenharPlacarHUD(const Jogo *jogo) {
