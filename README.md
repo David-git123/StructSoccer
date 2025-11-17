@@ -4,7 +4,9 @@
     <a href="#"> <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white" /> </a> <a href="https://www.raylib.com/"> <img src="https://img.shields.io/badge/Raylib-000000?style=for-the-badge&logoColor=white" /> </a> 
 </p>
 
-<h1><strong>⚽ Descrição</strong></h1> <h4> Struct Soccer é um jogo de futebol 3v3 desenvolvido em C com a biblioteca Raylib. A proposta é oferecer uma experiência dinâmica e divertida, onde o jogador controla equipes compostas por estruturas (structs) que simulam atributos reais de um atleta — como velocidade, precisão, energia e posição em campo. Com partidas rápidas e jogabilidade simples, o game combina raciocínio tático e reflexos rápidos, proporcionando diversão e desafio na medida certa. </h4>
+<h1><strong>⚽ Descrição</strong></h1> <h4> Struct Soccer é um jogo de futebol 3v3 desenvolvido em C com a biblioteca Raylib. A proposta é oferecer uma experiência dinâmica e divertida, onde o jogador controla equipes compostas por estruturas (structs) que simulam atributos reais de um atleta — como velocidade, precisão, energia e posição em campo. Com partidas rápidas e jogabilidade simples, o game combina raciocínio tático e reflexos rápidos, proporcionando diversão e desafio na medida certa. Possui 2 modos: PowerUps e Clássico. O modo PowerUps é uma releitura do 3x3 clássico adicionando poderes que modificam o estado do jogo.
+
+</h4>
 
 <h1><strong>🎥 Vídeo Demonstrativo</strong></h1> <a href="#"> <img src="" alt="Struct Soccer Gameplay"> </a>
 
@@ -129,3 +131,4 @@ Bom jogo!
   </tr>
 </table>
 </p>
+
