@@ -241,6 +241,9 @@ void main() {
     Texture2D texturaJogadorControlado2 = LoadTexture("assets/art/props/2p.png");
     Texture2D texturaGoleiro = LoadTexture("assets/art/characters/GOLEIRO.png");
     Texture2D goalMensagem = LoadTexture("assets/art/ui/goal.png");
+    Texture2D fogo = LoadTexture("assets/art/particles/fogo-removebg-preview.png");
+    Texture2D congelar = LoadTexture("assets/art/particles/congelar-removebg-preview.png");
+    Texture2D relampago = LoadTexture("assets/art/particles/relampago-removebg-preview.png");
     Music gameplayMusic = LoadMusicStream("assets/music/gameplay.mp3");
     Music tournamentMusic = LoadMusicStream("assets/music/tournament.mp3");
 
@@ -327,7 +330,9 @@ void main() {
         .goalMensagemTex = goalMensagem,
         .musicPartida = gameplayMusic,
         .musicTorneio = tournamentMusic,
-
+        .fogotxt = fogo,
+        .congelartxt = congelar,
+        .relampagotxt = relampago,
         .jogo = jogo,
         .bola1 = bola1,
         .camera = camera,
@@ -849,7 +854,7 @@ void TratarColisoesParedeBola(Bola * bola, Rectangle rectangleParede, Jogo * jog
             }
         }
     }
-    if(bola->posBola.x>790 ){
+    if(bola->posBola.x>800 ){
         bola->posBola.x = 790;
         bola->velocidadeAtual.x = -bola->velocidadeAtual.x;
     }
@@ -1271,6 +1276,7 @@ void movimentarGoleiro(Jogador * goleiro, Jogo * jogo, Bola * bola){
 
 void ordernarPorGols(Jogador *head1, Jogador *tail1)
 {
+
     Jogador *aux1 = head1;
 
     Jogador *aux = head1;
@@ -1295,6 +1301,7 @@ void ordernarPorGols(Jogador *head1, Jogador *tail1)
         }
         head1 = head1->prox;
     } while (aux != tail1->prox);
+    
 }
 
 void DesenharPlacarHUD(const Jogo *jogo) {

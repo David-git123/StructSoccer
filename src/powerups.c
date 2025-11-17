@@ -55,19 +55,28 @@
 
     
 
-    void DesenharPowerUps(const Jogo *jogo) {
+    void DesenharPowerUps(const Jogo *jogo,GameCtx * ctx) {
         PowerUp *p = jogo->listaPowerUps;
         while (p) {
             if (p->ativo) {
+                Texture2D texturaAtual;
+                Rectangle srcDaVez;
+                Rectangle srcFogo =  (Rectangle) {0,0,260,170};
+                Rectangle srcRelampago = (Rectangle){0, 0, 80, 192};
+                Rectangle srcCongelar = (Rectangle){0, 0, 80, 110};
+
                 Color cor;
                 if (p->tipo == PW_VELOCIDADE) {
-                    cor = BLUE;
+                    texturaAtual = ctx->relampagotxt;
+                    srcDaVez = srcRelampago;
                 } else if(p->tipo == PW_CONGELAR){
-                    cor = RED;
+                    texturaAtual = ctx->congelartxt;
+                    srcDaVez = srcCongelar;
                 } else if (p->tipo == PW_SUPERCHUTE) {
-                    cor =  YELLOW;
+                    srcDaVez = srcFogo;
+                    texturaAtual = ctx->fogotxt;
                 }
-                DrawRectangleRec(p->caixa, cor);
+                DrawTexturePro(texturaAtual,srcDaVez,(Rectangle){p->caixa.x,p->caixa.y,p->caixa.width+20,p->caixa.height+10},(Vector2){p->caixa.width/2,p->caixa.height/2},0.0f,WHITE);
             }
             p = p->prox;
         }
@@ -390,7 +399,7 @@ static void DesenharTopScoresFinal(Jogador *head1, Jogador *tail1,
                 desenharTexturaBola(ctx->bolaTex, ctx->bola1, contFramesBola, *(ctx->ctrl1), *(ctx->ctrl2));
 
                 //  power-ups são desenhados NO MESMO MUNDO (com câmera) 
-                DesenharPowerUps(ctx->jogo);
+                DesenharPowerUps(ctx->jogo,ctx);
             EndMode2D();
 
             DesenharPlacarHUD(ctx->jogo);
